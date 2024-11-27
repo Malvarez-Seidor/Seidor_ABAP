@@ -1,0 +1,20 @@
+projection;
+//strict ( 2 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+
+define behavior for ZCDS_P_DOC_RET alias Withholdings
+{
+
+  use update;
+
+    field( readonly : update ) CompanyCode, FiscalYear, AccountingDocument, AccountingDocumentType,
+                               Supplier, BusinessName, TypeId, IdNumber, Establishment, EmissionPoint, Sequential,
+                               Accesskey, IssueDate, DocumentType, DocumentStatus, MessageDocument, Xml, FileName, MimeType,
+                               AuthorizationDate, DocumentSupplier, AccountingDocCreatedByUser, UserFullName, DocumentReferenceID,
+                               AccountingDocumentCreationDate, AccountingDocumentHeaderText, CompanyCodeCurrency,
+                               DocumentItemText, NetAmountIsPosted, PostingDate, CompanyCodeName, AccountingDocumentTypeName,
+                               ReverseDocument, TaxBaseAmountIsNetAmount, Criticality;
+
+  use action SendDocument;
+  use action UpdateStatus;
+
+}

@@ -1,0 +1,57 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Transport Data',
+                      typeNamePlural    : 'Transports Data',
+                      title             : { type :#STANDARD, label : 'Delivery Document', value : 'DeliveryDocument' },
+                      description       : { type :#STANDARD, value : 'FiscalYear' } },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'CarrierId', direction:  #ASC } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+                     
+annotate entity ZCDS_P_EC_010
+    with 
+{   
+
+  @UI.facet: [ { id : 'DeliveryDocument', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Delivery Document', position: 10 } ]
+              
+  @UI: { identification: [ {  position : 10, label : 'Company Code' } ] }
+  @UI.hidden: true
+  CompanyCode;
+  
+  @UI: { identification: [ {  position : 20, label : 'Fiscal Year' } ] }
+  @UI.hidden: true
+  FiscalYear;
+  
+  @UI: { identification: [ {  position : 30, label : 'Delivery Document' } ] }
+  @UI.hidden: true
+  DeliveryDocument;
+  
+  @UI: { identification: [ {  position : 40, label : 'Delivery Document Type' } ] }
+  @UI.hidden: true
+  DeliveryDocumentType;
+  
+  @UI: { lineItem: [ { position : 10, label : 'Carrier Id', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Carrier Id' } ] }
+  CarrierId;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Type Id', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'Type Id' } ] }
+  TypeId;
+    
+  @UI: { lineItem: [ { position : 30, label : 'Business Name', importance :  #HIGH } ],
+   identification: [ { position : 70, label : 'Business Name' } ] }
+  BusinessName;
+    
+  @UI: { lineItem: [ { position : 40, label : 'Car Plate', importance :  #HIGH } ],
+   identification: [ { position : 80, label : 'Car Plate' } ] }
+  CarPlate;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Start Date', importance :  #HIGH  } ],
+   identification: [ { position : 90, label : 'Start Date' }] }
+  StartDate;
+  
+  @UI: { lineItem: [ { position : 60,  label : 'End Date', importance :  #HIGH } ],
+   identification: [ { position : 100, label : 'End Date' } ] }    
+  EndDate;
+       
+}

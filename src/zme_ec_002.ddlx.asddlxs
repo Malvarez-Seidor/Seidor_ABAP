@@ -1,0 +1,46 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName : 'Sequential Administrator', typeNamePlural : 'Sequential Administrator',
+            title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+
+annotate view ZCDS_P_EC_002 with
+{
+  @UI.facet: [ { id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance :  #HIGH } ],
+   identification: [ {  position : 10, label : 'Company Code' } ],
+   selectionField: [ { position: 10 } ] }
+  CompanyCode;
+
+  @UI: { lineItem: [ { position : 20, label : 'Company Name', importance :  #HIGH } ],
+   identification: [ { position : 20, label : 'Company Name' } ] }
+  @UI.hidden: true
+  CompanyCodeName;
+
+  @UI: { lineItem: [ { position : 30, label : 'Document SRI', importance :  #HIGH } ],
+   identification: [ { position : 30, label : 'Document SRI' } ],
+   selectionField: [ { position: 20 } ] }
+  DocumentSri;
+
+  @UI: { lineItem: [ { position : 40, label : 'Establishment', importance :  #HIGH } ],
+   identification: [ { position : 40, label : 'Establishment' } ],
+   selectionField: [ { position: 30 } ] }
+  Establishment;
+
+  @UI: { lineItem: [ { position : 50, label : 'Emission Point', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Emission Point' } ],
+   selectionField: [ { position: 40 } ] }
+  EmissionPoint;
+
+  @UI: { lineItem: [ { position : 60, label : 'Number Object', importance :  #HIGH } ],
+   identification: [ {  position : 60, label : 'Number Object' } ] }
+  Objet;
+
+  @UI: { lineItem: [ { position : 70, label : 'Address Establishment', importance :  #LOW } ],
+   identification: [ {  position : 70, label : 'Address Establishment' } ] }
+  Address;
+  
+  @UI: { lineItem: [ { position : 80, label : 'Sequential', importance :  #LOW }, { type: #FOR_ACTION, dataAction: 'getNext', label: 'Next' } ],
+   identification: [ { position : 80, label : 'Sequential' }, { type: #FOR_ACTION, dataAction: 'getNext', label: 'Next' } ] }
+  Sequential;
+
+}

@@ -1,0 +1,31 @@
+projection;
+//strict ( 2 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+
+define behavior for ZCDS_P_DOC_SD_GUIA alias TransportGuides
+{
+
+  use update;
+
+  field( readonly : update ) Companycode, FiscalYear, DeliveryDocument, DeliveryDocumentType, ShiptParty,
+                             BusinessName, TypeId, Idnumber, Establishment, Emissionpoint, Sequential, Accesskey,
+                             Documenttype, Issuedate, Documentstatus, Messagedocument, Authorizationdate, Xml,
+                             Mimetype, Filename, Documentsupplier, BillingDocumentDate, CompanyCodeName, CompleteDeliveryIsDefined,
+                             CreatedByUser, CreationDate, Criticality, DeliveryBlockReason, DeliveryDate,
+                             DeliveryDocumentTypeName, IsExportDelivery, OverallDelivReltdBillgStatus,
+                             OverallGoodsMovementStatus, OverallSDProcessStatus, PickingDate, ReleasedCreditAmount,
+                             SalesOrganization, SalesOrganizationName, TotalNetAmount, TransactionCurrency, UserFullName;
+
+  use association _TransportData { create; }
+
+  use action SendDocument;
+  use action UpdateStatus;
+
+}
+
+define behavior for ZCDS_P_EC_010 alias TransportData
+{
+  use update;
+  use delete;
+
+  use association _TransportGuides;
+}

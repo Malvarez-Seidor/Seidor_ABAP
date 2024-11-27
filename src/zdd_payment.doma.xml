@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_DOMA" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD01V>
+    <DOMNAME>ZDD_PAYMENT</DOMNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
+    <DATATYPE>CHAR</DATATYPE>
+    <LENG>000002</LENG>
+    <OUTPUTLEN>000002</OUTPUTLEN>
+    <VALEXI>X</VALEXI>
+    <DDTEXT>Payment Methods</DDTEXT>
+    <DOMMASTER>E</DOMMASTER>
+   </DD01V>
+   <DD07V_TAB>
+    <DD07V>
+     <DOMNAME>ZDD_PAYMENT</DOMNAME>
+     <VALPOS>0001</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>01</DOMVALUE_L>
+     <DDTEXT>Without Using the Financial System</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_PAYMENT</DOMNAME>
+     <VALPOS>0002</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>15</DOMVALUE_L>
+     <DDTEXT>Debt Compensation</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_PAYMENT</DOMNAME>
+     <VALPOS>0003</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>16</DOMVALUE_L>
+     <DDTEXT>Debit Card</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_PAYMENT</DOMNAME>
+     <VALPOS>0004</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>17</DOMVALUE_L>
+     <DDTEXT>Electronic Cash</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_PAYMENT</DOMNAME>
+     <VALPOS>0005</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>18</DOMVALUE_L>
+     <DDTEXT>Prepaid Card</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_PAYMENT</DOMNAME>
+     <VALPOS>0006</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>19</DOMVALUE_L>
+     <DDTEXT>Credit Card</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_PAYMENT</DOMNAME>
+     <VALPOS>0007</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>20</DOMVALUE_L>
+     <DDTEXT>Others With Use of the System</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_PAYMENT</DOMNAME>
+     <VALPOS>0008</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>21</DOMVALUE_L>
+     <DDTEXT>Endorsement of Securities</DDTEXT>
+    </DD07V>
+   </DD07V_TAB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

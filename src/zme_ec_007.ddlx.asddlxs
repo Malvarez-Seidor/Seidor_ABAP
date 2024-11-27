@@ -1,0 +1,49 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName : 'Electronic Constant', typeNamePlural : 'Electronic Constants',
+            title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+            
+annotate view ZCDS_P_EC_007 with
+{
+  @UI.facet: [ { id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+  
+  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance :  #HIGH } ],
+   identification: [ { position : 10, label : 'Company Code' } ],
+   selectionField: [ { position: 10 } ] }
+  CompanyCode;
+
+  @UI: { lineItem: [ { position : 20, label : 'Company Name', importance :  #HIGH } ],
+   identification: [ { position : 20, label : 'Company Name' } ] }
+  @UI.hidden: true
+  CompanyCodeName;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Application', importance :  #HIGH } ],
+   identification: [ { position : 30, label : 'Application' } ],
+   selectionField: [ { position: 20 } ] }
+  Api;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Field Name', importance :  #HIGH } ],
+   identification: [ { position : 40, label : 'Field Name' } ] }
+  Fieldname;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Sign', importance :  #HIGH } ], 
+   identification: [ { position : 50, label : 'Sign' } ] }
+  Sign;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Option', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'Option' } ] }
+  Options;
+  
+  @UI: { lineItem: [ { position : 70, label : 'Sequence', importance :  #HIGH } ],
+   identification: [ { position : 70, label : 'Sequence' } ] }
+  Sequence;
+  
+  @UI: { lineItem: [ { position : 80, label : 'Low', importance : #HIGH } ],
+   identification: [ { position : 80, label : 'Low' } ] }
+  Low;
+  
+  @UI: { lineItem: [ { position : 90, label : 'High', importance : #HIGH } ],
+   identification: [ { position : 90, label : 'High' } ] }
+  High;
+
+}

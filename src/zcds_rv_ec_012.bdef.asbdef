@@ -1,0 +1,88 @@
+managed;
+with draft;
+//strict ( 2 );
+
+define behavior for ZCDS_RV_EC_012 alias LiquidationSupports
+implementation in class zbp_cds_rv_ec_012 unique
+persistent table zdt_ec_012
+lock master total etag Accountingdocument
+etag master last_changed_by
+draft table zdt_ec_012_draft
+{
+
+  create;
+  update;
+  delete;
+
+  action ( features : instance ) uploadExcelData  result [1] $self;
+
+//  association _SupportDetails { create ( features : instance ); }
+
+  association _SupportDetails { create; with draft; }
+
+  determination fields on modify { field FileName ; }
+
+  mapping for zdt_ec_012{
+
+  Companycode              = companycode;
+  Fiscalyear               = fiscalyear;
+  Accountingdocument       = accountingdocument;
+  Accountingdocumenttype   = Accountingdocumenttype;
+  Filestatus               = filestatus;
+  Attachment               = attachment;
+  Mimetype                 = mimetype;
+  Filename                 = filename;
+  Last_changed_by          = last_changed_by;
+
+  }
+
+}
+
+define behavior for ZCDS_RV_EC_013 alias SupportDetails
+implementation in class zbp_cds_rv_ec_013 unique
+persistent table zdt_ec_013
+draft table zdt_ec_013_draft
+lock dependent by _LiquidationSupports
+etag master last_changed_by
+{
+
+  update;
+  delete;
+
+//  association _LiquidationSupports {  }
+  association _LiquidationSupports { with draft; }
+
+  action createSES result [1] $self;
+
+
+  field ( readonly ) Companycode, Fiscalyear, Accountingdocument, Accountingdocumenttype, Documentitem;
+
+  mapping for zdt_ec_013
+      {
+        companycode              = companycode;
+        Fiscalyear               = fiscalyear;
+        Accountingdocument       = accountingdocument;
+        Accountingdocumenttype   = Accountingdocumenttype;
+        Documentitem             = documentitem;
+        Typeid                   = typeid;
+        Idnumber                 = idnumber;
+        Documenttype             = documenttype;
+        Establishment            = establishment;
+        Emissionpoint            = emissionpoint;
+        Sequential               = sequential;
+        Accesskey                = accesskey;
+        Issuedate                = issuedate;
+        Taxcode                  = taxcode;
+        Amountbasetax            = amountbasetax;
+        Amountbasetax0           = amountbasetax0;
+        Amountbasenotax          = amountbasenotax;
+        Amountbaseexetax         = amountbaseexetax;
+        Amounttax                = amounttax;
+        Amountice                = amountice;
+        Total_price              = total_price;
+        Currency                 = currency;
+        Last_changed_by          = last_changed_by;
+
+      }
+
+}

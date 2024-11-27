@@ -1,0 +1,4 @@
+@EndUserText.label: 'Administrador Secuenciales'
+define service ZBSD_EC_002 {
+  expose ZCDS_P_EC_002 as SeqAdministrator;
+}

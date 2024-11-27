@@ -1,0 +1,4 @@
+@EndUserText.label: 'Payment Methods'
+define service ZBSD_EC_006 {
+  expose ZCDS_P_EC_006 as PaymentConditions;
+}

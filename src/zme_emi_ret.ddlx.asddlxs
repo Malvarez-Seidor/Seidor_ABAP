@@ -1,0 +1,48 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Withholding',
+                      typeNamePlural    : 'Withholdings',
+                      title             : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCode' } },
+ presentationVariant: [ { sortOrder: [ { by: 'AccountingDocument', direction:  #ASC  } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+                     
+annotate view ZCDS_P_EMI_RET
+    with 
+{
+   
+  @UI.facet: [ { label: 'Header Data',   purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10 } ]
+
+  @UI: { lineItem: [ { position : 10, importance : #HIGH } ],
+  selectionField: [ { position : 10 } ],
+  textArrangement: #TEXT_ONLY }
+  Companycode;
+  
+  @UI: { lineItem: [ { position : 20, importance : #MEDIUM } ],
+   selectionField: [ { position : 20 } ] }
+  @UI.fieldGroup: [ { position: 20 } ]
+  Fiscalyear;
+  
+  @UI: { lineItem: [ { position : 30, importance : #HIGH } ],
+   selectionField: [ { position : 30 } ] }
+  @UI: { dataPoint: { visualization: #NUMBER  } }
+  @UI.dataPoint.title: 'Accounting Document'
+  Accountingdocument;
+  
+  @UI: { lineItem: [ { position : 40, importance : #MEDIUM } ],
+   selectionField: [ { position : 40 } ],
+   textArrangement: #TEXT_ONLY }
+  @UI.dataPoint.title: 'Accounting Document Type'
+  Accountingdocumenttype;
+  
+  @UI: { lineItem: [ { position : 50,  label : 'Document Status', importance : #HIGH } ],
+   selectionField: [ { position : 50 } ] }
+  @UI.textArrangement: #TEXT_ONLY
+  @UI: { dataPoint: { title: 'Document Status' } }
+  Documentstatus;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Document Type', importance : #MEDIUM } ],
+   identification: [ { position : 60,  label : 'Document Type' } ],
+   textArrangement: #TEXT_ONLY }
+  Documenttype;
+  
+}

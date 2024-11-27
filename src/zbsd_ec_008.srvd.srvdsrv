@@ -1,0 +1,4 @@
+@EndUserText.label: 'Mantenimiento Secuenciales'
+define service ZBSD_EC_008 {
+  expose ZCDS_P_EC_008 as SeqMaintenance;
+}

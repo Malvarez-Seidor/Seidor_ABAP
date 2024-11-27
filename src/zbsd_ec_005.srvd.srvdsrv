@@ -1,0 +1,4 @@
+@EndUserText.label: 'Class of Conditions'
+define service ZBSD_EC_005 {
+  expose ZCDS_P_EC_005 as TypeCondition;
+}

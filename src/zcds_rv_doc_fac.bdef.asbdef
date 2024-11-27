@@ -1,0 +1,20 @@
+managed implementation in class zbp_cds_rv_doc_fac unique;
+//strict ( 2 );
+
+define behavior for ZCDS_RV_DOC_FAC alias InvoiceDocuments
+persistent table zdt_sd_doc_fac
+lock master
+//authorization master ( instance )
+//etag master Billingdocument
+
+{
+
+  create;
+  update;
+  delete;
+
+  // instance action and dynamic action control
+  action ( features : instance ) SendDocument result [1] $self;
+  action ( features : instance ) UpdateStatus result [1] $self;
+
+}

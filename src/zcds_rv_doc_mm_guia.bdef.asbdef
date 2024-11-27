@@ -1,0 +1,80 @@
+managed;
+//strict ( 1 );
+//with draft;
+
+define behavior for ZCDS_RV_DOC_MM_GUIA alias TransferGuides
+implementation in class zbp_cds_rv_doc_mm_guia unique
+persistent table zdt_mm_doc_guia
+//draft table zdt_ec_011_c
+lock master
+//total etag locallastchangedate
+//authorization master ( global )
+//etag master LastChangeDate
+
+{
+  create;
+  update;
+  delete;
+
+  association _TransportData { create  ( features : instance );  }
+
+  // instance action and dynamic action control
+  action ( features : instance ) SendDocument result [1] $self;
+  action ( features : instance ) UpdateStatus result [1] $self;
+
+   mapping for zdt_mm_doc_guia
+      {
+        companycode          = companycode;
+        MaterialDocumentyear = MaterialDocumentyear;
+        Materialdocument     = Materialdocument;
+        GoodsMovementType    = GoodsMovementType;
+        idnumber             = idnumber;
+        establishment        = establishment;
+        emissionpoint        = emissionpoint;
+        sequential           = sequential;
+        accesskey            = accesskey;
+        documenttype         = documenttype;
+        issuedate            = issuedate;
+        documentstatus       = documentstatus;
+        messagedocument      = messagedocument;
+        authorizationdate    = authorizationdate;
+        xml                  = xml;
+        mimetype             = mimetype;
+        filename             = filename;
+        documentsupplier     = documentsupplier;
+
+      }
+
+}
+
+define behavior for ZCDS_RV_EC_011 alias TransportData
+implementation in class zbp_cds_rv_ec_011 unique
+persistent table zdt_ec_011
+lock dependent by _TransferGuides
+//authorization dependent by _TransferGuides
+//etag master lastChangeDate
+{
+
+  update;
+  delete;
+
+  association _TransferGuides{ }
+
+  field ( readonly ) Companycode, Materialdocumentyear, Materialdocument, Goodsmovementtype;
+
+  mapping for zdt_ec_011
+      {
+        companycode          = companycode;
+        MaterialDocumentyear = MaterialDocumentyear;
+        Materialdocument     = Materialdocument;
+        GoodsMovementType    = GoodsMovementType;
+        Carrierid            = carrierid;
+        Typeid               = typeid;
+        Businessname         = businessname;
+        Startdate            = startdate;
+        Enddate              = enddate;
+        Carplate             = carplate;
+
+      }
+
+}

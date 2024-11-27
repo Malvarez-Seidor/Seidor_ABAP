@@ -1,0 +1,4 @@
+@EndUserText.label: 'Official Withholding Key'
+define service ZBSD_EC_014 {
+  expose ZCDS_P_EC_014 as OfficialWithholdingKey;
+}

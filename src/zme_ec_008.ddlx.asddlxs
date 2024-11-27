@@ -1,0 +1,81 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName : 'Sequential Maintenance', typeNamePlural : 'Sequential Maintenance',
+            title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+            
+annotate view ZCDS_P_EC_008
+    with 
+{
+    
+  @UI.facet: [ { id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+  
+  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance :  #HIGH } ],
+   identification: [ { position : 10, label : 'Company Code' } ],
+   selectionField: [ { position: 10 } ] }
+  CompanyCode;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Document Sri', importance :  #HIGH } ],
+   identification: [ { position : 30, label : 'Document Sri' } ],
+   selectionField: [ { position: 20 } ] }
+  DocumentSri;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Sequence', importance : #MEDIUM } ],
+   identification: [ { position : 40, label : 'Sequence' } ] }
+  Sequence;
+
+  @UI: { lineItem: [ { position : 50, label : 'Establishment', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Establishment' } ],
+   selectionField: [ { position: 30 } ] }
+  @UI.dataPoint.title: 'Establishment'
+  Establishment;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Emission Point', importance : #HIGH } ],
+   identification: [ { position : 60, label : 'Emission Point' } ],
+   selectionField: [ { position: 40 } ] }
+  @UI.dataPoint.title: 'Emission Point'
+  EmissionPoint;
+  
+  @UI: { lineItem: [ { position : 70, label : 'Accounting Document Type', importance :  #HIGH } ],
+   identification: [ { position : 70, label : 'Accounting Document Type' } ],
+   selectionField: [ { position: 50 } ] }
+  AccountingDocumentType;
+   
+  @UI: { lineItem: [ { position : 90, label : 'Billing Document Type', importance :  #HIGH } ],
+   identification: [ { position : 90, label : 'Billing Documeny Type' } ], 
+   selectionField: [ { position: 60 } ] }
+  BillingDocumentType;
+  
+  @UI: { lineItem: [ { position : 110, label : 'Delivery Document Type', importance :  #HIGH } ],
+   identification: [ { position : 110, label : 'Delivery Document Type' } ],
+   selectionField: [ { position: 70 } ] }
+  DeliveryDocumentType;
+  
+  @UI: { lineItem: [ { position : 130, label : 'Goods Movement Type', importance :  #HIGH } ],
+   identification: [ { position : 130, label : 'Goods Movement Type' } ],
+   selectionField: [ { position: 80 } ] }
+  GoodsMovementType;
+  
+  @UI: { lineItem: [ { position : 150, label : 'Sales Organization', importance :  #HIGH } ],
+   identification: [ { position : 150, label : 'Sales Organization' } ],
+   selectionField: [ { position: 90 } ] }
+  SalesOrganization;
+  
+  @UI: { lineItem: [ { position : 170, label : 'Plant', importance :  #HIGH } ],
+   identification: [ { position : 170, label : 'Plant' } ], 
+   selectionField: [ { position: 100 } ] }
+  Plant;
+  
+  @UI: { lineItem: [ { position : 190, label : 'Storage Location', importance : #LOW } ],
+   identification: [ { position : 190, label : 'Storage Location' } ],
+   selectionField: [ { position: 110 } ] }
+  StorageLocation;
+  
+  @UI: { lineItem: [ { position : 210, label : 'User', importance :  #HIGH } ],
+   identification: [ { position : 210, label : 'User' } ], 
+   selectionField: [ { position: 120 } ] }
+  Users;
+  
+  @UI.dataPoint.title: 'User Name'
+  UserDescription;
+    
+}

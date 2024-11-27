@@ -1,0 +1,17 @@
+managed implementation in class zbp_cds_rv_ec_002 unique;
+//strict ( 2 );
+
+define behavior for ZCDS_RV_EC_002 alias SeqAdministrator
+persistent table zdt_ec_002
+lock master
+//authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+  //field ( readonly ) Companycode, Documentsri, Establishment, Emissionpoint;
+  action ( features : instance ) getNext result [1] $self;
+
+  field ( readonly  ) Sequential;
+}

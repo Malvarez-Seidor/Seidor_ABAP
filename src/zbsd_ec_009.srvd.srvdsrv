@@ -1,0 +1,4 @@
+@EndUserText.label: 'Sri Countries'
+define service ZBSD_EC_009 {
+  expose ZCDS_P_EC_009 as SriCountries;
+}

@@ -1,0 +1,4 @@
+@EndUserText.label: 'Documentos Electonicos'
+define service ZBSD_EC_001 {
+  expose ZCDS_P_EC_001 as ElectronicDocuments;
+}

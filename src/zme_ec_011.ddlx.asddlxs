@@ -1,0 +1,57 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Transport Data',
+                      typeNamePlural    : 'Transports Data',
+                      title             : { type :#STANDARD, label : 'Material Document', value : 'MaterialDocument' },
+                      description       : { type :#STANDARD, value : 'MaterialDocumentYear' } },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'CarrierId', direction:  #ASC } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+                     
+annotate entity ZCDS_P_EC_011
+    with 
+{   
+
+  @UI.facet: [ { id : 'MaterialDocument', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Material Document', position: 10 } ]
+              
+  @UI: { identification: [ {  position : 10, label : 'Company Code' } ] }
+  @UI.hidden: true
+  CompanyCode;
+  
+  @UI: { identification: [ {  position : 20, label : 'Document Year' } ] }
+  @UI.hidden: true
+  MaterialDocumentYear;
+  
+  @UI: { identification: [ {  position : 30, label : 'Material Document' } ] }
+  @UI.hidden: true
+  MaterialDocument;
+  
+  @UI: { identification: [ {  position : 40, label : 'Goods Movement Type' } ] }
+  @UI.hidden: true
+  GoodsMovementType;
+  
+  @UI: { lineItem: [ { position : 10, label : 'Carrier Id', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Carrier Id' } ] }
+  CarrierId;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Type Id', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'Type Id' } ] }
+  TypeId;
+    
+  @UI: { lineItem: [ { position : 30, label : 'Business Name', importance :  #HIGH } ],
+   identification: [ { position : 70, label : 'Business Name' } ] }
+  BusinessName;
+    
+  @UI: { lineItem: [ { position : 40, label : 'Car Plate', importance :  #HIGH } ],
+   identification: [ { position : 80, label : 'Car Plate' } ] }
+  CarPlate;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Start Date', importance :  #HIGH  } ],
+   identification: [ { position : 90, label : 'Start Date' }] }
+  StartDate;
+  
+  @UI: { lineItem: [ { position : 60,  label : 'End Date', importance :  #HIGH } ],
+   identification: [ { position : 100, label : 'End Date' } ] }    
+  EndDate;
+       
+}

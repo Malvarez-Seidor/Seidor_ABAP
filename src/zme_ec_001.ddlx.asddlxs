@@ -1,0 +1,45 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'Electronic Document', typeNamePlural : 'Electronic Documents',
+            title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+                               
+annotate view ZCDS_P_EC_001 with
+{ 
+  @UI.facet: [{ id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+              
+  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance : #HIGH } ],
+   identification: [ { position : 10, label : 'Company Code' } ],
+   selectionField: [ { position: 10 } ] }
+  CompanyCode;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Company Name', importance : #HIGH } ],
+   identification: [ { position : 20, label : 'Company Name' }] }                    
+  @UI.hidden: true
+  CompanyCodeName;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Document Type', importance : #HIGH } ],
+   identification: [ { position : 30, label : 'Document Type' } ],
+   selectionField: [ { position: 20 } ] }
+  DocumentType;
+
+  @UI: { lineItem: [ { position : 40, label : 'Document Sri', importance : #HIGH } ],
+   identification: [ { position : 40, label : 'Document Sri' } ],
+   selectionField: [ { position: 30 } ] }
+  DocumentSri;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Sequence', importance : #HIGH } ],
+   identification: [ { position : 50, label : 'Sequence' } ] }
+  Sequence;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Export', importance : #HIGH } ],
+   identification: [ { position : 60, label : 'Export' } ] }
+  Export;
+  
+  @UI: { lineItem: [ { position : 70, label : 'Refunds', importance : #HIGH } ],
+   identification: [ { position : 70, label : 'Refunds' } ] }
+  Refunds;
+
+  @UI: { lineItem: [ { position : 80, label : 'Reason', importance : #HIGH } ],
+   identification: [ { position : 80, label : 'Reason' } ] }
+  Reason;
+
+}

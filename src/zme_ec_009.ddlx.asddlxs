@@ -1,0 +1,34 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'SRI Country', typeNamePlural : 'SRI Countries',
+                         title : { type :#STANDARD, label : 'Sociedad', value : 'CountryName' }, description.value: 'Country'  } }
+annotate view ZCDS_P_EC_009
+    with 
+{   
+
+  @UI.facet: [ { id : 'Country', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Country' }]
+    
+  @UI: { lineItem: [ { position : 10, label : 'Country', importance :  #HIGH }],
+   identification: [{  position : 10, label : 'Country' } ], 
+         selectionField: [ { position: 10 } ] }
+
+  Country;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Country Name', importance :  #HIGH } ],
+   identification: [ { position : 20, label : 'Country Name' } ] }
+  CountryName;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Country Sri', importance :  #HIGH }],
+   identification: [ { position : 30, label : 'Country Sri' }] }
+  CountrySri;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Tax Haven Country', importance :  #HIGH } ],
+   identification: [ { position : 40, label : 'Tax Haven Country' } ] }
+  
+  TaxHavenCountry;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Pais Convenio', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Pais Convenio' } ],
+   selectionField: [ { position: 20 } ] }
+  Pais_Conv;
+    
+}

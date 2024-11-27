@@ -1,0 +1,5 @@
+@EndUserText.label: 'Transfer Guides - Bussiness Servivces Definition'
+define service ZBSD_EC_MM_GUIA {
+  expose ZCDS_P_DOC_MM_GUIA as TransferGuides;
+  expose ZCDS_P_EC_011      as TransportData;
+}

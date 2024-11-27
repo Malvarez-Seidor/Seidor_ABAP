@@ -1,0 +1,6 @@
+@EndUserText.label: 'Purchase Report'
+define service ZBSD_EC_REP_COM {
+  expose ZCDS_VED_REP_COM as PurchaseReport;
+  expose ZCDS_VC_DET_RET  as PurchaseWithholdingsReport;
+  expose ZCDS_VC_DET_COM  as PurchaseDetailsReport;
+}

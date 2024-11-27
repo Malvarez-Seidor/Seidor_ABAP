@@ -1,0 +1,4 @@
+@EndUserText.label: 'Tipos de impuestos '
+define service ZBSD_EC_003 {
+  expose ZCDS_P_EC_003 as TypesTaxes;
+}

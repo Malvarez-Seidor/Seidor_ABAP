@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_DOMA" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD01V>
+    <DOMNAME>ZDD_STATUS</DOMNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
+    <DATATYPE>CHAR</DATATYPE>
+    <LENG>000012</LENG>
+    <OUTPUTLEN>000012</OUTPUTLEN>
+    <VALEXI>X</VALEXI>
+    <DDTEXT>Status of Electronic Documents</DDTEXT>
+    <DOMMASTER>E</DOMMASTER>
+   </DD01V>
+   <DD07V_TAB>
+    <DD07V>
+     <DOMNAME>ZDD_STATUS</DOMNAME>
+     <VALPOS>0001</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>PENDING</DOMVALUE_L>
+     <DDTEXT>Pending</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_STATUS</DOMNAME>
+     <VALPOS>0002</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>AUTHORIZED</DOMVALUE_L>
+     <DDTEXT>Authorized</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_STATUS</DOMNAME>
+     <VALPOS>0003</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>ERROR</DOMVALUE_L>
+     <DDTEXT>Error</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_STATUS</DOMNAME>
+     <VALPOS>0004</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>PROCESS</DOMVALUE_L>
+     <DDTEXT>In Process</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_STATUS</DOMNAME>
+     <VALPOS>0005</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>CANCELED</DOMVALUE_L>
+     <DDTEXT>Canceled</DDTEXT>
+    </DD07V>
+   </DD07V_TAB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

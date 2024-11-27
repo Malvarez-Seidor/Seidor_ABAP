@@ -1,0 +1,21 @@
+managed implementation in class zbp_cds_rv_doc_ndc unique;
+//strict ( 2 );
+
+define behavior for ZCDS_RV_DOC_NDC alias CreditNotes
+persistent table zdt_sd_doc_ndc
+lock master
+//authorization master ( instance )
+//etag master Billingdocument
+
+{
+
+  create;
+  update;
+  delete;
+  // field ( readonly ) Billingdocument;
+
+  // instance action and dynamic action control
+  action ( features : instance ) SendDocument result [1] $self;
+  action ( features : instance ) UpdateStatus result [1] $self;
+
+}

@@ -1,0 +1,6 @@
+@EndUserText.label: 'Download Elec Documents - Bussiness Servivces Definition'
+define service ZBSD_EC_015 {
+  expose ZCDS_P_EC_015 as ElectronicDocuments;
+  expose ZCDS_P_EC_016 as Withholdings;
+  expose ZCDS_P_EC_017 as PurchaseOrders;
+}

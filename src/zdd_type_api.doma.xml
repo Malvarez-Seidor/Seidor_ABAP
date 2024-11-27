@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_DOMA" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD01V>
+    <DOMNAME>ZDD_TYPE_API</DOMNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
+    <DATATYPE>CHAR</DATATYPE>
+    <LENG>000002</LENG>
+    <OUTPUTLEN>000002</OUTPUTLEN>
+    <VALEXI>X</VALEXI>
+    <DDTEXT>Application Type</DDTEXT>
+    <DOMMASTER>E</DOMMASTER>
+   </DD01V>
+   <DD07V_TAB>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0001</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>WH</DOMVALUE_L>
+     <DDTEXT>Withholdings</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0002</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>IN</DOMVALUE_L>
+     <DDTEXT>Invoices</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0003</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>CN</DOMVALUE_L>
+     <DDTEXT>Credit Notes</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0004</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>DN</DOMVALUE_L>
+     <DDTEXT>Debit Notes</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0005</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>LP</DOMVALUE_L>
+     <DDTEXT>Liquidation of purchases</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0006</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>SG</DOMVALUE_L>
+     <DDTEXT>Shipping guides</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0007</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>EM</DOMVALUE_L>
+     <DDTEXT>Emission</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0008</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>CS</DOMVALUE_L>
+     <DDTEXT>Consult</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0009</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>DW</DOMVALUE_L>
+     <DDTEXT>Download</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <DOMNAME>ZDD_TYPE_API</DOMNAME>
+     <VALPOS>0010</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>GE</DOMVALUE_L>
+     <DDTEXT>Get</DDTEXT>
+    </DD07V>
+   </DD07V_TAB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

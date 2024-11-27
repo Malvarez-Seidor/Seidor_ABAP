@@ -1,0 +1,4 @@
+@EndUserText.label: 'Invoice Documents'
+define service ZBSD_EC_DOC_FAC {
+  expose ZCDS_P_DOC_FAC as InvoiceDocuments;
+}

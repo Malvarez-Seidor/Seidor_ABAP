@@ -1,0 +1,59 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Withholding Detail',
+                      typeNamePlural    : 'Withholdings Details',
+                      title             : { type :#STANDARD, label : 'Billing Document', value : 'BillingDocument' },
+                      description       : { type :#STANDARD, value : 'BillingDocumentItem' } },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'BillingDocumentItem', direction:  #ASC } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+                     
+annotate entity ZCDS_VC_DET_VEN with
+{
+    
+    @UI.facet: [ { id : 'Detail', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Detail', position: 10 } ]
+    
+    @UI: { lineItem: [ { position : 10, importance : #HIGH, cssDefault.width: '4rem' } ],
+     identification: [ { position : 10, label : 'Billing Item' } ] }
+    BillingDocumentItem;
+    
+    @UI: { lineItem: [ { position : 20, importance : #HIGH, cssDefault.width: '20rem' } ],
+     identification: [ { position : 20, label : 'Product' } ] }
+    Product;
+    
+//    @UI: { lineItem: [ { position : 30, importance : #HIGH, cssDefault.width: '12rem' } ],
+//     identification: [ { position : 30, label : 'Item Text' } ] }
+//    BillingDocumentItemText;
+    
+    @UI: { lineItem: [ { position : 40, importance : #HIGH, cssDefault.width: '10rem' } ],
+     identification: [ { position : 40, label : 'Quantity' } ] }
+    BillingQuantity;
+    
+    @UI: { lineItem: [ { position : 50, importance : #HIGH, label : 'Net Amount', cssDefault.width: '10rem' } ],
+     identification: [ { position : 50, label : 'Net Amount' } ] }
+    NetAmount;
+    
+    @UI: { lineItem: [ { position : 60, importance : #HIGH, cssDefault.width: '5rem' } ],
+     identification: [ { position : 60, label : 'Tax Code' } ] }
+    TaxCode;
+    
+    @UI: { lineItem: [ { position : 70, importance : #HIGH, label : 'Percent', cssDefault.width: '5rem' } ],
+     identification: [ { position : 70, label : 'Percent' } ] }
+    taxratepercent;
+    
+    @UI: { lineItem: [ { position : 80, importance : #HIGH, label : 'Tax Amount', cssDefault.width: '10rem' } ],
+     identification: [ { position : 80, label : 'Tax Amount' } ] }
+    TaxAmount;
+    
+    
+    @UI: { lineItem: [ { position : 90, importance : #HIGH, label : 'Total Amount', cssDefault.width: '10rem' } ],
+     identification: [ { position : 90, label : 'Total Amount' } ] }
+    EligibleAmountForCashDiscount;
+    
+    @UI: { identification: [ { position : 100, label : 'Sales Document' } ] }
+    SalesDocument;
+    
+    @UI: { identification: [ { position : 110, label : 'Sales DocumentItem' } ] }
+    SalesDocumentItem;
+    
+}

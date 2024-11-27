@@ -1,0 +1,28 @@
+projection;
+//strict ( 2 );
+
+define behavior for ZCDS_P_EC_015 alias ElectronicDocuments
+{
+  use create;
+  use update;
+  use delete;
+
+  use association _Withholdings { create; }
+  use association _PurchaseOrders { create; }
+}
+
+define behavior for ZCDS_P_EC_016 alias Withholdings
+{
+  use update;
+  use delete;
+
+  use association _ElectronicDocuments;
+}
+
+define behavior for ZCDS_P_EC_017 alias PurchaseOrders
+{
+  use update;
+  use delete;
+
+  use association _ElectronicDocuments;
+}

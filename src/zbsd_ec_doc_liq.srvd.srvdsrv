@@ -1,0 +1,4 @@
+@EndUserText.label: 'Liquidation Purchase'
+define service ZBSD_EC_DOC_LIQ {
+  expose ZCDS_P_DOC_LIQ as LiquidationPurchase;
+}

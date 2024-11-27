@@ -1,0 +1,14 @@
+managed implementation in class zbp_cds_rv_ec_014 unique;
+//strict ( 2 );
+
+define behavior for ZCDS_RV_EC_014 alias OfficialWithholdingKey
+persistent table zdt_ec_014
+lock master
+//authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+//  field ( readonly ) Withholdingtaxtype, Withholdingtaxcode;
+}

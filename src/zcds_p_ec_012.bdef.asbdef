@@ -1,0 +1,28 @@
+projection;
+//strict ( 2 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+use draft;
+
+define behavior for ZCDS_P_EC_012 alias LiquidationSupports
+{
+
+  use update;
+  use delete;
+
+  field ( readonly: update ) Companycode, Fiscalyear, Accountingdocument, Accountingdocumenttype, AccountingDocCreatedByUser,
+                             AmountInCompanyCodeCurrency, UserFullName, Supplier, BusinessPartnerFullName;
+
+  use association _SupportDetails { create; with draft; }
+
+}
+
+define behavior for ZCDS_P_EC_013 alias SupportDetails
+{
+
+  use update;
+  use delete;
+
+  use action createSES;
+
+  use association _LiquidationSupports{ with draft; }
+
+}

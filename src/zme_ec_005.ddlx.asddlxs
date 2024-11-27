@@ -1,0 +1,38 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName : 'Type of Condition', typeNamePlural : 'Types of Conditions',
+                      title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+                      
+annotate view ZCDS_P_EC_005 with
+{
+  @UI.facet: [ { id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+            
+  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance :  #HIGH } ],
+   identification: [ { position : 10, label : 'Company Code' } ], 
+   selectionField: [ { position: 10 } ] }
+  CompanyCode;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Company Name', importance :  #HIGH } ],
+   identification: [ { position : 20, label : 'Company Name' } ] }
+  @UI.hidden: true
+  CompanyCodeName;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Condition', importance :  #HIGH } ],
+   identification: [ { position : 30, label : 'Condition' } ], 
+   selectionField: [ { position: 20 } ] }
+  CCondition;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Condition Name', importance :  #MEDIUM } ],
+   identification: [ { position : 40, label : 'Condition Name' } ] }
+  ConditionTypeName;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Condition Application', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Condition Application' } ] }
+  ConditionApplication;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Type Condition', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Type Condition' } ],
+   selectionField: [ { position: 30 } ] }
+  TypeCondition;
+
+}

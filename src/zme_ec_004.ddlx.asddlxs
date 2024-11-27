@@ -1,0 +1,37 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'Types of ID', typeNamePlural : 'Types of IDs',
+            title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+annotate entity ZCDS_P_EC_004 with
+{
+  @UI.facet: [{ id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+               
+  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance :  #HIGH } ],
+   identification: [ { position : 10, label : 'Company Code' } ], 
+   selectionField: [ { position: 10 } ] }
+  CompanyCode;
+
+  @UI: { lineItem: [ { position : 20, label : 'Company Name', importance :  #HIGH } ],
+   identification: [ { position : 20, label : 'Company Name' } ] }
+  @UI.hidden: true
+  CompanyCodeName;
+  
+  @UI: { lineItem: [ { position : 30, label : 'BP Tax Type', importance :  #HIGH } ],
+   identification: [ { position : 30, label : 'BP Tax Type' } ],
+   selectionField: [ { position: 20 } ] }
+  BPTaxType;
+  
+  @UI: { lineItem: [ { position : 40, label : 'ID Name', importance :  #MEDIUM } ],
+   identification: [ { position : 40, label : 'ID Name' }] }
+  TaxTypeName;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Type Doccument', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Type Doccument' } ],
+   selectionField: [ { position: 30 } ] }
+  TypeDoccument;
+  
+  @UI: { lineItem: [ { position : 60, label : 'ID SRI', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'ID SRI' } ],
+   selectionField: [ { position: 40 } ] }
+  Typedi;
+
+}

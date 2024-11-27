@@ -1,0 +1,40 @@
+managed implementation in class zbp_cds_rv_ec_015 unique;
+//strict ( 2 );
+
+define behavior for ZCDS_RV_EC_015 alias ElectronicDocuments
+persistent table zdt_ec_015
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+  field ( readonly ) Companycode, Documentsri, Accesskey, Documentsupplier;
+  association _Withholdings { create; }
+  association _PurchaseOrders { create; }
+}
+
+define behavior for ZCDS_RV_EC_016 alias Withholdings
+persistent table zdt_ec_016
+lock dependent by _ElectronicDocuments
+authorization dependent by _ElectronicDocuments
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) Companycode, Documentsri, Accesskey, Documentsupplier, Positem;
+  association _ElectronicDocuments;
+}
+
+define behavior for ZCDS_RV_EC_017 alias PurchaseOrders
+persistent table zdt_ec_017
+lock dependent by _ElectronicDocuments
+authorization dependent by _ElectronicDocuments
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) Companycode, Documentsri, Accesskey, Documentsupplier, Purchasingdocument, Purchasingdocumentitem;
+  association _ElectronicDocuments;
+}

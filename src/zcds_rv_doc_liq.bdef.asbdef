@@ -1,0 +1,18 @@
+managed implementation in class zbp_cds_rv_doc_liq unique;
+//strict ( 2 );
+
+define behavior for ZCDS_RV_DOC_LIQ alias LiquidationPurchase
+persistent table zdt_fi_doc_liq
+lock master
+//authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+
+  // instance action and dynamic action control
+  action ( features : instance ) SendDocument result [1] $self;
+  action ( features : instance ) UpdateStatus result [1] $self;
+
+}

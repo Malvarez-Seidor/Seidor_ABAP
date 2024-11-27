@@ -1,0 +1,106 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Support Detail',
+                      typeNamePlural    : 'Support Details',
+                      title             : { type :#STANDARD, label : 'Accounting Document', value : 'AccountingDocument' },
+                      description       : { type :#STANDARD, value : 'DocumentItem' } },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'DocumentItem', direction:  #ASC } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+                     
+annotate entity ZCDS_P_EC_013
+    with 
+{   
+
+  @UI.facet: [ { id : 'Detail', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Detail', position: 10 } ]
+              
+  @UI: { identification: [ {  position : 10, label : 'Company Code' } ] }
+  @UI.hidden: true
+  CompanyCode;
+  
+  @UI: { identification: [ {  position : 20, label : 'Fiscal Year' } ] }
+  @UI.hidden: true
+  FiscalYear;
+  
+  @UI: { identification: [ {  position : 30, label : 'Accounting Document' } ] }
+  @UI.hidden: true
+  AccountingDocument;
+  
+  @UI: { identification: [ {  position : 40, label : 'Accounting Document Type' } ] }
+  @UI.hidden: true
+  AccountingDocumentType;
+  
+  @UI: { lineItem: [ { position : 10, label : 'Document Item', importance :  #HIGH },
+                     { type: #FOR_ACTION, dataAction: 'createSES', label: 'Process SES' } ],                  
+   identification: [ { position : 50, label : 'Document Item' } ] }
+  DocumentItem;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Type Id', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'Type Id' } ] }
+  TypeId;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Id Number', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'Id Number' } ] }
+  IdNumber;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Document Type', importance :  #HIGH } ],
+   identification: [ { position : 70, label : 'Document Type' } ] }
+  DocumentType;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Establishment', importance :  #HIGH } ],
+   identification: [ { position : 80, label : 'Establishment' } ] }
+  Establishment;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Emission Point', importance :  #HIGH  } ],
+   identification: [ { position : 90, label : 'Emission Point' }] }
+  EmissionPoint;
+  
+  @UI: { lineItem: [ { position : 70,  label : 'Sequential', importance :  #HIGH } ],
+   identification: [ { position : 100, label : 'Sequential' } ] }
+  Sequential;
+  
+  @UI: { lineItem: [ { position : 80,  label : 'Accesskey', importance :  #LOW } ],
+   identification: [ { position : 110, label : 'Accesskey' } ] }
+  Accesskey;
+  
+  @UI: { lineItem: [ { position : 90,  label : 'Issue Date', importance :  #MEDIUM } ],
+   identification: [ { position : 120, label : 'Issue Date' } ] }
+  IssueDate;
+  
+  @UI: { lineItem: [ { position : 100,  label : 'Tax Code', importance :  #LOW } ],
+   identification: [ { position : 130, label : 'Tax Code' } ] }
+  TaxCode;
+  
+  @UI: { lineItem: [ { position : 110, label : 'Base Tax', importance :  #MEDIUM } ],
+   identification: [ { position : 140, label : 'Base Tax' } ] }
+  AmountBaseTax;
+  
+  @UI: { lineItem: [ { position : 120, label : 'Base Tax 0%', importance :  #MEDIUM } ],
+   identification: [ { position : 150, label : 'Base Tax 0%' } ] }
+  AmountBaseTax0;
+  
+  @UI: { lineItem: [ { position : 130, label : 'Base No Tax', importance :  #MEDIUM } ],
+   identification: [ { position : 160, label : 'Base No Tax' } ] }
+  AmountBaseNoTax;
+  
+  @UI: { lineItem: [ { position : 140, label : 'Base Exe. Tax', importance :  #MEDIUM } ],
+   identification: [ { position : 170, label : 'Base Exe. Tax' } ] }
+  AmountBaseExeTax;
+  
+  @UI: { lineItem: [ { position : 150, label : 'Amount Tax', importance :  #MEDIUM } ],
+   identification: [ { position : 180, label : 'Amount Tax' } ] }
+  AmountTax;
+  
+  @UI: { lineItem: [ { position : 160, label : 'Amount ICE', importance :  #MEDIUM } ],
+   identification: [ { position : 190, label : 'Amount ICE' } ] }
+  AmountIce;
+  
+  @UI: { lineItem: [ { position : 170, label : 'Total Price', importance :  #MEDIUM } ],
+   identification: [ { position : 200, label : 'Total Price' } ] }
+  Total_Price;
+  
+  @UI: { lineItem: [ { position : 180, label : 'Currency', importance :  #LOW } ],
+   identification: [ { position : 210, label : 'Currency' } ] }
+  Currency; 
+       
+}

@@ -1,0 +1,64 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName : 'Type of Tax', typeNamePlural : 'Types of Taxes',
+            title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+            
+annotate entity ZCDS_P_EC_003
+    with 
+{
+   
+   @UI.facet: [ { id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+   
+    @UI: { lineItem: [ { position : 10, label : 'Company Code', importance :  #HIGH } ],
+     identification: [ { position : 10, label : 'Company Code' } ],
+     selectionField: [ { position: 10 } ] }
+    CompanyCode;
+    
+    @UI: { lineItem: [ { position : 20, label : 'Company Name', importance :  #HIGH } ],
+     identification: [ { position : 20, label : 'Company Name' } ] }
+    @UI.hidden: true
+    CompanyCodeName;
+    
+    @UI: { lineItem: [ { position : 30, label : 'Tax Code', importance :  #HIGH } ],
+     identification: [ { position : 30, label : 'Tax Code' } ], 
+     selectionField: [ { position: 20 } ] }
+    TaxCode;
+    
+    @UI: { lineItem: [ { position : 40, label : 'Tax Name', importance :  #MEDIUM } ],
+     identification: [ { position : 40, label : 'Tax Name' } ] }
+    TaxCodeName;
+    
+    @UI: { lineItem: [ { position : 50, label : 'Tax Percent', importance :  #HIGH } ],
+     identification: [ {  position : 50, label : 'Tax Percent' } ] }
+    TaxRatePercent;
+   
+    @UI: { lineItem: [ { position : 60, label : 'No Tax', importance :  #HIGH } ],
+     identification: [ { position : 60, label : 'No Tax' } ]  }
+    Notax;
+    
+    @UI: { lineItem: [ { position : 70, label : 'Tax 0%', importance :  #HIGH } ],
+     identification: [ { position : 70, label : 'Tax 0%' } ] }
+    Tax0;
+    
+    @UI: { lineItem: [ { position : 80, label : 'Exempt Tax', importance :  #HIGH } ],
+     identification: [ { position : 80, label : 'Exempt Tax' } ] }
+    ExemptTax;
+    
+    @UI: { lineItem: [ { position : 90, label : 'Tax', importance :  #HIGH } ],
+     identification: [ { position : 90, label : 'Tax' } ] }
+    Tax;
+    
+    @UI: { lineItem: [ { position : 100, label : 'Tax Support Id', importance :  #HIGH } ],
+     identification: [ { position : 100, label : 'Tax Support Id' } ],
+     selectionField: [ { position: 30 } ] }
+    TaxSupportId;
+    
+    @UI: { lineItem: [ { position : 110, label : 'Tax Id Rate', importance :  #HIGH } ],
+     identification: [ { position : 110, label : 'Tax Id Rate' } ] }
+    TaxsIdRate;
+    
+    @UI: { lineItem: [ { position : 110, label : 'Support Tax Code', importance :  #HIGH } ],
+     identification: [ { position : 110, label : 'Support Tax Code' } ] }
+    supportTaxCode;
+  
+}

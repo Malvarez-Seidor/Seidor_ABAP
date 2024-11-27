@@ -1,0 +1,78 @@
+managed;
+//strict ( 2 );
+
+define behavior for ZCDS_RV_DOC_SD_GUIA alias TransportGuides
+implementation in class zbp_cds_rv_doc_sd_guia unique
+persistent table zdt_sd_doc_guia
+lock master
+//authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+
+  association _TransportData { create  ( features : instance );  }
+
+  action ( features : instance ) SendDocument result [1] $self;
+  action ( features : instance ) UpdateStatus result [1] $self;
+
+  mapping for zdt_sd_doc_guia{
+
+  Companycode              = companycode;
+  Fiscalyear               = fiscalyear;
+  Deliverydocument         = deliverydocument;
+  Deliverydocumenttype     = deliverydocumenttype;
+  Shiptoparty              = shiptoparty;
+  Businessname             = businessname;
+  Typeid                   = typeid;
+  Idnumber                 = idnumber;
+  Establishment            = establishment;
+  Emissionpoint            = emissionpoint;
+  Sequential               = sequential;
+  Accesskey                = accesskey;
+  Documenttype             = documenttype;
+  Issuedate                = issuedate;
+  Documentstatus           = documentstatus;
+  Messagedocument          = messagedocument;
+  Authorizationdate        = authorizationdate;
+  Xml                      = xml;
+  Mimetype                 = mimetype;
+  Filename                 = filename;
+  Documentsupplier         = documentsupplier;
+
+  }
+
+}
+
+define behavior for ZCDS_RV_EC_010 alias TransportData
+implementation in class zbp_cds_rv_ec_010 unique
+persistent table zdt_ec_010
+lock dependent by _TransportGuides
+//authorization dependent by _TransportGuides
+//etag master <field_name>
+{
+
+  update;
+  delete;
+
+  association _TransportGuides{ }
+
+  field ( readonly ) Companycode, Fiscalyear, Deliverydocument, Deliverydocumenttype;
+
+  mapping for zdt_ec_010
+      {
+        companycode          = companycode;
+        Fiscalyear           = fiscalyear;
+        Deliverydocument     = deliverydocument;
+        Deliverydocumenttype = deliverydocumenttype;
+        Carrierid            = carrierid;
+        Typeid               = typeid;
+        Businessname         = businessname;
+        Startdate            = startdate;
+        Enddate              = enddate;
+        Carplate             = carplate;
+
+      }
+
+}

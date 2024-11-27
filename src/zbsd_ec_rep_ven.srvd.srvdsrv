@@ -1,0 +1,6 @@
+@EndUserText.label: 'Sales Report'
+define service ZBSD_EC_REP_VEN {
+  expose ZCDS_VED_REP_VEN as SalesReport;
+  expose ZCDS_VC_DET_RET  as SalesWithholdingsReport;
+  expose ZCDS_VC_DET_VEN  as SalesDetailsReport;
+}

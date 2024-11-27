@@ -1,0 +1,4 @@
+@EndUserText.label: 'Table of Constants'
+define service ZBSD_EC_007 {
+  expose ZCDS_P_EC_007 as Constants;
+}

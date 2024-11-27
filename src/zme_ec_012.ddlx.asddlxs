@@ -1,0 +1,80 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Liquidation Support',
+                      typeNamePlural    : 'Liquidation Supports',
+                      title             : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' },
+                      description       : { type :#STANDARD, value : 'CompanyCode' } },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'FileStatus', direction:  #DESC },
+                                       { by: 'AccountingDocument', direction:  #ASC } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+                     
+annotate entity ZCDS_P_EC_012
+    with 
+{   
+
+  @UI.facet: [ { label: 'Document Info',       purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10 },
+               { label: 'Excel',               purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 20,
+                   targetQualifier: 'Excel', id: 'Excel' }, 
+               { label: 'Details',             purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30,
+                  targetElement: '_SupportDetails', id: 'Details' } ]
+              
+  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance :  #HIGH } ],
+   selectionField: [ { position : 10 } ], 
+   textArrangement: #TEXT_ONLY }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  CompanyCode;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Fiscal Year', importance :  #HIGH } ],
+   selectionField: [ { position : 20 } ]  }
+  @UI.dataPoint.title: 'Fiscal Year'
+  FiscalYear;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Accounting Document', importance :  #HIGH } ],
+   selectionField: [ { position : 30 } ]  }
+  @UI: { dataPoint: { visualization: #NUMBER  } }
+  @UI.dataPoint.title: 'Accounting Document'
+  AccountingDocument;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Document Type', importance :  #HIGH } ],
+         textArrangement: #TEXT_ONLY,
+   selectionField: [ { position : 40 } ]  }
+  @UI.dataPoint.title: 'Accounting Document Type'
+  AccountingDocumentType;
+  
+  @UI: { lineItem: [ { position : 60, label : 'File Status', importance :  #HIGH, criticality : 'Criticality', criticalityRepresentation: #WITH_ICON } ] }
+  @UI.textArrangement: #TEXT_ONLY
+  @UI: { dataPoint: { title: 'Document Status',  criticality : 'Criticality', criticalityRepresentation: #WITH_ICON } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  FileStatus; 
+  
+  @UI: { lineItem: [ { position : 50,  importance : #HIGH } ],
+   textArrangement: #TEXT_ONLY  }
+  @UI: { identification: [ { position : 10 } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  Supplier;
+  
+  @UI.textArrangement: #TEXT_ONLY 
+  @UI: { identification: [ { position : 20 } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  AccountingDocCreatedByUser;
+  
+  @UI: {  identification: [ { label: 'Total Amount', position : 30 } ] }
+  AmountInCompanyCodeCurrency;
+  
+  @UI.fieldGroup: [ { qualifier: 'Excel', label :'Excel', position: 10 } ]
+  Attachment;
+  
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  CompanyCodeName;
+  
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  AccountingDocumentTypeName;
+       
+}

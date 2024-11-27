@@ -1,0 +1,149 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Transfer Guide',
+                      typeNamePlural    : 'Transfer Guides',
+                      title             : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' },
+                      imageUrl: 'Xml',
+                      description       : { type :#STANDARD,  value : 'CompanyCode' } },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'DocumentStatus',   direction:  #DESC },
+                                       { by: 'MaterialDocument', direction:  #ASC  } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+
+ annotate view ZCDS_P_DOC_MM_GUIA with
+ 
+{
+
+  @UI.facet: [ { label: 'Header Data',     purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10 },
+               { label: 'Document Info',   purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 20, targetQualifier: 'Detail'   },
+               { label: 'Transport Data',  purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30, targetQualifier: 'Data',
+                 targetElement: '_TransportData' },
+               { label: 'Attached',        purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 40, targetQualifier: 'Attached' },
+               { label: 'Log',             purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 50, targetQualifier: 'Log'      } ]
+               
+  @UI: { lineItem: [ { position : 10, importance : #HIGH } ],
+  textArrangement: #TEXT_ONLY }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  CompanyCode;
+  
+  @UI: { lineItem: [ { position : 20, importance : #HIGH  } ], 
+   selectionField: [ { position : 10 } ] }
+  @UI: { dataPoint: { title: 'Material Document',  visualization: #NUMBER   } }
+  MaterialDocument;
+  
+  @UI: { lineItem: [ { position : 30, importance : #MEDIUM } ],
+   textArrangement: #TEXT_ONLY }
+  @UI: { dataPoint: { title: 'Goods Movement Type'   } }
+  @Search.defaultSearchElement: true
+  @ Search.fuzzinessThreshold: 0.8
+  GoodsMovementType;
+  
+  @UI: { lineItem: [ { position : 40, importance : #MEDIUM } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail',position: 90, label: 'Material Document Year' } ]
+  MaterialDocumentYear;
+  
+  @UI: { lineItem: [ { position : 50, importance : #HIGH } ],
+   selectionField: [ { position : 20 } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail',position: 50 } ]
+  Plant;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Establishment', importance : #HIGH } ],
+   identification: [ { position : 30, label : 'Establishment' } ],
+   selectionField: [ { position: 30 } ] }
+  Establishment;
+  
+  @UI: { lineItem: [ { position : 70, label : 'Emission Point', importance : #HIGH } ],
+   identification: [ { position : 60, label : 'Emission Point' } ],
+   selectionField: [ { position: 40 } ] }
+  Emissionpoint;
+  
+  @UI: { lineItem: [ { position : 80,   label : 'Sequential', importance : #HIGH } ],
+   identification: [ { position : 100,  label : 'Sequential' } ],
+   selectionField: [ { position: 50 } ] }
+  Sequential;
+  
+  @UI: { lineItem: [ { position : 90, label : 'Issue Date', importance : #MEDIUM } ],
+   identification: [ { position : 50, label : 'Issue Date' } ] }
+  IssueDate;
+  
+  @UI: { lineItem: [ { position : 100,  label : 'Document Status', importance : #HIGH, criticality: 'Criticality' },
+                     { type: #FOR_ACTION, dataAction: 'SendDocument', label: 'Send Document' },
+                     { type: #FOR_ACTION, dataAction: 'UpdateStatus', label: 'Update Status' } ],
+   selectionField: [ { position : 60 } ],
+   identification: [ { type: #FOR_ACTION, dataAction: 'SendDocument', label: 'Send Document' }, 
+                     { type: #FOR_ACTION, dataAction: 'UpdateStatus', label: 'Update Status' } ] }
+  
+  @UI.textArrangement: #TEXT_ONLY
+  @UI: { dataPoint: { title: 'Document Status',  criticality : 'Criticality', criticalityRepresentation: #WITH_ICON } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  DocumentStatus;
+  
+  @UI: { lineItem: [ { position : 110, label : 'Authorization Date', importance :  #MEDIUM } ],
+   identification: [ { position : 80,  label : 'Authorization Date' } ] }
+  AuthorizationDate;
+  
+  @UI: { lineItem: [ { position : 120, label : 'Storage Location', importance : #MEDIUM } ],
+   textArrangement: #TEXT_ONLY }
+  @UI.fieldGroup: [ { qualifier: 'Detail',position: 20 } ]
+  StorageLocation;
+  
+  @UI: { lineItem: [ { position : 130, label : 'Accesskey', importance : #MEDIUM } ],
+   identification: [ { position : 40,  label : 'Accesskey' } ] }
+  Accesskey;
+  
+  @UI: { lineItem: [ { position : 140, label : 'Document Type', importance : #MEDIUM } ],
+   identification: [ { position : 10,  label : 'Document Type' } ],
+   textArrangement: #TEXT_ONLY }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  DocumentType;
+  
+  @UI: { lineItem: [ { position : 150, label : 'Document Date', importance : #MEDIUM } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail',position: 40 } ]
+  DocumentDate;
+  
+  @UI: { lineItem: [ { position : 160, importance : #LOW } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail', position: 60 } ]
+  PostingDate;
+  
+  @UI: { lineItem: [ { position : 170, label : 'Authorization Date', importance :  #MEDIUM } ],
+   identification: [ { position : 70 } ] }
+  GoodsMovementIsCancelled;
+  
+  @UI: { identification: [ { position : 90, label : 'Id Number' } ] }
+  IdNumber;
+  
+  @UI: { identification: [ { position : 110,  label : 'Document Supplier' } ] }
+  DocumentSupplier;
+  
+  @UI.fieldGroup: [ { qualifier: 'Detail',position: 10 } ]
+  MaterialDocumentItem;
+  
+  @UI.fieldGroup: [ { qualifier: 'Detail',position: 30 } ]
+  MaterialDocumentRecordType;
+  
+  @UI.fieldGroup: [ { qualifier:'Attached',  label :'Xml', position: 10 } ]
+  Xml;
+  
+  @UI.fieldGroup: [ { qualifier: 'Log', label : 'Message Document', position: 10 } ]
+  MessageDocument;
+  
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  CompanyCodeName;
+  
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  GoodsMovementTypeName;
+  
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  PlantName;
+  
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  StorageLocationName;
+
+}

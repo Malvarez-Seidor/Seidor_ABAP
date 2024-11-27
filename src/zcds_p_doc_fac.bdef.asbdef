@@ -1,0 +1,22 @@
+projection;
+
+//strict ( 2 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+
+define behavior for ZCDS_P_DOC_FAC
+alias InvoiceDocuments use etag
+{
+
+    use update;
+
+    field( readonly : update ) CompanyCode, FiscalYear, AccountingDocument, AccountingDocumentType, BillingDocument,
+                               BillingDocumentType, SoldToParty, BusinessName, TypeId, IdNumber, Establishment,
+                               EmissionPoint, Sequential, Accesskey, IssueDate, DocumentType, DocumentStatus, MessageDocument,
+                               Xml, FileName, MimeType, AuthorizationDate, DocumentSupplier, UserFullName, TransactionCurrency,
+                               TotalTaxAmount, TotalNetAmount, SalesOrganizationName, SalesOrganization, DocumentReferenceID,
+                               Criticality, CreationDate, CreatedByUser, CompanyCodeName, BillingDocumentIsCancelled,
+                               BillingDocumentTypeName, BillingDocumentDate, AccountingDocumentTypeName;
+
+    use action SendDocument;
+    use action UpdateStatus;
+
+}

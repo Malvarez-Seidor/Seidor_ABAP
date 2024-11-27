@@ -1,0 +1,4 @@
+@EndUserText.label: 'Withholdings'
+define service ZBSD_EC_DOC_RET {
+  expose ZCDS_P_DOC_RET as Withholdings;
+}

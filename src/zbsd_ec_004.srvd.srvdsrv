@@ -1,0 +1,4 @@
+@EndUserText.label: 'Types of Identification'
+define service ZBSD_EC_004 {
+  expose ZCDS_P_EC_004 as TypeIdentification;
+}

@@ -1,0 +1,5 @@
+@EndUserText.label: 'Liquidation Supports'
+define service ZBSD_EC_012 {
+  expose ZCDS_P_EC_012 as LiquidationSupports;
+  expose ZCDS_P_EC_013 as SupportDetails;
+}
