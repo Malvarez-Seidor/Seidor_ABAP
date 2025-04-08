@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Notas Credito",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "creditnotes.eclocalizacion017"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_64EF6172852CE14F684D02813DA1F907928475AF_TM",
+    "semanticObject": "ZEMI_EC_017",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_64EF6172852CE14F684D02813DA1F907928475AF_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Notas Credito",
+        "subtitle": "Emision de Notas Credito"
+      }
+    }
+  ]
+}

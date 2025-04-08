@@ -2,7 +2,7 @@
 
 @UI :{ headerInfo : { typeName          : 'Withholding Detail',
                       typeNamePlural    : 'Withholdings Details',
-                      title             : { type :#STANDARD, label : 'Accounting Document', value : 'AccountingDocument' },
+                      title             : { type :#STANDARD, value : 'AccountingDocument' },
                       description       : { type :#STANDARD, value : 'AccountingDocumentItem' } },
                       
  presentationVariant: [ { sortOrder: [ { by: 'AccountingDocumentItem', direction:  #ASC } ],
@@ -11,48 +11,48 @@
 annotate entity ZCDS_VC_DET_RET
     with 
 {
-   @UI.facet: [ { id : 'Detail', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Detail', position: 10 } ]
+   @UI.facet: [ { id : 'Detail', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Detalle', position: 10 } ]
    
-   @UI: { lineItem: [ { position : 10, label : 'Accounting Document', importance : #HIGH, cssDefault.width: '8rem' } ],
-    identification: [ { position : 10, label : 'Accounting Document' } ] }
+   @UI: { lineItem: [ { position : 10, importance : #HIGH, cssDefault.width: '8rem' } ],
+    identification: [ { position : 10 } ] }
    AccountingDocument;
    
    @UI: { lineItem: [ { position : 20, importance : #HIGH, cssDefault.width: '4rem' } ],
-    identification: [ { position : 20, label : 'Fiscal Year' } ] }
+    identification: [ { position : 20 } ] }
    FiscalYear;
    
    @UI: { lineItem: [ { position : 30, importance : #HIGH, cssDefault.width: '4rem' } ],
-    identification: [ { position : 30, label : 'Accounting Item' } ] }
+    identification: [ { position : 30 } ] }
    AccountingDocumentItem;
    
    @UI: { lineItem: [ { position : 40, importance : #HIGH, cssDefault.width: '6rem' } ],
-    identification: [ { position : 40, label : 'Withholding Type' } ] }
+    identification: [ { position : 40 } ] }
    WithholdingTaxType;
    
    @UI: { lineItem: [ { position : 50, importance : #HIGH, cssDefault.width: '6rem' } ],
-    identification: [ { position : 50, label : 'Withholding Code' } ] }
+    identification: [ { position : 50 } ] }
    WithholdingTaxCode;
    
-   @UI: { lineItem: [ { position : 60, importance : #HIGH, label : 'Official Code', cssDefault.width: '6rem' } ],
-    identification: [ { position : 60, label : 'Official Code' } ] }
+   @UI: { lineItem: [ { position : 60, importance : #HIGH, label : 'Código Oficial', cssDefault.width: '6rem' } ],
+    identification: [ { position : 60, label : 'Código Oficial' } ] }
    OfficialWhldgTaxCode;
    
-   @UI: { lineItem: [ { position : 70, importance : #HIGH,label : 'Withholding Base', cssDefault.width: '10rem' } ],
-    identification: [ { position : 70, label : 'Withholding Base' } ] }
+   @UI: { lineItem: [ { position : 70, importance : #HIGH, cssDefault.width: '10rem' } ],
+    identification: [ { position : 70 } ] }
    WhldgTaxBaseAmtInCoCodeCrcy;
    
-   @UI: { lineItem: [ { position : 80, importance : #HIGH, label : 'Percentage', cssDefault.width: '8rem' } ],
-    identification: [ { position : 80, label : 'Percentage' } ] }
+   @UI: { lineItem: [ { position : 80, importance : #HIGH, cssDefault.width: '8rem' } ],
+    identification: [ { position : 80 } ] }
    WithholdingTaxPercent;
    
-   @UI: { lineItem: [ { position : 90, importance : #HIGH, label : 'Withholding Amount', cssDefault.width: '10rem' } ],
-    identification: [ { position : 90, label : 'Withholding Amount' } ] }
+   @UI: { lineItem: [ { position : 90, importance : #HIGH, cssDefault.width: '10rem' } ],
+    identification: [ { position : 90 } ] }
    WhldgTaxAmtInCoCodeCrcy;
   
-   @UI: { identification: [ { position : 10, label : 'Withholding Text' } ] }
+   @UI: { identification: [ { position : 10 } ] }
    WhldgTaxReferenceText;
    
-   @UI: { identification: [ { position : 10, label : 'Withholding Name' } ] }
+   @UI: { identification: [ { position : 10 } ] }
    WhldgTaxCodeName;
     
 }

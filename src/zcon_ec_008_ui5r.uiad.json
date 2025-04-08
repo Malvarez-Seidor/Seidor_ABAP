@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Mantenimiento de Secuenciales",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "seqmaintenance.eclocalizacion008"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_17561D0B48965B39E6373239785B8B52672F163B_TM",
+    "semanticObject": "ZCON_EC_008",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_17561D0B48965B39E6373239785B8B52672F163B_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Mantenimiento de Secuenciales",
+        "subtitle": "Asignar Secuenciales"
+      }
+    }
+  ]
+}

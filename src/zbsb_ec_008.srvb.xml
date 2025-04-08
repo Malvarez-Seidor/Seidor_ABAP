@@ -6,7 +6,7 @@
     <METADATA>
      <NAME>ZBSB_EC_008</NAME>
      <TYPE>SRVB/SVB</TYPE>
-     <DESCRIPTION>Mantenimiento de Secuenciales - Service Binding</DESCRIPTION>
+     <DESCRIPTION>Sequential Maintenance - Service Binding</DESCRIPTION>
      <LANGUAGE>EN</LANGUAGE>
      <MASTER_LANGUAGE>EN</MASTER_LANGUAGE>
      <ABAP_LANGU_VERSION>5</ABAP_LANGU_VERSION>

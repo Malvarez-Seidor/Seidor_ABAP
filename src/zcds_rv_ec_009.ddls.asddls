@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'SRI Countries - Roow View Interface'
 define root view entity ZCDS_RV_EC_009
 as select from zdt_ec_009 as  SriCountries
@@ -9,7 +9,8 @@ association [1..1] to I_CountryText                    as _Country  on  _Country
     key country     as Country,
     countrysri      as Countrysri,
     taxhavencountry as Taxhavencountry,
-    pais_conv       as Pais_conv,
+    taxagreement    as Taxagreement,
+    taxregime       as Taxregime,
     _Country
     
 }

@@ -1,0 +1,220 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Localizacion Ecuador",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "title": "Localizacion Ecuador"
+  },
+  "sections": [
+    {
+      "id": "SECTION_1",
+      "title": "Seccion de configuracion",
+      "visualizations": [
+        {
+          "id": "SECTION_1_VIZ_1",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_001_UI5R",
+            "tileId": "UI5R_D3412AEDF45D582F70F6660B74B57F8479491A03_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_2",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_002_UI5R",
+            "tileId": "UI5R_8E487400B79FCC5E24A4FCB6D9C6F4E4EC45874A_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_3",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_003_UI5R",
+            "tileId": "UI5R_2712803654B73A41C8B474C0F812F95F57A01516_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_4",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_004_UI5R",
+            "tileId": "UI5R_C93BFAD27401193D5A6ECBFAB7B6DDD59F5D6A83_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_5",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_005_UI5R",
+            "tileId": "UI5R_939A8FAC690E49F89CFBD3AA59C2CD9A0007E905_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_6",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_006_UI5R",
+            "tileId": "UI5R_585B4297DF34DD274CD46190AA66580606BB787D_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_7",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_007_UI5R",
+            "tileId": "UI5R_A1CA9E9093D04CA88EEB4699A49F40EE40B57802_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_8",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_008_UI5R",
+            "tileId": "UI5R_17561D0B48965B39E6373239785B8B52672F163B_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_9",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_009_UI5R",
+            "tileId": "UI5R_B00F489C6449C133DFE49041A3516EAC8CD75649_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_14",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_014_UI5R",
+            "tileId": "UI5R_716DE26E61E7A329AB09ECB6C157FC4282E6A750_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_22",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_018_UI5R",
+            "tileId": "UI5R_83A586B175E80C97F8E7FD3659A5DFB2AF272BC0_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_23",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_019_UI5R",
+            "tileId": "UI5R_AC5B36E13A1210B9EC07B0265B38EC9F2081149E_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_24",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_020_UI5R",
+            "tileId": "UI5R_3DFFF198547043628DB878A528AF44C70A194E2A_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_25",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_022_UI5R",
+            "tileId": "UI5R_7FD3BCBC16BD48F7CBE167DCB5886C2A2DF191E8_AL"
+          }
+        },
+        {
+          "id": "SECTION_1_VIZ_26",
+          "ladiAssignment": {
+            "ladiId": "ZCON_EC_023_UI5R",
+            "tileId": "UI5R_7534E4BEE6D23B25D12362267AAD2AA70D204553_AL"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SECTION_2",
+      "title": "Seccion de emisiones",
+      "visualizations": [
+        {
+          "id": "SECTION_2_VIZ_12",
+          "ladiAssignment": {
+            "ladiId": "ZEMI_EC_012_UI5R",
+            "tileId": "UI5R_F00FD103C4DF7CC6214D40646E654DDAE90B7DEA_AL"
+          }
+        },
+        {
+          "id": "SECTION_2_VIZ_15",
+          "ladiAssignment": {
+            "ladiId": "ZEMI_EC_015_UI5R",
+            "tileId": "UI5R_F823015B51AADBB8F742B339692E0035A4906FAE_AL"
+          }
+        },
+        {
+          "id": "SECTION_2_VIZ_17",
+          "ladiAssignment": {
+            "ladiId": "ZEMI_EC_017_UI5R",
+            "tileId": "UI5R_64EF6172852CE14F684D02813DA1F907928475AF_AL"
+          }
+        },
+        {
+          "id": "SECTION_2_VIZ_18",
+          "ladiAssignment": {
+            "ladiId": "ZEMI_EC_018_UI5R",
+            "tileId": "UI5R_2122A72A61266B4E1CFA6A227014F8043F70E5F3_AL"
+          }
+        },
+        {
+          "id": "SECTION_2_VIZ_16",
+          "ladiAssignment": {
+            "ladiId": "ZEMI_EC_016_UI5R",
+            "tileId": "UI5R_6B6144BA178569A147DE1E407026D8EE4223C2E8_AL"
+          }
+        },
+        {
+          "id": "SECTION_2_VIZ_19",
+          "ladiAssignment": {
+            "ladiId": "ZEMI_EC_019_UI5R",
+            "tileId": "UI5R_05F941369889C007629C9F8CE9F44768971EC721_AL"
+          }
+        },
+        {
+          "id": "SECTION_2_VIZ_20",
+          "ladiAssignment": {
+            "ladiId": "ZEMI_EC_020_UI5R",
+            "tileId": "UI5R_B81A3FDE9BA32A18322DAC2798A4B2D96DC7FACA_AL"
+          }
+        }
+      ]
+    },
+    {
+      "id": "SECTION_3",
+      "title": "Seccion de reportes",
+      "visualizations": [
+        {
+          "id": "SECTION_3_VIZ_1",
+          "ladiAssignment": {
+            "ladiId": "ZREP_EC_001_UI5R",
+            "tileId": "UI5R_AEB73474F640DEB3438D73091201E8C743A616CB_AL"
+          }
+        },
+        {
+          "id": "SECTION_3_VIZ_2",
+          "ladiAssignment": {
+            "ladiId": "ZREP_EC_002_UI5R",
+            "tileId": "UI5R_D95FF67FFECEA68EE59FA3D06F2EA137A96D52ED_AL"
+          }
+        },
+        {
+          "id": "SECTION_3_VIZ_3",
+          "ladiAssignment": {
+            "ladiId": "ZREP_EC_003_UI5R",
+            "tileId": "UI5R_C3B679F85BF25B16CDFDF71DC5E7E6E0942B3B6A_AL"
+          }
+        },
+        {
+          "id": "SECTION_3_VIZ_4",
+          "ladiAssignment": {
+            "ladiId": "ZREP_EC_004_UI5R",
+            "tileId": "UI5R_B0B8ED8DAF6209EA1B0EDC01531CB805B1C4B823_AL"
+          }
+        },
+        {
+          "id": "SECTION_3_VIZ_5",
+          "ladiAssignment": {
+            "ladiId": "ZREP_EC_005_UI5R",
+            "tileId": "UI5R_3977235F25FD8D1CF745BBFB631F817F1AD1D955_AL"
+          }
+        }
+      ]
+    }
+  ]
+}

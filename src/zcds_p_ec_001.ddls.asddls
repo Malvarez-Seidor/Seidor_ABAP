@@ -1,14 +1,15 @@
 @EndUserText.label: 'Electronic Documents'// Projection View'
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
 
 define root view entity ZCDS_P_EC_001
-  
+  provider contract transactional_query
   as projection on ZCDS_RV_EC_001
 {
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CompanyCodeVH', element: 'CompanyCode' }, 
                      additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' } ] } ]
-
+                     
+      @ObjectModel.text.element: ['CompanyCodeName']
   key Companycode              as CompanyCode,
   key Documenttype             as DocumentType,
 
@@ -23,8 +24,6 @@ define root view entity ZCDS_P_EC_001
       Refunds                  as Refunds,
       Reason                   as Reason,
       
-      @ObjectModel.text.element: ['CompanyCodeName']
       _Company.CompanyCodeName as CompanyCodeName
-
 
 }

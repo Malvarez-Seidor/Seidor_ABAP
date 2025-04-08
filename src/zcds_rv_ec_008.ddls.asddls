@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Sequential Maintenance' //Roow View Interface'
 define root view entity ZCDS_RV_EC_008
   as select from zdt_ec_008 as SeqMaintenance

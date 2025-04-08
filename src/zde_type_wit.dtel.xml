@@ -11,10 +11,10 @@
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
     <DDTEXT>Withholding Type</DDTEXT>
-    <REPTEXT>Withholding Type</REPTEXT>
-    <SCRTEXT_S>With. Type</SCRTEXT_S>
-    <SCRTEXT_M>Withholding Type</SCRTEXT_M>
-    <SCRTEXT_L>Withholding Type</SCRTEXT_L>
+    <REPTEXT>Tipo de Retención</REPTEXT>
+    <SCRTEXT_S>Tipo Reten</SCRTEXT_S>
+    <SCRTEXT_M>Tipo Retención</SCRTEXT_M>
+    <SCRTEXT_L>Tipo Retención</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
     <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>

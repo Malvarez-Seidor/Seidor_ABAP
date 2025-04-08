@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Liquidacion",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "liquidationpurchase.eclocalizacion016"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_6B6144BA178569A147DE1E407026D8EE4223C2E8_TM",
+    "semanticObject": "ZEMI_EC_016",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_6B6144BA178569A147DE1E407026D8EE4223C2E8_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Liquidacion",
+        "subtitle": "Emision de Liquidacion"
+      }
+    }
+  ]
+}

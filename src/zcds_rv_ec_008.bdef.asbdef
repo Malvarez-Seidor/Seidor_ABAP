@@ -1,14 +1,14 @@
 managed implementation in class zbp_cds_rv_ec_008 unique;
-//strict ( 2 );
+strict ( 2 );
 
 define behavior for ZCDS_RV_EC_008 alias SeqMaintenance
 persistent table zdt_ec_008
 lock master
-//authorization master ( instance )
+authorization master ( global, instance )
 //etag master <field_name>
 {
   create;
   update;
   delete;
-  //field ( readonly ) Companycode, Documentsri, Establishment, Emissionpoint;
+  field ( readonly: update ) Companycode, Documentsri, Establishment, Emissionpoint, Users, Sequence ;
 }

@@ -1,10 +1,10 @@
-managed implementation in class zbp_cds_rv_doc_ndc unique;
-//strict ( 2 );
+unmanaged implementation in class zbp_cds_rv_doc_ndc unique;
+strict;
 
 define behavior for ZCDS_RV_DOC_NDC alias CreditNotes
-persistent table zdt_sd_doc_ndc
+//persistent table zdt_sd_doc_ndc
 lock master
-//authorization master ( instance )
+authorization master ( global, instance )
 //etag master Billingdocument
 
 {
@@ -12,10 +12,39 @@ lock master
   create;
   update;
   delete;
-  // field ( readonly ) Billingdocument;
+
+  field ( readonly: update ) CompanyCode, FiscalYear, Billingdocument, BillingDocumentType, AccountingDocument, AccountingDocumentType;
 
   // instance action and dynamic action control
   action ( features : instance ) SendDocument result [1] $self;
   action ( features : instance ) UpdateStatus result [1] $self;
+
+  mapping for zdt_sd_doc_ndc{
+
+  CompanyCode            = CompanyCode;
+  FiscalYear             = FiscalYear;
+  AccountingDocument     = AccountingDocument;
+  AccountingDocumentType = AccountingDocumentType;
+  BillingDocument        = BillingDocument;
+  BillingDocumentType    = BillingDocumentType;
+  SoldToParty            = SoldToParty;
+  BusinessName           = BusinessName;
+  TypeId                 = TypeId;
+  IdNumber               = IdNumber;
+  Establishment          = Establishment;
+  emissionpoint          = EmissionPoint;
+  Sequential             = Sequential;
+  Accesskey              = Accesskey;
+  DocumentType           = DocumentType;
+  IssueDate              = IssueDate;
+  DocumentStatus         = DocumentStatus;
+  MessageDocument        = MessageDocument;
+  AuthorizationDate      = AuthorizationDate;
+  Xml                    = Xml;
+  MimeType               = MimeType;
+  FileName               = FileName;
+  DocumentSupplier       = DocumentSupplier;
+
+  }
 
 }

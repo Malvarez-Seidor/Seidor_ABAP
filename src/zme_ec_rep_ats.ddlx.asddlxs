@@ -1,0 +1,76 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Reporte de ATS',
+                      typeNamePlural    : 'Reporte de ATS',
+                      title             : { type :#STANDARD,  value : 'CompanyCode' },
+                      description       : { type :#STANDARD,  value : 'Accesskey' } }, 
+
+ presentationVariant: [ { sortOrder: [ { by: 'DocumentStatus',  direction:  #DESC },
+                                       { by: 'AccountingDocument', direction:  #ASC  } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+
+annotate entity ZCDS_VED_REP_ATS with
+{
+
+  @UI.facet: [ { label: 'Inf. Documento', purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10                                        },
+               { label: 'Det. Compras',   purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 20, targetElement: '_AccountingDocumentItem' },
+               { label: 'Det. Ventas',    purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30, targetElement: '_BillingDocumentItem' } ]
+               
+  @UI: { lineItem: [ { position : 10, importance : #HIGH, cssDefault.width: '4rem' } ] }
+  FiscalYear;
+
+  @UI: { lineItem: [ { position : 20, importance : #HIGH } ] }
+  FiscalPeriod;
+
+  @UI: { lineItem: [ { position : 30, importance : #HIGH, cssDefault.width: '7rem' } ], dataPoint: { visualization: #NUMBER  } }
+  @UI.dataPoint.hidden: false
+  AccountingDocument;
+
+  @UI.identification: [ { position : 10 } ]
+  AccountingDocumentType;
+  
+  @UI: { lineItem: [ { position : 40,  importance : #MEDIUM, label: 'Tipo Documento' } ], textArrangement: #TEXT_ONLY  }
+  TypeProces;
+  
+  @UI: { lineItem: [ { position : 50,  importance : #MEDIUM, label: 'BP' } ], textArrangement: #TEXT_ONLY  }
+                     
+  @UI: { identification: [ { position : 20 } ] }
+  BusinessPartner;
+  
+  @UI: { lineItem: [ { position : 60,  importance : #MEDIUM, label: 'Razon Social' } ], textArrangement: #TEXT_ONLY  }
+  @UI: { identification: [ { position : 30 } ] }
+  BusinessName;
+  
+  @UI: { lineItem: [ { position : 70,  importance : #HIGH, label: 'Tipo Identificación' } ],
+   identification: [ { position : 40, label : 'Tipo Identificación' } ] }
+  TypeId;
+
+  @UI: { lineItem: [ { position : 80,  importance : #HIGH, label: 'Número Identificación', cssDefault.width: '10rem' } ],
+   identification: [ { position : 50, label : 'Número Identificación' } ] }
+  IdNumber;
+  
+  @UI.textArrangement: #TEXT_ONLY
+  @UI: { lineItem: [ { position : 90, label : 'Tipo Comprobante', importance : #HIGH, cssDefault.width: '4rem' } ] }
+  @UI.identification:  [ { position : 60, label: 'Tipo Comprobante' } ]
+  DocumentType;
+  
+  @UI: { lineItem: [ { position : 100,  label : 'Estado Documento', importance : #HIGH } ] }
+  DocumentStatus;
+  
+  @UI: { lineItem: [ { position : 110, label : 'Numero Documento', importance : #HIGH, cssDefault.width: '9rem' } ] }
+  @UI.identification: [ { position : 70, label: 'Numero Documento' } ]
+  NumberDocument;
+
+  @UI: { lineItem: [ { position : 160, label : 'Clave Acceso', importance : #MEDIUM } ] }
+  @UI.identification: [ { position : 80, label: 'Sustento Clave Acceso' } ]
+  Accesskey;   
+
+  @UI: { lineItem: [ { position : 170, label : 'Fecha Emisión', importance : #MEDIUM } ] }
+  @UI.identification: [ { position : 140, label: 'Fecha Emisión' } ]
+  IssueDate;
+  
+  @UI: { lineItem: [ { position : 170, label : 'Fecha Autorizacion', importance : #MEDIUM } ] }
+  @UI.identification: [ { position : 140, label: 'Fecha Autorizacion' } ]
+  AuthorizationDate;
+
+}

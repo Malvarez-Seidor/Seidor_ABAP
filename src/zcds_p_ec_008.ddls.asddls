@@ -1,12 +1,14 @@
 @EndUserText.label: 'Sequential Maintenance - Projection View'
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 //@Search.searchable: true
 @Metadata.allowExtensions: true
 define root view entity ZCDS_P_EC_008
+  provider contract transactional_query
   as projection on ZCDS_RV_EC_008
 {
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CompanyCode', element: 'CompanyCode' },
                      additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' } ] } ]
+      @ObjectModel.text.element: ['CompanyCodeName']
   key Companycode                                    as CompanyCode,
 
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_TRSRI', element: 'value_low' } } ]
@@ -68,28 +70,28 @@ define root view entity ZCDS_P_EC_008
       @ObjectModel.text.element: [ 'StorageLocationName' ]
       Storagelocation                                as StorageLocation,
 
-      @ObjectModel.text.element: ['CompanyCodeName']
+//      @ObjectModel.text.element: ['CompanyCodeName']
       _Company.CompanyCodeName                       as CompanyCodeName,
 
       @ObjectModel.text.element: ['AccountingDocumentTypeName']
       _AccountingDocument.AccountingDocumentTypeName as AccountingDocumentTypeName,
 
-      @ObjectModel.text.element: ['BillingDocumentTypeName']
+//      @ObjectModel.text.element: ['BillingDocumentTypeName']
       _BillingDocumentType.BillingDocumentTypeName   as BillingDocumentTypeName,
 
-      @ObjectModel.text.element: ['DeliveryDocumentTypeName']
+//      @ObjectModel.text.element: ['DeliveryDocumentTypeName']
       _DeliveryDocumentType.DeliveryDocumentTypeName as DeliveryDocumentTypeName,
 
-      @ObjectModel.text.element: ['GoodsMovementTypeName']
+//      @ObjectModel.text.element: ['GoodsMovementTypeName']
       _GoodsMovementType.GoodsMovementTypeName       as GoodsMovementTypeName,
 
-      @ObjectModel.text.element: ['SalesOrganizationName']
+//      @ObjectModel.text.element: ['SalesOrganizationName']
       _SalesOrganization.SalesOrganizationName       as SalesOrganizationName,
 
-      @ObjectModel.text.element: ['PlantName']
+//      @ObjectModel.text.element: ['PlantName']
       _Plant.PlantName                               as PlantName,
 
-      @ObjectModel.text.element: ['StorageLocationName']
+//      @ObjectModel.text.element: ['StorageLocationName']
       _StorageLocation.StorageLocationName           as StorageLocationName,
 
 //      @ObjectModel.text.element: ['UserDescription']

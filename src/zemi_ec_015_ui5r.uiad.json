@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Facturas",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "invoicedocuments.eclocalizacion015"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_F823015B51AADBB8F742B339692E0035A4906FAE_TM",
+    "semanticObject": "ZEMI_EC_015",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_F823015B51AADBB8F742B339692E0035A4906FAE_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Facturas",
+        "subtitle": "Emision de Facturas"
+      }
+    }
+  ]
+}

@@ -1,6 +1,8 @@
-@EndUserText.label: 'Download Elec Documents - Bussiness Servivces Definition'
+@EndUserText.label: 'Download Elec Documents'
 define service ZBSD_EC_015 {
-  expose ZCDS_P_EC_015 as ElectronicDocuments;
-  expose ZCDS_P_EC_016 as Withholdings;
-  expose ZCDS_P_EC_017 as PurchaseOrders;
+  expose ZCDS_P_EC_015    as ElectronicDocuments;
+  expose ZCDS_P_EC_016    as Withholdings;
+  expose ZCDS_P_EC_017    as PurchaseOrders;
+  expose ZCDS_RV_EC_015_R as ElectronicDocumentsReception;
+  expose ZCDS_RV_EC_016_R as WithholdingsReception;
 }

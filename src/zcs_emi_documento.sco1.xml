@@ -9,7 +9,7 @@
     <IB_TRUST_PSE_ID>SSLC_CUSTOMER_DEFAULT</IB_TRUST_PSE_ID>
     <IB_BASIC_AUTH>X</IB_BASIC_AUTH>
     <IB_X509_AUTH>X</IB_X509_AUTH>
-    <INBOUND_ROLE_ID>ZCR_2GXZYP7YLIPN7GMWFB5DTZVO3I</INBOUND_ROLE_ID>
+    <INBOUND_ROLE_ID>ZCR_QNT3CY254IPN7LE5UXMQBGKO74</INBOUND_ROLE_ID>
     <CONTAINS_OUTBOUND>X</CONTAINS_OUTBOUND>
     <OB_AUTH_PSE_ID>SSLC_CUSTOMER_DEFAULT</OB_AUTH_PSE_ID>
     <OB_TRUST_PSE_ID>SSLC_CUSTOMER_DEFAULT</OB_TRUST_PSE_ID>
@@ -46,10 +46,114 @@
       <TEXT>Emision de Documentos Electronicos</TEXT>
      </item>
     </OUTBOUND>
-    <PUBLISH_STATUS>p</PUBLISH_STATUS>
+    <AUTH>
+     <item>
+      <AUTH_OBJECT>F_BKPF_BUK</AUTH_OBJECT>
+      <STATUS>U</STATUS>
+      <TEXT>Accounting Document: Authorization for Company Codes</TEXT>
+      <AUTH_ITEM>
+       <item>
+        <UUID>U0D6rSQvHt+7zDszqxLvHQ==</UUID>
+        <AUTH_OBJECT>F_BKPF_BUK</AUTH_OBJECT>
+        <AUTH_OBJECT_INSTANCE>0001</AUTH_OBJECT_INSTANCE>
+        <TEXT>Accounting Document: Authorization for Company Codes</TEXT>
+        <STATUS>U</STATUS>
+        <VALUES>
+         <item>
+          <FIELD>ACTVT</FIELD>
+          <VALUE>Display change documents, Delete, Post, Activate, generate, Enter, Include, Assign, Change, Display, Display in Value Help, Reverse, Close Out, Pre-enter, Create or generate, Release</VALUE>
+          <VALUES>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxNPHQ==</UUID>
+            <LOW_VALUE>08</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxRvHQ==</UUID>
+            <LOW_VALUE>06</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxMPHQ==</UUID>
+            <LOW_VALUE>10</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxSPHQ==</UUID>
+            <LOW_VALUE>07</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxRPHQ==</UUID>
+            <LOW_VALUE>22</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxNvHQ==</UUID>
+            <LOW_VALUE>02</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxOPHQ==</UUID>
+            <LOW_VALUE>03</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxOvHQ==</UUID>
+            <LOW_VALUE>F4</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxMvHQ==</UUID>
+            <LOW_VALUE>85</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxPvHQ==</UUID>
+            <LOW_VALUE>C4</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxQvHQ==</UUID>
+            <LOW_VALUE>77</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxQPHQ==</UUID>
+            <LOW_VALUE>01</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxPPHQ==</UUID>
+            <LOW_VALUE>43</LOW_VALUE>
+           </item>
+          </VALUES>
+          <TEXT>Activity</TEXT>
+          <STATUS>U</STATUS>
+          <IS_ACTVT>X</IS_ACTVT>
+         </item>
+         <item>
+          <FIELD>BUKRS</FIELD>
+          <VALUE>IN01, FO01, OL01</VALUE>
+          <VALUES>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxTPHQ==</UUID>
+            <LOW_VALUE>IN01</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxSvHQ==</UUID>
+            <LOW_VALUE>FO01</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>U0D6rSQvHt+7zDszqxTvHQ==</UUID>
+            <LOW_VALUE>OL01</LOW_VALUE>
+           </item>
+          </VALUES>
+          <TEXT>Company Code</TEXT>
+          <STATUS>U</STATUS>
+         </item>
+        </VALUES>
+       </item>
+      </AUTH_ITEM>
+     </item>
+    </AUTH>
+    <PUBLISH_STATUS>u</PUBLISH_STATUS>
     <PLUGIN_CONFIG>
      <item>
       <UI_OBJECT>cscn_type_selection</UI_OBJECT>
+      <IS_VISIBLE>X</IS_VISIBLE>
+      <IS_ENABLED>X</IS_ENABLED>
+     </item>
+     <item>
+      <UI_OBJECT>cscn_obs_ping_supported</UI_OBJECT>
       <IS_VISIBLE>X</IS_VISIBLE>
       <IS_ENABLED>X</IS_ENABLED>
      </item>

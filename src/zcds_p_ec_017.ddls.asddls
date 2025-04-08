@@ -1,6 +1,8 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Download Electronic Purchase Orders - Projection View'
+@EndUserText.label: 'Download Electronic Purchase Orders'  //Projection View'
 @Metadata.ignorePropagatedAnnotations: true
+@Metadata.allowExtensions: true
+
 define view entity ZCDS_P_EC_017
   as projection on ZCDS_RV_EC_017
 {

@@ -18,14 +18,14 @@
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>I</DOMVALUE_L>
-     <DDTEXT>Include</DDTEXT>
+     <DDTEXT>Incluir</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_SIGN</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>E</DOMVALUE_L>
-     <DDTEXT>Exclude</DDTEXT>
+     <DDTEXT>Excluir</DDTEXT>
     </DD07V>
    </DD07V_TAB>
   </asx:values>

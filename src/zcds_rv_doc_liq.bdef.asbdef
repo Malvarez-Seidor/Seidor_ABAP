@@ -1,10 +1,10 @@
-managed implementation in class zbp_cds_rv_doc_liq unique;
-//strict ( 2 );
+unmanaged implementation in class zbp_cds_rv_doc_liq unique;
+strict;
 
 define behavior for ZCDS_RV_DOC_LIQ alias LiquidationPurchase
-persistent table zdt_fi_doc_liq
+//persistent table zdt_fi_doc_liq
 lock master
-//authorization master ( instance )
+authorization master ( global, instance )
 //etag master <field_name>
 {
   create;
@@ -14,5 +14,33 @@ lock master
   // instance action and dynamic action control
   action ( features : instance ) SendDocument result [1] $self;
   action ( features : instance ) UpdateStatus result [1] $self;
+
+  field ( readonly:update ) Companycode, Fiscalyear, Accountingdocument, Accountingdocumenttype;
+
+  mapping for zdt_fi_doc_liq{
+
+  CompanyCode            = CompanyCode;
+  FiscalYear             = FiscalYear;
+  AccountingDocument     = AccountingDocument;
+  AccountingDocumentType = AccountingDocumentType;
+  Supplier               = supplier;
+  BusinessName           = BusinessName;
+  TypeId                 = TypeId;
+  IdNumber               = IdNumber;
+  Establishment          = Establishment;
+  emissionpoint          = EmissionPoint;
+  Sequential             = Sequential;
+  Accesskey              = Accesskey;
+  DocumentType           = DocumentType;
+  IssueDate              = IssueDate;
+  DocumentStatus         = DocumentStatus;
+  MessageDocument        = MessageDocument;
+  AuthorizationDate      = AuthorizationDate;
+  Xml                    = Xml;
+  MimeType               = MimeType;
+  FileName               = FileName;
+  DocumentSupplier       = DocumentSupplier;
+
+  }
 
 }

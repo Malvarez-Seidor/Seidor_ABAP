@@ -10,11 +10,11 @@
     <SCRLEN1>10</SCRLEN1>
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Estatus de Documentos</DDTEXT>
-    <REPTEXT>Document Status</REPTEXT>
-    <SCRTEXT_S>Doc.Status</SCRTEXT_S>
-    <SCRTEXT_M>Document Status</SCRTEXT_M>
-    <SCRTEXT_L>Document Status</SCRTEXT_L>
+    <DDTEXT>Document Status</DDTEXT>
+    <REPTEXT>Estado Documento Electrónico</REPTEXT>
+    <SCRTEXT_S>Est. Doc.</SCRTEXT_S>
+    <SCRTEXT_M>Estado Documento</SCRTEXT_M>
+    <SCRTEXT_L>Estado de Documento</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
     <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>

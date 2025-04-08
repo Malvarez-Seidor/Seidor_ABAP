@@ -1,9 +1,10 @@
 @EndUserText.label: 'Debit Notes' //- Projection View'
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 //@Search.searchable: true
 @Metadata.allowExtensions: true
 
 define root view entity ZCDS_P_DOC_NDD
+  provider contract transactional_query
   as projection on ZCDS_RV_DOC_NDD
 {
  
@@ -11,31 +12,32 @@ define root view entity ZCDS_P_DOC_NDD
       @ObjectModel.text.element: [ 'CompanyCodeName' ]
       @Consumption.valueHelpDefinition: [ { entity:  { name: 'I_CompanyCodeVH', element: 'CompanyCode' },
                      additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' } ] } ]
-  key Companycode              as CompanyCode,
+  key CompanyCode              as CompanyCode,
   
       @Semantics.fiscal.year: true
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_FISCALYEAR' , element: 'FiscalYear' }, distinctValues: true } ]
-  key Fiscalyear               as FiscalYear,
+  key FiscalYear               as FiscalYear,
   
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_DOCUMENT_FI' , element: 'AccountingDocument' }, distinctValues: true } ]
-  key Accountingdocument       as AccountingDocument,
+  key AccountingDocument       as AccountingDocument,
       
-      @Search.defaultSearchElement: true
+      @ObjectModel.text.element: ['AccountingDocumentTypeName']
+      @UI.textArrangement: #TEXT_ONLY
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_DOCUMENTTYPE' , element: 'AccountingDocumentType' }, distinctValues: true } ]
-  key Accountingdocumenttype   as AccountingDocumentType,
+  key  AccountingDocumentType   as AccountingDocumentType,
   
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_BillingDocumentStdVH' , element: 'BillingDocument' }, distinctValues: true } ]
-  key Billingdocument          as BillingDocument,
-      
+  key BillingDocument          as BillingDocument,
+  
       @Search.defaultSearchElement: true
       @ObjectModel.text.element: [ 'BillingDocumentTypeName' ]
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_BillingDocumentTypeStdVH' , element: 'BillingDocumentType' }, distinctValues: true } ]
-      Billingdocumenttype      as BillingDocumentType,
+  key BillingDocumentType      as BillingDocumentType,
       
       @Search.defaultSearchElement: true
       @ObjectModel.text.element: [ 'BusinessName' ]
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Customer_VH' , element: 'Customer' }, distinctValues: true } ]
-      Soldtoparty              as SoldToParty,
+      SoldToParty              as SoldToParty,
       
       @Search.defaultSearchElement: true
       Businessname             as BusinessName,
@@ -123,7 +125,7 @@ define root view entity ZCDS_P_DOC_NDD
       @Search.defaultSearchElement: true
       SalesOrganizationName    as SalesOrganizationName,
       
-      @Semantics.text:true 
+      @Semantics.text:true
       @Search.defaultSearchElement: true
       AccountingDocumentTypeName as AccountingDocumentTypeName,
       

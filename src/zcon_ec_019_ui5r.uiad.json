@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Configuración Reporte 103",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "configreport103.eclocalizacion023"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_AC5B36E13A1210B9EC07B0265B38EC9F2081149E_TM",
+    "semanticObject": "ZCON_EC_019",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_AC5B36E13A1210B9EC07B0265B38EC9F2081149E_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Configuración Reporte 103",
+        "subtitle": "Configuración de Casilleros"
+      }
+    }
+  ]
+}

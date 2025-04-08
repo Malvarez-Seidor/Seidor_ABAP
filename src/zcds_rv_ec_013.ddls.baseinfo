@@ -3,10 +3,12 @@
 {
 "FROM":
 [
+"ZCDS_RV_EC_012",
 "ZDT_EC_013"
 ],
 "ASSOCIATED":
 [
+"I_CURRENCY",
 "ZCDS_RV_EC_012"
 ],
 "BASE":

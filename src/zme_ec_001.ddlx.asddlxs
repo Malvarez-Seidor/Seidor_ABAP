@@ -1,45 +1,47 @@
 @Metadata.layer: #CORE
-@UI :{ headerInfo : { typeName : 'Electronic Document', typeNamePlural : 'Electronic Documents',
-            title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+@UI :{ headerInfo : { typeName : 'Documento Electrónico', typeNamePlural : 'Documentos Electrónicos',
+            title : { type :#STANDARD, value : 'CompanyCodeName' }, description.value: 'CompanyCode'  }
+     }
                                
 annotate view ZCDS_P_EC_001 with
 { 
-  @UI.facet: [{ id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+  
+  @UI.facet: [{ id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE } ]
               
-  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance : #HIGH } ],
-   identification: [ { position : 10, label : 'Company Code' } ],
-   selectionField: [ { position: 10 } ] }
+  @UI: { lineItem: [ { position : 10, importance : #HIGH } ],
+   identification: [ { position : 10 } ],
+   selectionField: [ { position : 10 } ] }
   CompanyCode;
   
-  @UI: { lineItem: [ { position : 20, label : 'Company Name', importance : #HIGH } ],
-   identification: [ { position : 20, label : 'Company Name' }] }                    
+  @UI: { lineItem: [ { position : 20, importance : #HIGH } ],
+   identification: [ { position : 20 } ] }                    
   @UI.hidden: true
   CompanyCodeName;
   
-  @UI: { lineItem: [ { position : 30, label : 'Document Type', importance : #HIGH } ],
-   identification: [ { position : 30, label : 'Document Type' } ],
+  @UI: { lineItem: [ { position : 30, label : 'Documento SAP', importance : #HIGH } ],
+   identification: [ { position : 30, label : 'Documento SAP' } ],
    selectionField: [ { position: 20 } ] }
   DocumentType;
 
-  @UI: { lineItem: [ { position : 40, label : 'Document Sri', importance : #HIGH } ],
-   identification: [ { position : 40, label : 'Document Sri' } ],
+  @UI: { lineItem: [ { position : 40, label : 'Documento SRI', importance : #HIGH } ],
+   identification: [ { position : 40, label : 'Documento SRI' } ],
    selectionField: [ { position: 30 } ] }
   DocumentSri;
   
-  @UI: { lineItem: [ { position : 50, label : 'Sequence', importance : #HIGH } ],
-   identification: [ { position : 50, label : 'Sequence' } ] }
+  @UI: { lineItem: [ { position : 50, label : 'Secuencia', importance : #HIGH } ],
+   identification: [ { position : 50, label : 'Secuencia' } ] }
   Sequence;
   
-  @UI: { lineItem: [ { position : 60, label : 'Export', importance : #HIGH } ],
-   identification: [ { position : 60, label : 'Export' } ] }
+  @UI: { lineItem: [ { position : 60, label : 'Exportación', importance : #HIGH } ],
+   identification: [ { position : 60, label : 'Exportación' } ] }
   Export;
   
-  @UI: { lineItem: [ { position : 70, label : 'Refunds', importance : #HIGH } ],
-   identification: [ { position : 70, label : 'Refunds' } ] }
+  @UI: { lineItem: [ { position : 70, label : 'Reembolsos', importance : #HIGH } ],
+   identification: [ { position : 70, label : 'Reembolsos' } ] }
   Refunds;
 
-  @UI: { lineItem: [ { position : 80, label : 'Reason', importance : #HIGH } ],
-   identification: [ { position : 80, label : 'Reason' } ] }
+  @UI: { lineItem: [ { position : 80, label : 'Razón', importance : #HIGH } ],
+   identification: [ { position : 80, label : 'Razón' } ] }
   Reason;
 
 }

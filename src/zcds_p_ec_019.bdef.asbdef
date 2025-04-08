@@ -1,0 +1,9 @@
+projection;
+strict ( 2 );
+
+define behavior for ZCDS_P_EC_019 alias ConfigReport103
+{
+  use create;
+  use update;
+  use delete;
+}

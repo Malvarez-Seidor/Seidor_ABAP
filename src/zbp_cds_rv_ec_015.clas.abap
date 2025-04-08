@@ -1,4 +1,6 @@
 CLASS zbp_cds_rv_ec_015 DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zcds_rv_ec_015.
+protected section.
+private section.
 ENDCLASS.
 
 

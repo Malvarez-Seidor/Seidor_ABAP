@@ -1,13 +1,14 @@
 managed;
-with draft;
-//strict ( 2 );
+strict;
+//with draft;
 
 define behavior for ZCDS_RV_EC_012 alias LiquidationSupports
 implementation in class zbp_cds_rv_ec_012 unique
 persistent table zdt_ec_012
-lock master total etag Accountingdocument
+lock master
+authorization master ( global, instance )
+early numbering
 etag master last_changed_by
-draft table zdt_ec_012_draft
 {
 
   create;
@@ -16,11 +17,13 @@ draft table zdt_ec_012_draft
 
   action ( features : instance ) uploadExcelData  result [1] $self;
 
-//  association _SupportDetails { create ( features : instance ); }
+  association _SupportDetails { create ( precheck ); }
 
-  association _SupportDetails { create; with draft; }
+  determination fields on modify { field FileName ;  }
 
-  determination fields on modify { field FileName ; }
+  validation Carga  on save { field FileName ;  }
+
+  field ( readonly:update ) Companycode, Fiscalyear, Accountingdocument, Accountingdocumenttype;
 
   mapping for zdt_ec_012{
 
@@ -33,6 +36,7 @@ draft table zdt_ec_012_draft
   Mimetype                 = mimetype;
   Filename                 = filename;
   Last_changed_by          = last_changed_by;
+  Criticality              = criticality;
 
   }
 
@@ -41,21 +45,19 @@ draft table zdt_ec_012_draft
 define behavior for ZCDS_RV_EC_013 alias SupportDetails
 implementation in class zbp_cds_rv_ec_013 unique
 persistent table zdt_ec_013
-draft table zdt_ec_013_draft
+authorization dependent by _LiquidationSupports
 lock dependent by _LiquidationSupports
 etag master last_changed_by
+
 {
 
-  update;
+  update( precheck );
   delete;
 
-//  association _LiquidationSupports {  }
-  association _LiquidationSupports { with draft; }
+  association _LiquidationSupports {  }
 
-  action createSES result [1] $self;
-
-
-  field ( readonly ) Companycode, Fiscalyear, Accountingdocument, Accountingdocumenttype, Documentitem;
+  field ( readonly, numbering : managed ) Draftuuid;
+  field ( readonly: update ) Companycode, Fiscalyear, Accountingdocument, Accountingdocumenttype;
 
   mapping for zdt_ec_013
       {
@@ -63,7 +65,7 @@ etag master last_changed_by
         Fiscalyear               = fiscalyear;
         Accountingdocument       = accountingdocument;
         Accountingdocumenttype   = Accountingdocumenttype;
-        Documentitem             = documentitem;
+        Draftuuid                = draftuuid;
         Typeid                   = typeid;
         Idnumber                 = idnumber;
         Documenttype             = documenttype;

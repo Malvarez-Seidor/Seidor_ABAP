@@ -1,6 +1,7 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Liquidation Supports' //'- Roow View Interface'
 @Metadata.ignorePropagatedAnnotations: true
+@Search.searchable: true
 define root view entity ZCDS_RV_EC_012
   as select from I_JournalEntry
     left outer join zdt_ec_012 as SupportAttachment   
@@ -13,7 +14,7 @@ define root view entity ZCDS_RV_EC_012
             on ElectronicDocuments.companycode  = I_JournalEntry.CompanyCode
            and ElectronicDocuments.documenttype = I_JournalEntry.AccountingDocumentType
            and ElectronicDocuments.documentsri  = '03'
-           and ElectronicDocuments.sequence     = '01'
+           and ElectronicDocuments.sequence     >= '01'
            and ElectronicDocuments.refunds      is not initial 
            
     inner join I_JournalEntryItem as I_JournalEntryItem   
@@ -25,7 +26,12 @@ define root view entity ZCDS_RV_EC_012
            and I_JournalEntryItem.Ledger                 = '0L'
            and I_JournalEntryItem.IsReversal is initial    
            and I_JournalEntryItem.IsReversed is initial
-           
+   
+//    inner join ZCDS_VC_TAX_COM as I_OperationalAcctgDocTaxItem
+//            on I_OperationalAcctgDocTaxItem.CompanyCode            = I_JournalEntry.CompanyCode
+//           and I_OperationalAcctgDocTaxItem.FiscalYear             = I_JournalEntry.FiscalYear
+//           and I_OperationalAcctgDocTaxItem.AccountingDocument     = I_JournalEntry.AccountingDocument
+   
     inner join I_BusinessPartner  as I_BusinessPartner         
             on I_BusinessPartner.BusinessPartner = I_JournalEntryItem.Supplier
             
@@ -37,39 +43,20 @@ define root view entity ZCDS_RV_EC_012
     inner join I_AccountingDocumentTypeText as I_AccountingDocumentTypeText 
             on I_AccountingDocumentTypeText.AccountingDocumentType = I_JournalEntry.AccountingDocumentType
            and I_AccountingDocumentTypeText.Language               = $session.system_language
-    composition [0..*] of ZCDS_RV_EC_013 as _SupportDetails
+    composition [1..*] of ZCDS_RV_EC_013 as _SupportDetails
 {
   
   @ObjectModel.text.association: '_SupportDetails'
-  key
-        case
-            when SupportAttachment.companycode is not initial
-            then SupportAttachment.companycode
-          else   I_JournalEntry.CompanyCode
-          end                        as Companycode,
-  @ObjectModel.text.association: '_SupportDetails'
-  key
-        case
-            when SupportAttachment.fiscalyear is not initial
-            then SupportAttachment.fiscalyear
-          else   I_JournalEntry.FiscalYear
-          end                        as Fiscalyear,
+  key I_JournalEntry.CompanyCode as CompanyCode,
   
   @ObjectModel.text.association: '_SupportDetails'
-  key
-        case
-            when SupportAttachment.accountingdocument is not initial
-            then SupportAttachment.accountingdocument
-          else   I_JournalEntry.AccountingDocument
-          end                        as Accountingdocument,
+  key I_JournalEntry.FiscalYear as FiscalYear,
   
   @ObjectModel.text.association: '_SupportDetails'
-  key
-        case
-            when SupportAttachment.accountingdocumenttype is not initial
-            then SupportAttachment.accountingdocumenttype
-          else   I_JournalEntry.AccountingDocumentType
-          end                        as Accountingdocumenttype,
+  key I_JournalEntry.AccountingDocument as AccountingDocument,
+  
+  @ObjectModel.text.association: '_SupportDetails'
+  key I_JournalEntry.AccountingDocumentType as AccountingDocumentType,
           
    case 
     when SupportAttachment.filestatus is not initial 
@@ -89,6 +76,7 @@ define root view entity ZCDS_RV_EC_012
   
   @Semantics.amount.currencyCode: 'CompanyCodeCurrency'
   abs(I_JournalEntryItem.AmountInCompanyCodeCurrency) as AmountInCompanyCodeCurrency,
+//  abs(I_OperationalAcctgDocTaxItem.TaxBaseAmountInCoCodeCrcy) + abs(I_OperationalAcctgDocTaxItem.TaxAmountInCoCodeCrcy) as AmountInCompanyCodeCurrency,
      
   I_JournalEntryItem.Supplier                    as Supplier,
   I_JournalEntry.CompanyCodeCurrency             as CompanyCodeCurrency,

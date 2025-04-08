@@ -1,0 +1,4 @@
+@EndUserText.label: 'Types Supporting Documents'
+define service ZBSD_EC_023 {
+  expose ZCDS_P_EC_023 as SupportingDocuments;
+}

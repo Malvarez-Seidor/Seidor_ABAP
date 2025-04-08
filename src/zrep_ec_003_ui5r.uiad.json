@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Reporte de Compras",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "purchasereport.eclocalizacion028"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_C3B679F85BF25B16CDFDF71DC5E7E6E0942B3B6A_TM",
+    "semanticObject": "ZREP_EC_003",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_C3B679F85BF25B16CDFDF71DC5E7E6E0942B3B6A_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Reporte de Compras",
+        "subtitle": "Detalles de Compras"
+      }
+    }
+  ]
+}

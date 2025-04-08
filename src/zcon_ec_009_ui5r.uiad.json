@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Paises",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "sricountries.eclocalizacion009"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_B00F489C6449C133DFE49041A3516EAC8CD75649_TM",
+    "semanticObject": "ZCON_EC_009",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_B00F489C6449C133DFE49041A3516EAC8CD75649_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Paises",
+        "subtitle": "Configurar Paises SRI"
+      }
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 @Metadata.layer: #CORE
 
-@UI :{ headerInfo : { typeName          : 'Transport Guide',
-                      typeNamePlural    : 'Transport Guides',
-                      title             : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' },
+@UI :{ headerInfo : { typeName          : 'Guía de Transporte',
+                      typeNamePlural    : 'Guías de Transportes',
+                      title             : { type :#STANDARD, value : 'CompanyCodeName' },
                       imageUrl: 'Xml',
                       description       : { type :#STANDARD,  value : 'CompanyCode' } },
                       
@@ -28,33 +28,30 @@ annotate view ZCDS_P_DOC_SD_GUIA
   
   @UI: { lineItem: [ { position : 20, importance : #HIGH } ],
    selectionField: [ { position : 10 } ] }
-  
   @UI: { dataPoint: { visualization: #NUMBER  } }
-  @UI.dataPoint.title: 'Delivery Document'
   DeliveryDocument;
 
   @UI: { lineItem: [ { position : 30, importance : #MEDIUM } ],
    textArrangement: #TEXT_ONLY }
-  @UI.dataPoint.title: 'Delivery Document Type'
   @Search.defaultSearchElement: true
   @ Search.fuzzinessThreshold: 0.8
   DeliveryDocumentType;
 
-  @UI: { lineItem: [ { position : 100,  label : 'Document Status', importance : #HIGH, criticality: 'Criticality' },
-                     { type: #FOR_ACTION, dataAction: 'SendDocument', label: 'Send Document' },
-                     { type: #FOR_ACTION, dataAction: 'UpdateStatus', label: 'Update Status' } ],
+  @UI: { lineItem: [ { position : 100,  label : 'Estado Documento', importance : #HIGH, criticality: 'Criticality' },
+                     { type: #FOR_ACTION, dataAction: 'SendDocument', label: 'Enviar Documento' },
+                     { type: #FOR_ACTION, dataAction: 'UpdateStatus', label: 'Actualizar Estado' } ],
    selectionField: [ { position : 60 } ],
-   identification: [ { type: #FOR_ACTION, dataAction: 'SendDocument', label: 'Send Document' },
-                     { type: #FOR_ACTION, dataAction: 'UpdateStatus', label: 'Update Status' } ] }
+   identification: [ { type: #FOR_ACTION, dataAction: 'SendDocument', label: 'Enviar Documento' },
+                     { type: #FOR_ACTION, dataAction: 'UpdateStatus', label: 'Actualizar Estado' } ] }
   
   @UI.textArrangement: #TEXT_ONLY
-  @UI: { dataPoint: { title: 'Document Status',  criticality : 'Criticality', criticalityRepresentation: #WITH_ICON } }
+  @UI: { dataPoint: { title: 'Estado Documento',  criticality : 'Criticality', criticalityRepresentation: #WITH_ICON } }
   @Search.defaultSearchElement: true
   @Search.fuzzinessThreshold: 0.8
   DocumentStatus;
   
-  @UI: { lineItem: [ { position : 140, label : 'Document Type', importance : #MEDIUM } ],
-   identification: [ { position : 10,  label : 'Document Type' } ],
+  @UI: { lineItem: [ { position : 140, label : 'Tipo Documento', importance : #MEDIUM } ],
+   identification: [ { position : 10,  label : 'Tipo Documento' } ],
    textArrangement: #TEXT_ONLY }
   @Search.defaultSearchElement: true
   @Search.fuzzinessThreshold: 0.8
@@ -66,53 +63,53 @@ annotate view ZCDS_P_DOC_SD_GUIA
   @UI: { identification: [ { position : 20 } ] }
   @Search.defaultSearchElement: true
   @Search.fuzzinessThreshold: 0.8
-  ShiptParty;
+  SoldToParty;
   
-  @UI: { lineItem: [ { position : 60, label : 'Establishment', importance : #HIGH } ],
-   identification: [ { position : 30, label : 'Establishment' } ],
+  @UI: { lineItem: [ { position : 60, label : 'Establecimiento', importance : #HIGH } ],
+   identification: [ { position : 30, label : 'Establecimiento' } ],
    selectionField: [ { position: 30 } ] }
   Establishment;
   
-  @UI: { lineItem: [ { position : 130, label : 'Accesskey', importance : #MEDIUM } ],
-   identification: [ { position : 40, label : 'Accesskey' } ] }
+  @UI: { lineItem: [ { position : 130, label : 'Clave Acceso', importance : #MEDIUM } ],
+   identification: [ { position : 40,  label : 'Clave Acceso' } ] }
   Accesskey;  
   
-  @UI: { lineItem: [ { position : 90, label : 'Issue Date', importance : #MEDIUM } ],
-   identification: [ { position : 50, label : 'Issue Date' } ] }
+  @UI: { lineItem: [ { position : 90, label : 'Fecha Emisión', importance : #MEDIUM } ],
+   identification: [ { position : 50, label : 'Fecha Emisión' } ] }
   IssueDate;
   
-  @UI: { identification: [ { position : 60, label : 'Type Id' } ] }
+  @UI: { identification: [ { position : 60, label : 'Tipo Identificación' } ] }
   TypeId;
   
-  @UI: { lineItem: [ { position : 70, label : 'Emission Point', importance : #HIGH } ],
-   identification: [ { position : 70, label : 'Emission Point' } ],
+  @UI: { lineItem: [ { position : 70, label : 'Punto Emisión', importance : #HIGH } ],
+   identification: [ { position : 70, label : 'Punto Emisión' } ],
    selectionField: [ { position: 40 } ] }
   EmissionPoint;
   
   @UI: { identification: [ { position : 80 } ] }
   CompleteDeliveryIsDefined;
 
-  @UI: { lineItem: [ { position : 110, label : 'Authorization Date', importance :  #MEDIUM } ],
-         identification: [ { position : 90, label : 'Authorization Date' } ] }
+  @UI: { lineItem: [ { position : 110, label : 'Fecha Autorización', importance :  #MEDIUM } ],
+   identification: [ { position :  90, label : 'Fecha Autorización' } ] }
   AuthorizationDate;
   
-  @UI: { identification: [ { position : 100, label : 'Id Number' } ] }
+  @UI: { identification: [ { position : 100, label : 'Número Identificación' } ] }
   IdNumber;
   
-  @UI: { lineItem: [ { position : 80, label : 'Sequential', importance : #HIGH } ],
-   identification: [ { position : 110,  label : 'Sequential' } ],
+  @UI: { lineItem: [ { position : 80,  label : 'Secuencial', importance : #HIGH } ],
+   identification: [ { position : 110, label : 'Secuencial' } ],
    selectionField: [ { position: 50 } ] }
   Sequential;
   
-  @UI: { identification: [ { position : 120,  label : 'Document Supplier' } ] }
+  @UI: { identification: [ { position : 120,  label : 'Documento Proveedor' } ] }
   DocumentSupplier;
   
-  @UI: { lineItem: [ { position : 120, label : 'Created By User', importance : #MEDIUM } ],
+  @UI: { lineItem: [ { position : 120, importance : #MEDIUM } ],
    textArrangement: #TEXT_ONLY }
   @UI.fieldGroup: [ { qualifier: 'Detail',position: 10 } ]
   CreatedByUser;
   
-  @UI: { lineItem: [ { position : 140, label : 'Sales Organization', importance : #MEDIUM } ],
+  @UI: { lineItem: [ { position : 140, importance : #MEDIUM } ],
    textArrangement: #TEXT_ONLY }
   @UI.fieldGroup: [ { qualifier: 'Detail',position: 20 } ]
   SalesOrganization;
@@ -120,18 +117,18 @@ annotate view ZCDS_P_DOC_SD_GUIA
    @UI.fieldGroup: [ { qualifier: 'Detail',position: 30 } ]
   DeliveryBlockReason;
   
-  @UI: { lineItem: [ { position : 150, label : 'Billing Document Date', importance : #MEDIUM } ] }
+  @UI: { lineItem: [ { position : 150, importance : #MEDIUM } ] }
   @UI.fieldGroup: [ { qualifier: 'Detail',position: 40 } ]
   BillingDocumentDate;
   
   @UI.fieldGroup: [ { qualifier: 'Detail',position: 50 } ]
   TotalNetAmount;
   
-  @UI: { lineItem: [ { position : 160, label : 'Delivery Date', importance : #HIGH } ] }
+  @UI: { lineItem: [ { position : 160, importance : #HIGH } ] }
   @UI.fieldGroup: [ { qualifier: 'Detail', label: 'Delivery Date', position: 60 } ]
   DeliveryDate;
   
-  @UI: { lineItem: [ { position : 130, label : 'Created Date', importance : #MEDIUM } ] }
+  @UI: { lineItem: [ { position : 130, importance : #MEDIUM } ] }
   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 70 } ]
   CreationDate;
   
@@ -145,7 +142,7 @@ annotate view ZCDS_P_DOC_SD_GUIA
   @UI.fieldGroup: [ { qualifier:'Attached',  label :'Xml', position: 10 } ]
   Xml;
   
-  @UI.fieldGroup: [ { qualifier: 'Log', label : 'Message Document', position: 10 } ]
+  @UI.fieldGroup: [ { qualifier: 'Log', label : 'Mensaje Documento', position: 10 } ]
   MessageDocument;
 
   @Search.defaultSearchElement: true

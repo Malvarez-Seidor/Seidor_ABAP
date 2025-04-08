@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Constantes",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "constants.eclocalizacion007"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_A1CA9E9093D04CA88EEB4699A49F40EE40B57802_TM",
+    "semanticObject": "ZCON_EC_007",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_A1CA9E9093D04CA88EEB4699A49F40EE40B57802_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Constantes",
+        "subtitle": "Configuracion de Constantes"
+      }
+    }
+  ]
+}

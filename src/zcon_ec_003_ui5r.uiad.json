@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Impuestos",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "typestaxes.eclocalizacion003"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_2712803654B73A41C8B474C0F812F95F57A01516_TM",
+    "semanticObject": "ZCON_EC_003",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_2712803654B73A41C8B474C0F812F95F57A01516_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Impuestos",
+        "subtitle": "Tipos de Impuestos"
+      }
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Reporte de Ventas",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "salesreport.eclocalizacion029"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_B0B8ED8DAF6209EA1B0EDC01531CB805B1C4B823_TM",
+    "semanticObject": "ZREP_EC_004",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_B0B8ED8DAF6209EA1B0EDC01531CB805B1C4B823_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Reporte de Ventas",
+        "subtitle": "Detalles de Ventas"
+      }
+    }
+  ]
+}

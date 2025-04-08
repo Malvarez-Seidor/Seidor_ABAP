@@ -11,10 +11,10 @@
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
     <DDTEXT>Type of identification</DDTEXT>
-    <REPTEXT>Type of identification</REPTEXT>
-    <SCRTEXT_S>Type Id</SCRTEXT_S>
-    <SCRTEXT_M>Type identification</SCRTEXT_M>
-    <SCRTEXT_L>Type of identification</SCRTEXT_L>
+    <REPTEXT>Tipo de Identificación SRI</REPTEXT>
+    <SCRTEXT_S>Tipo Id.</SCRTEXT_S>
+    <SCRTEXT_M>Tipo Identificación</SCRTEXT_M>
+    <SCRTEXT_L>Tipo de Identificación</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
     <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>

@@ -1,0 +1,34 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'Código de Repote', typeNamePlural : 'Códigos de Reportes',
+            title : { type :#STANDARD, value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+
+annotate entity ZCDS_P_EC_018
+    with 
+{
+ 
+  @UI.facet: [{ id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE } ]
+              
+  @UI: { lineItem: [ { position : 10, importance : #HIGH } ],
+   identification: [ { position : 10 } ],
+   selectionField: [ { position : 10 } ] }
+ CompanyCode;
+ 
+ @UI: { lineItem: [ { position : 20, importance : #HIGH } ],
+  identification: [ { position : 20 } ],
+  selectionField: [ { position : 20 } ] }
+ Report;
+ 
+ @UI: { lineItem: [ { position : 30, importance : #HIGH } ],
+  identification: [ { position : 30 } ],
+  selectionField: [ { position : 30 } ] }
+ TypeCode;
+ 
+ @UI: { lineItem: [ { position : 40, importance : #HIGH } ],
+  identification: [ { position : 40 } ] }
+ Code;
+ 
+ @UI: { lineItem: [ { position : 50, label: 'Descripción', importance : #HIGH } ],
+  identification: [ { position : 50, label: 'Descripción' } ] }
+ Description;
+ 
+}

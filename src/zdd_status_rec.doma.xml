@@ -18,14 +18,14 @@
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>01</DOMVALUE_L>
-     <DDTEXT>Pending</DDTEXT>
+     <DDTEXT>Pendiente</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_STATUS_REC</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>02</DOMVALUE_L>
-     <DDTEXT>Process</DDTEXT>
+     <DDTEXT>Procesado</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_STATUS_REC</DOMNAME>
@@ -39,7 +39,7 @@
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>04</DOMVALUE_L>
-     <DDTEXT>Canceled</DDTEXT>
+     <DDTEXT>Cancelado</DDTEXT>
     </DD07V>
    </DD07V_TAB>
   </asx:values>

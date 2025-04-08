@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Documentos de Sustentos",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "supportingdocuments.eclocalizacion031"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_7534E4BEE6D23B25D12362267AAD2AA70D204553_TM",
+    "semanticObject": "ZCON_EC_031",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_7534E4BEE6D23B25D12362267AAD2AA70D204553_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Documentos de Sustentos",
+        "subtitle": "Configuración Tipos Documentos"
+      }
+    }
+  ]
+}

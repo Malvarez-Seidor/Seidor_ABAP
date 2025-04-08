@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Configuracion Retenciones",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "officialwithholdingkey.eclocalizacion014"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_716DE26E61E7A329AB09ECB6C157FC4282E6A750_TM",
+    "semanticObject": "ZCON_EC_014",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_716DE26E61E7A329AB09ECB6C157FC4282E6A750_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Configuracion Retenciones",
+        "subtitle": "Clave Oficial de Retenciones"
+      }
+    }
+  ]
+}

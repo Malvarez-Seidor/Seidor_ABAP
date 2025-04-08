@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Reporte Anexo Transaccional",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "reporttransactionalannex.eclocalizacion030"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_3977235F25FD8D1CF745BBFB631F817F1AD1D955_TM",
+    "semanticObject": "ZREP_EC_005",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_3977235F25FD8D1CF745BBFB631F817F1AD1D955_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Reporte Anexo Transaccional",
+        "subtitle": "Anexo Transaccional Simplificado"
+      }
+    }
+  ]
+}

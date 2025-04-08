@@ -1,7 +1,6 @@
 @AbapCatalog.sqlViewName: 'ZCDS_RV_EMI_RET'
 @AbapCatalog.compiler.compareFilter: true
-@AbapCatalog.preserveKey: true
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Emision de Retenciones - View'
 @Metadata.ignorePropagatedAnnotations: true
 @Metadata.allowExtensions: true
@@ -13,10 +12,15 @@ define view ZCDS_P_EMI_RET
                                                           and ( ElectronicDocuments.documentsri          = '03' 
                                                              or ElectronicDocuments.documentsri          = '07' )
                                                              
-    left outer join zdt_fi_doc_ret as Withholdings        on  Withholdings.accountingdocument            = I_JournalEntry.AccountingDocument
+    left outer join zdt_fi_doc_ret as Withholdings        on  Withholdings.companycode                   = I_JournalEntry.CompanyCode
+                                                          and Withholdings.accountingdocument            = I_JournalEntry.AccountingDocument
                                                           and Withholdings.accountingdocumenttype        = I_JournalEntry.AccountingDocumentType
-    left outer join zdt_fi_doc_liq as LiquidationPurchase on  LiquidationPurchase.accountingdocument     = I_JournalEntry.AccountingDocument
+                                                          and Withholdings.fiscalyear                    = I_JournalEntry.FiscalYear
+                                                          
+    left outer join zdt_fi_doc_liq as LiquidationPurchase on  LiquidationPurchase.companycode            = I_JournalEntry.CompanyCode
+                                                          and LiquidationPurchase.accountingdocument     = I_JournalEntry.AccountingDocument
                                                           and LiquidationPurchase.accountingdocumenttype = I_JournalEntry.AccountingDocumentType
+                                                          and LiquidationPurchase.fiscalyear             = I_JournalEntry.FiscalYear
 
 {
 
@@ -36,7 +40,7 @@ define view ZCDS_P_EMI_RET
       and ElectronicDocuments.documentsri = '03'
       then 'PENDING'
     when ElectronicDocuments.documentsri = '03'
-      then 'ERROR'
+      then 'CANCELED'
     when ElectronicDocuments.documentsri = '07'
       then 'PENDING'
     else ''

@@ -1,10 +1,11 @@
 //@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Invoice Documents - Roow View Interface'
 
-
 define root view entity ZCDS_RV_DOC_FAC
   as select from    I_BillingDocumentBasic
     left outer join zdt_sd_doc_fac            as InvoiceDocuments          on  InvoiceDocuments.billingdocument  = I_BillingDocumentBasic.BillingDocument
+                                                                          and  InvoiceDocuments.companycode      = I_BillingDocumentBasic.CompanyCode
+                                                                          and  InvoiceDocuments.fiscalyear       = I_BillingDocumentBasic.FiscalYear
     inner join      zdt_ec_001                as ElectronicDocuments       on  ElectronicDocuments.companycode   = I_BillingDocumentBasic.CompanyCode
                                                                           and  ElectronicDocuments.documenttype  = I_BillingDocumentBasic.BillingDocumentType
                                                                           and  ElectronicDocuments.documentsri   = '01'
@@ -15,61 +16,38 @@ define root view entity ZCDS_RV_DOC_FAC
     inner join      I_BusinessPartner         as I_BusinessPartner         on  I_BusinessPartner.BusinessPartner = I_BillingDocumentBasic.SoldToParty
     inner join      I_BusinessUserVH          as I_BusinessUser            on  I_BusinessUser.UserID             = I_BillingDocumentBasic.CreatedByUser
     inner join      I_CompanyCode             as I_Company                 on  I_Company.CompanyCode             = I_BillingDocumentBasic.CompanyCode
+                                                                          and  I_Company.Language                = $session.system_language
     inner join      I_BillingDocumentTypeText as I_BillingDocumentTypeText on  I_BillingDocumentTypeText.BillingDocumentType = I_BillingDocumentBasic.BillingDocumentType
                                                                           and  I_BillingDocumentTypeText.Language            = $session.system_language
     inner join      I_SalesOrganizationText   as I_SalesOrganizationText   on  I_SalesOrganizationText.SalesOrganization     = I_BillingDocumentBasic.SalesOrganization
                                                                           and  I_SalesOrganizationText.Language              = $session.system_language
-    inner join      I_AccountingDocumentTypeText as I_AccountingDocumentTypeText on I_AccountingDocumentTypeText.AccountingDocumentType = I_JournalEntry.AccountingDocumentType
-                                                                                and I_AccountingDocumentTypeText.Language         = $session.system_language
     inner join      I_DistributionChannelText as I_DistributionChannel     on I_DistributionChannel.DistributionChannel = I_BillingDocumentBasic.DistributionChannel
                                                                           and I_DistributionChannel.Language            = $session.system_language
     left outer join ZSH_STATUS                as I_Status                  on I_Status.value_low =   InvoiceDocuments.documentstatus
+    
+    left outer join ZSH_STATUS                as I_StatusPending           on I_StatusPending.value_low = 'PENDING'
+    
+    association [1..1] to I_AccountingDocumentTypeText as _AccountingDocumentTypeText on _AccountingDocumentTypeText.AccountingDocumentType = I_JournalEntry.AccountingDocumentType
+                                                                                     and _AccountingDocumentTypeText.Language         = $session.system_language
 {
     
-  key
-        case
-            when InvoiceDocuments.companycode is not initial
-            then InvoiceDocuments.companycode
-          else   I_BillingDocumentBasic.CompanyCode
-          end                             as Companycode,
+  key I_BillingDocumentBasic.CompanyCode as CompanyCode,
 
-  key
-        case
-            when InvoiceDocuments.fiscalyear is not initial
-            then InvoiceDocuments.fiscalyear
-          else   I_BillingDocumentBasic.FiscalYear
-          end                             as Fiscalyear,
+  key I_BillingDocumentBasic.FiscalYear as FiscalYear,
 
-  key   case
-        when InvoiceDocuments.accountingdocument is not initial
-        then InvoiceDocuments.accountingdocument
-      else   I_BillingDocumentBasic.AccountingDocument
-      end                                 as Accountingdocument,
-
-
-  key   case
-        when InvoiceDocuments.accountingdocumenttype is not initial
+  key I_BillingDocumentBasic.AccountingDocument as AccountingDocument,
+      
+  key case
+        when InvoiceDocuments.accountingdocumenttype is not initial 
         then InvoiceDocuments.accountingdocumenttype
-      else   I_JournalEntry.AccountingDocumentType
-      end                                 as Accountingdocumenttype,
+        else I_JournalEntry.AccountingDocumentType 
+        end as AccountingDocumentType,
+        
+  key I_BillingDocumentBasic.BillingDocument  as BillingDocument,
 
-  key   case
-        when InvoiceDocuments.billingdocument is not initial
-        then InvoiceDocuments.billingdocument
-      else   I_BillingDocumentBasic.BillingDocument
-      end                                 as BillingDocument,
-
-        case
-            when InvoiceDocuments.billingdocumenttype is not initial
-            then InvoiceDocuments.billingdocumenttype
-          else   I_BillingDocumentBasic.BillingDocumentType
-          end                             as Billingdocumenttype,
-
-        case
-           when InvoiceDocuments.soldtoparty is not initial
-           then InvoiceDocuments.soldtoparty
-         else   I_BillingDocumentBasic.SoldToParty
-         end                              as Soldtoparty,
+  key I_BillingDocumentBasic.BillingDocumentType as BillingDocumentType,
+      
+      I_BillingDocumentBasic.SoldToParty as SoldToParty,
 
         case
             when InvoiceDocuments.businessname is not initial
@@ -165,8 +143,13 @@ define root view entity ZCDS_RV_DOC_FAC
         I_DistributionChannel.DistributionChannelName,
         
         @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 }
-        I_AccountingDocumentTypeText.AccountingDocumentTypeName,
+        _AccountingDocumentTypeText.AccountingDocumentTypeName,
         
         @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 }
-        I_Status.Description
-}
+        case
+         when I_Status.Description is not initial
+         then I_Status.Description
+         else I_StatusPending.Description
+         end as Description
+        
+} where I_BillingDocumentBasic.YY1_DOCUMENTOELECTRONI_BDH is initial

@@ -1,8 +1,8 @@
 @Metadata.layer: #CORE
 
-@UI :{ headerInfo : { typeName          : 'Transport Data',
-                      typeNamePlural    : 'Transports Data',
-                      title             : { type :#STANDARD, label : 'Material Document', value : 'MaterialDocument' },
+@UI :{ headerInfo : { typeName          : 'Dato de Transporte',
+                      typeNamePlural    : 'Datos de Transporte',
+                      title             : { type :#STANDARD, value : 'MaterialDocument' },
                       description       : { type :#STANDARD, value : 'MaterialDocumentYear' } },
                       
  presentationVariant: [ { sortOrder: [ { by: 'CarrierId', direction:  #ASC } ],
@@ -14,44 +14,44 @@ annotate entity ZCDS_P_EC_011
 
   @UI.facet: [ { id : 'MaterialDocument', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Material Document', position: 10 } ]
               
-  @UI: { identification: [ {  position : 10, label : 'Company Code' } ] }
+  @UI: { identification: [ {  position : 10 } ] }
   @UI.hidden: true
   CompanyCode;
   
-  @UI: { identification: [ {  position : 20, label : 'Document Year' } ] }
+  @UI: { identification: [ {  position : 20 } ] }
   @UI.hidden: true
   MaterialDocumentYear;
   
-  @UI: { identification: [ {  position : 30, label : 'Material Document' } ] }
+  @UI: { identification: [ {  position : 30 } ] }
   @UI.hidden: true
   MaterialDocument;
   
-  @UI: { identification: [ {  position : 40, label : 'Goods Movement Type' } ] }
+  @UI: { identification: [ {  position : 40 } ] }
   @UI.hidden: true
   GoodsMovementType;
   
-  @UI: { lineItem: [ { position : 10, label : 'Carrier Id', importance :  #HIGH } ],
-   identification: [ { position : 50, label : 'Carrier Id' } ] }
+  @UI: { lineItem: [ { position : 10, label : 'Identificación Transportista', importance :  #HIGH } ],
+   identification: [ { position : 50, label : 'Identificación Transportista' } ] }
   CarrierId;
   
-  @UI: { lineItem: [ { position : 20, label : 'Type Id', importance :  #HIGH } ],
-   identification: [ { position : 60, label : 'Type Id' } ] }
+  @UI: { lineItem: [ { position : 20, label : 'Tipo Identificación', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'Tipo Identificación' } ] }
   TypeId;
     
-  @UI: { lineItem: [ { position : 30, label : 'Business Name', importance :  #HIGH } ],
-   identification: [ { position : 70, label : 'Business Name' } ] }
+  @UI: { lineItem: [ { position : 30, label : 'Nombre Transportista', importance :  #HIGH } ],
+   identification: [ { position : 70, label : 'Nombre Transportista' } ] }
   BusinessName;
     
-  @UI: { lineItem: [ { position : 40, label : 'Car Plate', importance :  #HIGH } ],
-   identification: [ { position : 80, label : 'Car Plate' } ] }
+  @UI: { lineItem: [ { position : 40, label : 'Placa', importance :  #HIGH } ],
+   identification: [ { position : 80, label : 'Placa' } ] }
   CarPlate;
   
-  @UI: { lineItem: [ { position : 50, label : 'Start Date', importance :  #HIGH  } ],
-   identification: [ { position : 90, label : 'Start Date' }] }
+  @UI: { lineItem: [ { position : 50, label : 'Fecha Inicio', importance :  #HIGH  } ],
+   identification: [ { position : 90, label : 'Fecha Inicio' }] }
   StartDate;
   
-  @UI: { lineItem: [ { position : 60,  label : 'End Date', importance :  #HIGH } ],
-   identification: [ { position : 100, label : 'End Date' } ] }    
+  @UI: { lineItem: [ { position : 60,  label : 'Fecha Fin', importance :  #HIGH } ],
+   identification: [ { position : 100, label : 'Fecha Fin' } ] }    
   EndDate;
        
 }

@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Reporte 103",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "report103.eclocalizacion026"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_AEB73474F640DEB3438D73091201E8C743A616CB_TM",
+    "semanticObject": "ZREP_EC_001",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_AEB73474F640DEB3438D73091201E8C743A616CB_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Reporte 103",
+        "subtitle": "Retenciones en la Fuente del Impuesto"
+      }
+    }
+  ]
+}

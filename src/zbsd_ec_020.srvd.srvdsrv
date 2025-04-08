@@ -1,0 +1,4 @@
+@EndUserText.label: 'Report Configuration 104'
+define service ZBSD_EC_020 {
+  expose ZCDS_P_EC_020 as ConfigReport104;
+}

@@ -1,10 +1,11 @@
-managed implementation in class zbp_cds_rv_doc_fac unique;
-//strict ( 2 );
+unmanaged implementation in class zbp_cds_rv_doc_fac unique;
+strict;
 
 define behavior for ZCDS_RV_DOC_FAC alias InvoiceDocuments
-persistent table zdt_sd_doc_fac
+//persistent table zdt_sd_doc_fac
+//with unmanaged save
 lock master
-//authorization master ( instance )
+authorization master ( global, instance )
 //etag master Billingdocument
 
 {
@@ -14,7 +15,37 @@ lock master
   delete;
 
   // instance action and dynamic action control
-  action ( features : instance ) SendDocument result [1] $self;
-  action ( features : instance ) UpdateStatus result [1] $self;
+  action (  authorization : update, features : instance ) SendDocument result [1] $self;
+  action (  authorization : update, features : instance ) UpdateStatus result [1] $self;
+
+  field ( readonly:update ) Companycode, Fiscalyear, BillingDocument, BillingDocumentType, Accountingdocument, Accountingdocumenttype;
+
+  mapping for zdt_sd_doc_fac{
+
+  CompanyCode            = CompanyCode;
+  FiscalYear             = FiscalYear;
+  AccountingDocument     = AccountingDocument;
+  AccountingDocumentType = AccountingDocumentType;
+  BillingDocument        = BillingDocument;
+  BillingDocumentType    = BillingDocumentType;
+  SoldToParty            = SoldToParty;
+  BusinessName           = BusinessName;
+  TypeId                 = TypeId;
+  IdNumber               = IdNumber;
+  Establishment          = Establishment;
+  emissionpoint          = EmissionPoint;
+  Sequential             = Sequential;
+  Accesskey              = Accesskey;
+  DocumentType           = DocumentType;
+  IssueDate              = IssueDate;
+  DocumentStatus         = DocumentStatus;
+  MessageDocument        = MessageDocument;
+  AuthorizationDate      = AuthorizationDate;
+  Xml                    = Xml;
+  MimeType               = MimeType;
+  FileName               = FileName;
+  DocumentSupplier       = DocumentSupplier;
+
+  }
 
 }

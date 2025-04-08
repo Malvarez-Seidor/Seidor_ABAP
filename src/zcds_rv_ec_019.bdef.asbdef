@@ -1,0 +1,15 @@
+managed implementation in class zbp_cds_rv_ec_019 unique;
+strict ( 2 );
+
+define behavior for ZCDS_RV_EC_019 alias ConfigReport103
+persistent table zdt_ec_019
+lock master
+authorization master ( global, instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+  field ( readonly: update ) CompanyCode, WithholdingTaxType, WithholdingTaxCode, CodeReport;
+
+}

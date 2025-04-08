@@ -15,6 +15,7 @@ define view entity ZSH_DOC_NDD
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #HIGH
+      @UI: { lineItem: [ { label : 'Secuencial' } ] }
   key sequential   as Sequential,
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
@@ -23,6 +24,7 @@ define view entity ZSH_DOC_NDD
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #LOW
+      @UI: { lineItem: [ { label : 'Documento SRI' } ] }
       documenttype as Documenttype
 
 }

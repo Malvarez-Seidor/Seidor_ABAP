@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Códigos de Reportes",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "codereports.eclocalizacion022"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_83A586B175E80C97F8E7FD3659A5DFB2AF272BC0_TM",
+    "semanticObject": "ZCON_EC_018",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_83A586B175E80C97F8E7FD3659A5DFB2AF272BC0_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Códigos de Reportes",
+        "subtitle": "Configuración de Códigos"
+      }
+    }
+  ]
+}

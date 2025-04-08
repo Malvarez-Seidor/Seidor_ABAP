@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Condiciones",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "typecondition.eclocalizacion005"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_939A8FAC690E49F89CFBD3AA59C2CD9A0007E905_TM",
+    "semanticObject": "ZCON_EC_005",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_939A8FAC690E49F89CFBD3AA59C2CD9A0007E905_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Condiciones",
+        "subtitle": "Tipos de Condiciones"
+      }
+    }
+  ]
+}

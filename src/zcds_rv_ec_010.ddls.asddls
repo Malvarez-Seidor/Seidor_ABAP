@@ -1,12 +1,13 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Carrier Data' // Roow View Interface'
 define view entity ZCDS_RV_EC_010
   as select from zdt_ec_010
-  association to parent ZCDS_RV_DOC_SD_GUIA as _TransportGuides on $projection.Companycode          = _TransportGuides.Companycode
-                                                               and $projection.Deliverydocument     = _TransportGuides.Deliverydocument
-                                                               and $projection.Fiscalyear           = _TransportGuides.Fiscalyear
-                                                               and $projection.Deliverydocumenttype = _TransportGuides.Deliverydocumenttype
+  association to parent ZCDS_RV_DOC_SD_GUIA as _TransportGuides on $projection.Companycode          = _TransportGuides.CompanyCode
+                                                               and $projection.Deliverydocument     = _TransportGuides.DeliveryDocument
+                                                               and $projection.Fiscalyear           = _TransportGuides.FiscalYear
+                                                               and $projection.Deliverydocumenttype = _TransportGuides.DeliveryDocumentType
 {
+
   key companycode          as Companycode,
   key fiscalyear           as Fiscalyear,
   key deliverydocument     as Deliverydocument,

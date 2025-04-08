@@ -1,58 +1,138 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Download Electronic Documents - Roow View Interface'
+@EndUserText.label: 'Download Electronic Documents' // Roow View Interface'
 @Metadata.ignorePropagatedAnnotations: true
+
 define root view entity ZCDS_RV_EC_015
-  as select from zdt_ec_015
-  composition [0..*] of ZCDS_RV_EC_016 as _Withholdings
-  composition [0..*] of ZCDS_RV_EC_017 as _PurchaseOrders
+  as select from zdt_ec_015 as ReceptionDocument
+  inner join   I_CompanyCode             as I_Company           on  I_Company.CompanyCode             = ReceptionDocument.companycode
+  
+  left outer join  I_Businesspartnertaxnumber as I_customerid   on  I_customerid.BPTaxLongNumber      = ReceptionDocument.customerid
+                                                                or  I_customerid.BPTaxNumber          = ReceptionDocument.customerid
+                                                                
+  left outer join  I_Businesspartnertaxnumber as I_supplierid   on  I_supplierid.BPTaxLongNumber      = ReceptionDocument.supplierid
+                                                                or  I_supplierid.BPTaxNumber          = ReceptionDocument.supplierid
+                                                                
+  association [0..*] to ZSH_STATUS_REC   as I_StatusReception   on  I_StatusReception.value_low       = ReceptionDocument.documentstatus
+                                                               and  I_StatusReception.language        = $session.system_language
+  
+  composition [0..*] of ZCDS_RV_EC_016   as _Withholdings
+  composition [0..*] of ZCDS_RV_EC_017   as _PurchaseOrders
+  
 {
-  key companycode          as Companycode,
-  key documentsri          as Documentsri,
-  key accesskey            as Accesskey,
-  key documentsupplier     as Documentsupplier,
-      environment          as Environment,
-      establishment        as Establishment,
-      emissionpoint        as Emissionpoint,
-      sequential           as Sequential,
-      supplierid           as Supplierid,
-      suppliername         as Suppliername,
-      companyname          as Companyname,
+  key ReceptionDocument.companycode          as Companycode,
+  key ReceptionDocument.documentsri          as Documentsri,
+  key ReceptionDocument.accesskey            as Accesskey,
+  key ReceptionDocument.documentsupplier     as Documentsupplier,
+      ReceptionDocument.environment          as Environment,
+      ReceptionDocument.establishment        as Establishment,
+      ReceptionDocument.emissionpoint        as Emissionpoint,
+      ReceptionDocument.sequential           as Sequential,
+      
+        
+      ReceptionDocument.supplierid           as Supplierid,
+      ReceptionDocument.suppliername         as Suppliername,
+      ReceptionDocument.companyname          as Companyname,
       @Semantics.amount.currencyCode: 'Currency'
-      iceamount            as Iceamount,
+      ReceptionDocument.iceamount            as Iceamount,
       @Semantics.amount.currencyCode: 'Currency'
-      taxamount            as Taxamount,
+      ReceptionDocument.taxamount            as Taxamount,
       @Semantics.amount.currencyCode: 'Currency'
-      discountamount       as Discountamount,
+      ReceptionDocument.discountamount       as Discountamount,
       @Semantics.amount.currencyCode: 'Currency'
-      subtotalamount       as Subtotalamount,
+      ReceptionDocument.subtotalamount       as Subtotalamount,
       @Semantics.amount.currencyCode: 'Currency'
-      totalamount          as Totalamount,
-      currency             as Currency,
-      customerid           as Customerid,
-      customername         as Customername,
-      purchasingdocument   as Purchasingdocument,
-      supplierinvoice      as Supplierinvoice,
-      fiscalyear           as Fiscalyear,
-      accountingdocument   as Accountingdocument,
-      accountingfiscalyear as Accountingfiscalyear,
-      supplier             as Supplier,
-      customer             as Customer,
-      creationdate         as Creationdate,
-      creationtime         as Creationtime,
-      rejectiondate        as Rejectiondate,
-      rejectiontime        as Rejectiontime,
-      issuedate            as Issuedate,
-      issuetime            as Issuetime,
-      authorizationdate    as Authorizationdate,
-      authorizationtime    as Authorizationtime,
-      documentstatus       as Documentstatus,
-      receptionstatus      as Receptionstatus,
-      typesupport          as Typesupport,
-      reason               as Reason,
-      message              as Message,
-      supportdocumenttype  as Supportdocumenttype,
-      supportdocument      as Supportdocument,
-      supportdocumentdate  as Supportdocumentdate,
+      ReceptionDocument.totalamount          as Totalamount,
+      ReceptionDocument.currency             as Currency,
+      ReceptionDocument.customerid           as Customerid,
+      ReceptionDocument.customername         as Customername,
+      ReceptionDocument.purchasingdocument   as Purchasingdocument,
+      ReceptionDocument.supplierinvoice      as Supplierinvoice,
+      ReceptionDocument.fiscalyear           as Fiscalyear,
+      ReceptionDocument.accountingdocument   as Accountingdocument,
+      ReceptionDocument.accountingfiscalyear as Accountingfiscalyear,
+      
+      case 
+        when ReceptionDocument.documentsri = '01' and 
+             ReceptionDocument.supplier is not initial 
+        then ReceptionDocument.supplier  
+        
+        when ReceptionDocument.documentsri = '01' and 
+             I_supplierid.BusinessPartner is not initial 
+        then I_supplierid.BusinessPartner
+        
+        when ReceptionDocument.documentsri = '04' and 
+             ReceptionDocument.supplier is not initial 
+        then ReceptionDocument.supplier
+        
+        when ReceptionDocument.documentsri = '04' and 
+             I_supplierid.BusinessPartner is not initial 
+        then I_supplierid.BusinessPartner
+        
+        when ReceptionDocument.documentsri = '05' and 
+             ReceptionDocument.supplier is not initial 
+        then ReceptionDocument.supplier
+        
+        when ReceptionDocument.documentsri = '05' and 
+             I_supplierid.BusinessPartner is not initial 
+        then I_supplierid.BusinessPartner
+        
+        else ''
+        end                            as Supplier,
+      
+      case 
+        when ReceptionDocument.documentsri = '03' and 
+             ReceptionDocument.customer is not initial 
+        then ReceptionDocument.customer  
+        
+        when ReceptionDocument.documentsri = '03' and 
+             I_supplierid.BusinessPartner is not initial 
+        then I_supplierid.BusinessPartner
+        
+        when ReceptionDocument.documentsri = '07' and 
+             ReceptionDocument.customer is not initial 
+        then ReceptionDocument.customer
+        
+        when ReceptionDocument.documentsri = '07' and 
+             I_supplierid.BusinessPartner is not initial 
+        then I_supplierid.BusinessPartner
+        
+        else ''
+        end                            as Customer,
+        
+      ReceptionDocument.creationdate         as Creationdate,
+      ReceptionDocument.creationtime         as Creationtime,
+      ReceptionDocument.rejectiondate        as Rejectiondate,
+      ReceptionDocument.rejectiontime        as Rejectiontime,
+      ReceptionDocument.issuedate            as Issuedate,
+      ReceptionDocument.issuetime            as Issuetime,
+      ReceptionDocument.authorizationdate    as Authorizationdate,
+      ReceptionDocument.authorizationtime    as Authorizationtime,
+      
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 } 
+      ReceptionDocument.documentstatus       as Documentstatus,
+      
+      case ReceptionDocument.documentstatus
+        when '01'    then 0
+        when '02'    then 3
+        when '03'    then 1
+        when '04'    then 2
+        else 0
+        end                            as criticality,
+           
+      ReceptionDocument.receptionstatus      as Receptionstatus,
+      ReceptionDocument.typesupport          as Typesupport,
+      ReceptionDocument.reason               as Reason,
+      ReceptionDocument.message              as Message,
+      ReceptionDocument.supportdocumenttype  as Supportdocumenttype,
+      ReceptionDocument.supportdocument      as Supportdocument,
+      ReceptionDocument.supportdocumentdate  as Supportdocumentdate,
+      
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 } 
+      I_Company.CompanyCodeName,
+      
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 } 
+      I_StatusReception.Description          as Description,
+      
       _Withholdings,
       _PurchaseOrders
 }

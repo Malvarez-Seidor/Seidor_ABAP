@@ -1,5 +1,5 @@
 @EndUserText.label: 'Transfer Guides - Projection View'
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 //@Search.searchable: true
 @Metadata.ignorePropagatedAnnotations: true
 @Metadata.allowExtensions: true
@@ -10,6 +10,7 @@
 }
 
 define root view entity ZCDS_P_DOC_MM_GUIA
+  provider contract transactional_query
   as projection on ZCDS_RV_DOC_MM_GUIA
 {
 
@@ -17,14 +18,14 @@ define root view entity ZCDS_P_DOC_MM_GUIA
       @ObjectModel.text.element: [ 'CompanyCodeName' ]
       @Consumption.valueHelpDefinition: [ { entity:  { name: 'I_CompanyCodeVH', element: 'CompanyCode' },
                      additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' } ] } ]
-  key Companycode                as CompanyCode,
+  key CompanyCode                as CompanyCode,
 
       @Semantics.fiscal.year: true
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_Documentyear' , element: 'MaterialDocumentYear' }, distinctValues: true } ]
-  key MaterialDocumentyear       as MaterialDocumentYear,
+  key MaterialDocumentYear       as MaterialDocumentYear,
 
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_Materialdocument' , element: 'MaterialDocument' }, distinctValues: true } ]
-  key Materialdocument           as MaterialDocument,
+  key MaterialDocument           as MaterialDocument,
       
       @ObjectModel.text.element: [ 'GoodsMovementTypeName' ]
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_GoodsMovementTypeT' , element: 'GoodsMovementType' },
@@ -67,13 +68,13 @@ define root view entity ZCDS_P_DOC_MM_GUIA
       
       Documentsupplier           as DocumentSupplier,
       
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_MaterialDocumentTP' , element: 'DocumentDate' }, distinctValues: true } ]
+//      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_MaterialDocumentTP' , element: 'DocumentDate' }, distinctValues: true } ]
       DocumentDate               as DocumentDate,
       
       @ObjectModel.text.element: [ 'PlantName' ]
       Plant                      as Plant,
       
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_MaterialDocumentTP' , element: 'PostingDate' }, distinctValues: true } ]
+//      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_MaterialDocumentTP' , element: 'PostingDate' }, distinctValues: true } ]
       PostingDate                as PostingDate,
       
       GoodsMovementIsCancelled   as GoodsMovementIsCancelled,

@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Electronic Documents' // Roow View Interface
 define root view entity ZCDS_RV_EC_001
   as select from zdt_ec_001 as ElectronicDocuments

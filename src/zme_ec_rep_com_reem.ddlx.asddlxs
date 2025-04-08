@@ -1,0 +1,106 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Detalle de Soporte',
+                      typeNamePlural    : 'Detalles de Soporte',
+                      title             : { type :#STANDARD, value : 'AccountingDocument' },
+                      description       : { type :#STANDARD, value : 'Draftuuid' } },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'Draftuuid', direction:  #ASC } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+                     
+annotate entity ZCDS_VC_DET_REEM
+    with 
+{   
+
+  @UI.facet: [ { id : 'Detail', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Detalles', position: 10 } ]
+              
+  @UI: { identification: [ {  position : 10 } ] }
+  @UI.hidden: true
+  Companycode;
+  
+  @UI: { identification: [ {  position : 20 } ] }
+  @UI.hidden: true
+  Fiscalyear;
+  
+  @UI: { identification: [ {  position : 30 } ] }
+  @UI.hidden: true
+  Accountingdocument;
+  
+  @UI: { identification: [ {  position : 40 } ] }
+  @UI.hidden: true
+  Accountingdocumenttype;
+  
+  @UI: { lineItem: [ { position : 10, label : 'Posición', importance :  #HIGH },
+                     { type: #FOR_ACTION, dataAction: 'createSES', label: 'Carga' } ],                  
+   identification: [ { position : 50, label : 'Posición' } ] }
+  Draftuuid;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Tipo Identificación', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'Tipo Identificación' } ] }
+  Typeid;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Número Identificación', importance :  #HIGH } ],
+   identification: [ { position : 60, label : 'Número Identificación' } ] }
+  Idnumber;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Tipo Documento', importance :  #HIGH } ],
+   identification: [ { position : 70, label : 'Tipo Documento' } ] }
+  Documenttype;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Establecimiento', importance :  #HIGH } ],
+   identification: [ { position : 80, label : 'Establecimiento' } ] }
+  Establishment;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Punto Emisión', importance :  #HIGH  } ],
+   identification: [ { position : 90, label : 'Punto Emisión' }] }
+  Emissionpoint;
+  
+  @UI: { lineItem: [ { position : 70,  label : 'Secuencial', importance :  #HIGH } ],
+   identification: [ { position : 100, label : 'Secuencial' } ] }
+  Sequential;
+  
+  @UI: { lineItem: [ { position : 80,  label : 'Clave Acceso', importance :  #LOW } ],
+   identification: [ { position : 110, label : 'Clave Acceso' } ] }
+  Accesskey;
+  
+  @UI: { lineItem: [ { position : 90,  label : 'Fecha Emisión', importance :  #MEDIUM } ],
+   identification: [ { position : 120, label : 'Fecha Emisión' } ] }
+  Issuedate;
+  
+  @UI: { lineItem: [ { position : 100, importance :  #LOW } ],
+   identification: [ { position : 130 } ] }
+  Taxcode;
+  
+  @UI: { lineItem: [ { position : 110, label : 'Base Imp.', importance :  #MEDIUM } ],
+   identification: [ { position : 140, label : 'Base Imp.' } ] }
+  Amountbasetax;
+  
+  @UI: { lineItem: [ { position : 120, label : 'Base Imp. 0%', importance :  #MEDIUM } ],
+   identification: [ { position : 150, label : 'Base Imp. 0%' } ] }
+  Amountbasetax0;
+  
+  @UI: { lineItem: [ { position : 130, label : 'Base Sin Imp.', importance :  #MEDIUM } ],
+   identification: [ { position : 160, label : 'Base sin Imp.' } ] }
+  Amountbasenotax;
+  
+  @UI: { lineItem: [ { position : 140, label : 'Base Exe. Imp.', importance :  #MEDIUM } ],
+   identification: [ { position : 170, label : 'Base Exe. Imp.' } ] }
+  Amountbaseexetax;
+  
+  @UI: { lineItem: [ { position : 150, label : 'Impuesto', importance :  #MEDIUM } ],
+   identification: [ { position : 180, label : 'Impuesto' } ] }
+  Amounttax;
+  
+  @UI: { lineItem: [ { position : 160, label : 'Importe ICE', importance :  #MEDIUM } ],
+   identification: [ { position : 190, label : 'Importe ICE' } ] }
+  Amountice;
+  
+  @UI: { lineItem: [ { position : 170, label : 'Importe Total', importance :  #MEDIUM } ],
+   identification: [ { position : 200, label : 'Importe Total' } ] }
+  Total_Price;
+  
+  @UI: { lineItem: [ { position : 180, label : 'Currency', importance :  #LOW } ],
+   identification: [ { position : 210, label : 'Currency' } ] }
+  Currency; 
+       
+}

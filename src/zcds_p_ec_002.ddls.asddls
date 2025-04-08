@@ -1,13 +1,16 @@
 @EndUserText.label: 'Sequential Administrator' // Projection View'
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 //@Search.searchable: true
 @Metadata.allowExtensions: true
 
 define root view entity ZCDS_P_EC_002
+  provider contract transactional_query
   as projection on ZCDS_RV_EC_002
 {
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CompanyCodeVH', element: 'CompanyCode' },
-                     additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' }] } ]
+  
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_CompanyCodeVH', element: 'CompanyCode' },
+                 additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' }] } ]
+  @ObjectModel.text.element: ['CompanyCodeName']
   key Companycode              as CompanyCode,
   
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_TRSRI' , element: 'value_low' }, distinctValues: true } ]
@@ -20,9 +23,7 @@ define root view entity ZCDS_P_EC_002
   key Emissionpoint            as EmissionPoint,
       Objet                    as Objet,
       Address                  as Address,
-      Sequential               as Sequential,
 
-      @ObjectModel.text.element: ['CompanyCodeName']
       _Company.CompanyCodeName as CompanyCodeName
-
+      
 }

@@ -16,43 +16,23 @@ define root view entity ZCDS_RV_DOC_SD_GUIA
                                                                          and ElectronicDocuments.documentsri             = '06'
                                                                          and ElectronicDocuments.sequence                = '01'
     inner join      I_CompanyCode              as I_Company               on I_Company.CompanyCode                       = I_SalesOrganization.CompanyCode
+                                                                         and I_Company.Language                          = $session.system_language
     inner join      I_DeliveryDocumentTypeText as I_DeliveryDocumentType  on I_DeliveryDocumentType.DeliveryDocumentType = I_DeliveryDocument.DeliveryDocumentType
                                                                          and I_DeliveryDocumentType.Language             = $session.system_language
     left outer join ZSH_STATUS                 as I_Status                on I_Status.value_low =   TransportGuides.documentstatus
+    left outer join ZSH_STATUS                 as I_StatusPending         on I_StatusPending.value_low = 'PENDING'
   composition [0..*] of ZCDS_RV_EC_010 as _TransportData
 {
   
-  key
-        case
-            when TransportGuides.companycode is not initial
-            then TransportGuides.companycode
-          else   I_SalesOrganization.CompanyCode
-          end                      as Companycode,
+  key I_SalesOrganization.CompanyCode as CompanyCode,
 
-  key
-        case
-            when TransportGuides.fiscalyear is not initial
-            then TransportGuides.fiscalyear
-          else cast( I_DeliveryDocument.DeliveryDate as abap.char( 4 ) )
-          end                      as Fiscalyear,
+  key cast( cast( I_DeliveryDocument.DeliveryDate as abap.char( 4 ) ) as gjahr) as FiscalYear,
   
-  key   case
-        when TransportGuides.deliverydocument is not initial
-        then TransportGuides.deliverydocument
-      else   I_DeliveryDocument.DeliveryDocument
-      end                          as Deliverydocument,
+  key I_DeliveryDocument.DeliveryDocument as DeliveryDocument,
 
-  key   case
-        when TransportGuides.deliverydocumenttype is not initial
-        then TransportGuides.deliverydocumenttype
-      else   I_DeliveryDocument.DeliveryDocumentType
-     end                           as Deliverydocumenttype,
-
-        case
-                 when TransportGuides.shiptoparty is not initial
-                 then TransportGuides.shiptoparty
-               else   I_DeliveryDocument.ShipToParty
-               end                 as Shiptoparty,
+  key I_DeliveryDocument.DeliveryDocumentType as DeliveryDocumentType,
+      
+      I_DeliveryDocument.SoldToParty as SoldToParty,
 
         case
             when TransportGuides.businessname is not initial
@@ -151,7 +131,11 @@ define root view entity ZCDS_RV_DOC_SD_GUIA
         I_SalesOrganizationText.SalesOrganizationName,
         
         @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 }
-        I_Status.Description,
+        case
+         when I_Status.Description is not initial
+         then I_Status.Description
+         else I_StatusPending.Description
+         end as Description,
 
         _TransportData
 

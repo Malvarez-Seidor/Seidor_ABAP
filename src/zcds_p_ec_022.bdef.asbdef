@@ -1,0 +1,9 @@
+projection;
+strict ( 2 );
+
+define behavior for ZCDS_P_EC_022 alias PurchasingDocumentATS
+{
+  use create;
+  use update;
+  use delete;
+}

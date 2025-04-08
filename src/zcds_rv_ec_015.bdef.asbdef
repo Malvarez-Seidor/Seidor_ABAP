@@ -1,18 +1,71 @@
 managed implementation in class zbp_cds_rv_ec_015 unique;
-//strict ( 2 );
+strict;
 
 define behavior for ZCDS_RV_EC_015 alias ElectronicDocuments
 persistent table zdt_ec_015
 lock master
-authorization master ( instance )
+authorization master ( global, instance )
 //etag master <field_name>
 {
+
   create;
   update;
   delete;
+
+  action ( features : instance ) DocumentLogistics result [1] $self;
+  action ( features : instance ) FinancialDocument result [1] $self;
+
   field ( readonly ) Companycode, Documentsri, Accesskey, Documentsupplier;
+
   association _Withholdings { create; }
   association _PurchaseOrders { create; }
+
+  mapping for zdt_ec_015 {
+
+  Companycode          = companycode;
+  Documentsri          = documentsri;
+  Accesskey            = accesskey;
+  Documentsupplier     = documentsupplier;
+  Environment          = environment;
+  Establishment        = establishment;
+  Emissionpoint        = emissionpoint;
+  Sequential           = sequential;
+  Supplierid           = supplierid;
+  Suppliername         = suppliername;
+  Companyname          = companyname;
+  Iceamount            = iceamount;
+  Taxamount            = taxamount;
+  Discountamount       = discountamount;
+  Subtotalamount       = subtotalamount;
+  Totalamount          = totalamount;
+  Currency             = currency;
+  Customerid           = customerid;
+  Customername         = customername;
+  Purchasingdocument   = purchasingdocument;
+  Supplierinvoice      = supplierinvoice;
+  Fiscalyear           = fiscalyear;
+  Accountingdocument   = accountingdocument;
+  Accountingfiscalyear = accountingfiscalyear;
+  Supplier             = supplier;
+  Customer             = customer;
+  Creationdate         = creationdate;
+  Creationtime         = creationtime;
+  Rejectiondate        = rejectiondate;
+  Rejectiontime        = rejectiontime;
+  Issuedate            = issuedate;
+  Issuetime            = issuetime;
+  Authorizationdate    = authorizationdate;
+  Authorizationtime    = authorizationtime;
+  Documentstatus       = documentstatus;
+  Receptionstatus      = receptionstatus;
+  Typesupport          = typesupport;
+  Reason               = reason;
+  Message              = message;
+  Supportdocumenttype  = supportdocumenttype;
+  Supportdocument      = supportdocument;
+  Supportdocumentdate  = supportdocumentdate;
+
+  }
 }
 
 define behavior for ZCDS_RV_EC_016 alias Withholdings
@@ -21,10 +74,35 @@ lock dependent by _ElectronicDocuments
 authorization dependent by _ElectronicDocuments
 //etag master <field_name>
 {
+
   update;
   delete;
+
   field ( readonly ) Companycode, Documentsri, Accesskey, Documentsupplier, Positem;
+
   association _ElectronicDocuments;
+
+  mapping for zdt_ec_016{
+
+  Companycode          = companycode;
+  Documentsri          = documentsri;
+  Accesskey            = accesskey;
+  Documentsupplier     = documentsupplier;
+  Positem              = positem;
+  Establishmentsupport = establishmentsupport;
+  Emissionpointsupport = emissionpointsupport;
+  Sequentialsupport    = sequentialsupport;
+  Accesskeysupport     = accesskeysupport;
+  Documentsrisupport   = documentsrisupport;
+  Officialwhldgtaxcode = officialwhldgtaxcode;
+  Codeid               = codeid;
+  Amountretained       = amountretained;
+  Percentageretained   = percentageretained;
+  Baseretained         = baseretained;
+  Currency             = currency;
+
+  }
+
 }
 
 define behavior for ZCDS_RV_EC_017 alias PurchaseOrders
@@ -33,8 +111,28 @@ lock dependent by _ElectronicDocuments
 authorization dependent by _ElectronicDocuments
 //etag master <field_name>
 {
+
   update;
   delete;
+
   field ( readonly ) Companycode, Documentsri, Accesskey, Documentsupplier, Purchasingdocument, Purchasingdocumentitem;
+
   association _ElectronicDocuments;
+
+  mapping for zdt_ec_017{
+
+  companycode                 = companycode;
+  documentsri                 = documentsri;
+  accesskey                   = accesskey;
+  documentsupplier            = documentsupplier;
+  purchasingdocument          = purchasingdocument;
+  purchasingdocumentitem      = purchasingdocumentitem;
+  materialdocument            = materialdocument;
+  materialdocumentitem        = materialdocumentitem;
+  referencedocumentfiscalyear = referencedocumentfiscalyear;
+  invtrymgmtreferencedocument = invtrymgmtreferencedocument;
+  invtrymgmtrefdocumentitem   = invtrymgmtrefdocumentitem;
+
+  }
+
 }

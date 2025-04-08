@@ -4,6 +4,18 @@ CLASS zcl_create_guia DEFINITION
 
   PUBLIC SECTION.
 
+    TYPES: BEGIN OF ty_email,
+           AddressID        TYPE I_AddressEmailAddress_2-AddressID,
+           AddressPersonID  TYPE I_AddressEmailAddress_2-AddressPersonID,
+           EmailAddress     TYPE string,
+          END OF ty_email.
+
+    TYPES: BEGIN OF ty_Phone,
+           AddressID        TYPE I_AddressPhoneNumber_2-AddressID,
+           AddressPersonID  TYPE I_AddressPhoneNumber_2-AddressPersonID,
+           PhoneAreaCodeSubscriberNumber     TYPE string,
+          END OF ty_Phone.
+
     TYPES: ty_detalle_g TYPE STANDARD TABLE OF zts_guia_detalle,
            ty_det_add   TYPE STANDARD TABLE OF zts_det_add,
            ty_head_add  TYPE STANDARD TABLE OF zts_head_add.
@@ -20,12 +32,13 @@ CLASS zcl_create_guia DEFINITION
                                   deliverydocument     TYPE vbeln     "Numero Documento de Entrega Ventas
                                   deliverydocumenttype TYPE fkart   . "Tipo Documento de Entrega Ventas
 
-    METHODS callDocumentType IMPORTING documenttype TYPE zde_trsri             "Tipo de Documento SRI
+    METHODS callDocumentType IMPORTING documenttype TYPE zde_trsri     "Tipo de Documento SRI
                              EXPORTING inf_tribu    TYPE zts_inf_tribu
                                        guia         TYPE zts_guia_header
                                        t_detalle_g  TYPE zcl_create_guia=>ty_detalle_g
                                        t_det_add    TYPE zcl_create_guia=>ty_det_add
-                                       t_head_add   TYPE zcl_create_guia=>ty_head_add.
+                                       t_head_add   TYPE zcl_create_guia=>ty_head_add
+                                       message      TYPE string.
 
   PROTECTED SECTION.
 
@@ -68,8 +81,8 @@ CLASS zcl_create_guia DEFINITION
           gs_BusinessPartner          TYPE I_BusinessPartner,
           gs_Address                  TYPE i_address_2,
           gs_Businesspartnertaxnumber TYPE I_Businesspartnertaxnumber,
-          gs_email                    TYPE I_AddressEmailAddress_2,
-          gs_telefono                 TYPE I_AddressPhoneNumber_2,
+          gs_email                    TYPE ty_email,
+          gs_telefono                 TYPE ty_phone,
           gs_BusPartAddress           TYPE I_BusPartAddress.
 
     DATA: gt_Delivery                 TYPE STANDARD TABLE OF I_DeliveryDocument,
@@ -80,12 +93,13 @@ CLASS zcl_create_guia DEFINITION
           gt_BusinessPartner          TYPE STANDARD TABLE OF I_BusinessPartner,
           gt_ADDRESS                  TYPE STANDARD TABLE OF i_address_2,
           gt_Businesspartnertaxnumber TYPE STANDARD TABLE OF I_Businesspartnertaxnumber,
-          gt_email                    TYPE STANDARD TABLE OF I_AddressEmailAddress_2,
-          gt_telefono                 TYPE STANDARD TABLE OF I_AddressPhoneNumber_2.
+          gt_email                    TYPE STANDARD TABLE OF ty_email,
+          gt_telefono                 TYPE STANDARD TABLE OF ty_phone.
 
-    METHODS get_data .
+    METHODS get_data.
 
-    METHODS infoTributaria  CHANGING inf_tribu   TYPE zts_inf_tribu.
+    METHODS infoTributaria  CHANGING inf_tribu   TYPE zts_inf_tribu
+                                     message     TYPE string.
 
     METHODS getClaveAcceso  IMPORTING inf_tribu   TYPE zts_inf_tribu
                                       fecha       TYPE string
@@ -93,7 +107,8 @@ CLASS zcl_create_guia DEFINITION
                             CHANGING  estab       TYPE zts_inf_tribu-estab
                                       ptoemi      TYPE zts_inf_tribu-ptoemi
                                       secuencial  TYPE zts_inf_tribu-secuencial
-                                      claveacceso TYPE zts_inf_tribu-claveacceso.
+                                      claveacceso TYPE zts_inf_tribu-claveacceso
+                                      message     TYPE string.
 
     METHODS getHeaderGuia      CHANGING  header_g  TYPE zts_guia_header.
 
@@ -117,7 +132,8 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
 
     me->get_data( ).
 
-    me->infoTributaria( CHANGING inf_tribu = me->gs_inf_tribu ).
+    me->infoTributaria( CHANGING inf_tribu = me->gs_inf_tribu
+                                 message   = message ).
 
     CASE gv_documenttype.
       WHEN '06'.
@@ -158,7 +174,8 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
           lv_six     TYPE i,
           lv_mod     TYPE i,
           lv_rep     TYPE p,
-          lv_rep2(2) TYPE c.
+          lv_rep2(2) TYPE c,
+          lv_mensaje  TYPE string.
 
     CASE me->gv_documenttype.
       WHEN '06'.
@@ -205,7 +222,11 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
           ENDIF.
 
         CATCH cx_number_ranges INTO DATA(lr_error).
-
+          message = me->gs_ec_002-Objet.
+          lv_mensaje = lr_error->get_longtext( ).
+          IF lv_mensaje IS INITIAL.
+            lv_mensaje = lr_error->get_text( ).
+          ENDIF.
       ENDTRY.
 
     ENDIF.
@@ -300,16 +321,18 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
           header_g-dir_destinatario = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
         ENDIF.
 
-        SELECT *
+        SELECT AddressID, AddressPersonID, STRING_AGG( EmailAddress, '; '  ) as EmailAddress
           FROM I_AddressEmailAddress_2
           WITH PRIVILEGED ACCESS
           WHERE AddressID EQ @me->gs_BusPartAddress-AddressID
+          GROUP BY AddressID, AddressPersonID
            INTO TABLE @me->gt_email.
 
-        SELECT *
+        SELECT AddressID, AddressPersonID, STRING_AGG( PhoneAreaCodeSubscriberNumber, '; '  ) as PhoneAreaCodeSubscriberNumber
           FROM I_AddressPhoneNumber_2
           WITH PRIVILEGED ACCESS
           WHERE AddressID EQ @me->gs_BusPartAddress-AddressID
+          GROUP BY AddressID, AddressPersonID
           INTO TABLE @me->gt_telefono.
 
       ENDIF.
@@ -339,28 +362,41 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
     LOOP AT gt_deliveryitem INTO gs_deliveryitem WHERE ItemBillingBlockReason IS INITIAL
                                                    AND Material IS NOT INITIAL.
 
-      READ TABLE gt_product INTO gs_product WITH KEY Product = gs_deliveryitem-Material.
+      SELECT SINGLE Language, Product, ProductDescription
+        FROM I_ProductDescription_2
+       WHERE Product EQ @gs_deliveryitem-Material
+         AND Language EQ @sy-langu
+        INTO @DATA(ls_product).
+
       IF sy-subrc EQ 0.
-        gs_detalle_g-descripcion = gs_product-ProductDescription.
+        gs_detalle_g-descripcion = ls_product-ProductDescription.
+      ELSE.
+        gs_detalle_g-descripcion = gs_deliveryitem-DeliveryDocumentItemText.
       ENDIF.
+
       gs_detalle_g-codigoprincipal = gs_deliveryitem-Material.
 
       lv_navnw =  gs_deliveryitem-ActualDeliveryQuantity.
       gs_detalle_g-cantidad = lv_navnw.
 
-      SELECT SINGLE *
-      FROM I_UnitOfMeasureText
-      WHERE Language EQ @sy-langu
-       AND UnitOfMeasure EQ @gs_deliveryitem-BaseUnit
-       INTO @DATA(ls_UnitOfMeasureText).
-      IF sy-subrc EQ 0.
-        gs_det_add-titulo = 'UnidadMedida'.
-        gs_det_add-valor  = ls_UnitOfMeasureText-UnitOfMeasureLongName.
-        gs_det_add-codigoprincipal  = gs_deliveryitem-Material.
-        APPEND gs_det_add TO detalle_a.
+      READ TABLE detalle_a INTO gs_det_add WITH KEY codigoprincipal = gs_deliveryitem-Material.
+      IF sy-subrc NE 0.
+        SELECT SINGLE Language, UnitOfMeasure, UnitOfMeasureLongName
+          FROM I_UnitOfMeasureText
+          WHERE Language EQ @sy-langu
+            AND UnitOfMeasure EQ @gs_deliveryitem-BaseUnit
+           INTO @DATA(ls_UnitOfMeasureText).
+        IF sy-subrc EQ 0.
+          gs_det_add-titulo = 'UnidadMedida'.
+          gs_det_add-valor  = ls_UnitOfMeasureText-UnitOfMeasureLongName.
+          gs_det_add-codigoprincipal  = gs_deliveryitem-Material.
+          APPEND gs_det_add TO detalle_a.
+        ENDIF.
       ENDIF.
 
-      COLLECT gs_detalle_g INTO detalle.
+      APPEND gs_detalle_g TO detalle.
+      CLEAR: gs_detalle_g.
+*      COLLECT gs_detalle_g INTO detalle."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
 
     ENDLOOP.
 
@@ -369,34 +405,43 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
 
   METHOD getheaderadd.
 
+    DATA: lv_api   TYPE zde_type_api.
+
+    lv_api = 'SG'.
+
     CLEAR: gs_head_add.
     gs_head_add-valor = me->gs_delivery-DeliveryDocument.
     gs_head_add-nombre = 'Documento SAP'.
     APPEND gs_head_add TO header_add.
 
     CLEAR: gs_head_add.
-    LOOP AT me->gt_email INTO gs_email.
-      IF sy-tabix EQ 1.
-        CONCATENATE gs_head_add-valor gs_email-EmailAddress INTO gs_head_add-valor.
-      ELSE.
-        CONCATENATE gs_head_add-valor '; ' gs_email-EmailAddress INTO gs_head_add-valor.
-      ENDIF.
-    ENDLOOP.
-    IF gs_head_add IS NOT INITIAL.
+    READ TABLE me->gt_email INTO gs_email INDEX  1.
+    IF sy-subrc EQ 0.
+      gs_head_add-valor = gs_email-EmailAddress.
       gs_head_add-nombre = 'Email'.
       APPEND gs_head_add TO header_add.
     ENDIF.
 
     CLEAR: gs_head_add.
-    LOOP AT me->gt_telefono INTO gs_telefono.
-      IF sy-tabix EQ 1.
-        CONCATENATE gs_head_add-valor gs_telefono-PhoneAreaCodeSubscriberNumber INTO gs_head_add-valor.
-      ELSE.
-        CONCATENATE gs_head_add-valor '; ' gs_telefono-PhoneAreaCodeSubscriberNumber INTO gs_head_add-valor.
-      ENDIF.
-    ENDLOOP.
-    IF gs_head_add IS NOT INITIAL.
+    READ TABLE me->gt_telefono INTO gs_telefono INDEX  1.
+    IF sy-subrc EQ 0.
+      gs_head_add-valor = gs_telefono-PhoneAreaCodeSubscriberNumber.
       gs_head_add-nombre = 'Telefono'.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    IF gs_Address IS NOT INITIAL.
+      gs_head_add-nombre = 'Direccion del Cliente'.
+      gs_head_add-valor = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'AGENTE_RET'. "Agente de Retencion
+    IF sy-subrc EQ 0.
+      gs_head_add-nombre = 'Agente de Retencion'.
+      gs_head_add-valor  = gs_ec_007-low.
       APPEND gs_head_add TO header_add.
     ENDIF.
 
@@ -446,8 +491,8 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
      FROM I_billingdocumentitem as a
      INNER JOIN  I_billingdocument as b
      on a~billingdocument EQ b~billingdocument
-     WHERE a~ReferenceSDDocumentCategory = 'J'
-       AND a~ReferenceSDDocument = @me->gv_deliverydocument
+     WHERE a~ReferenceSDDocumentCategory EQ 'J'
+       AND a~ReferenceSDDocument EQ @me->gv_deliverydocument
        INTO @DATA(ls_billingdocument).
 
     IF sy-subrc EQ 0.
@@ -487,7 +532,7 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
       AND documentsri  EQ @me->gv_documenttype
     INTO TABLE @gt_ec_002.
 
-    SELECT client, companycode, taxcode, notax, tax0, exempttax, tax, taxsupportid, taxsidrate, taxratepercent
+    SELECT client, companycode, taxcode, notax, tax0, exempttax, tax, taxsupportid, taxsidrate, taxratepercent, supporttaxcode
     FROM zdt_ec_003
     WHERE companycode  EQ @me->gv_companycode
     INTO TABLE @gt_ec_003.
@@ -550,27 +595,17 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
             WHERE DeliveryDocument        EQ @me->gv_deliverydocument
             INTO TABLE @gt_deliveryitem.
 
-      IF sy-subrc EQ 0.
-
-        SELECT *
-          FROM I_ProductDescription_2
-          FOR ALL ENTRIES IN @me->gt_deliveryitem
-            WHERE Product EQ @me->gt_deliveryitem-material
-             AND Language EQ @sy-langu
-            INTO TABLE @gt_product.
-
-      ENDIF.
 
     ENDIF.
 
     SELECT SINGLE *
     FROM I_CompanyCode
-    WHERE companycode = @me->gv_companycode
+    WHERE companycode EQ @me->gv_companycode
     INTO @me->gs_CompanyCode.
 
     SELECT *
     FROM I_AddlCompanyCodeInformation
-    WHERE companycode = @me->gv_companycode
+    WHERE companycode EQ @me->gv_companycode
     INTO TABLE @me->gt_AddlInformation.
 
   ENDMETHOD.
@@ -701,7 +736,8 @@ CLASS ZCL_CREATE_GUIA IMPLEMENTATION.
                                CHANGING estab       = inf_tribu-estab
                                         ptoemi      = inf_tribu-ptoemi
                                         secuencial  = inf_tribu-secuencial
-                                        claveacceso = inf_tribu-claveacceso ).
+                                        claveacceso = inf_tribu-claveacceso
+                                        message     = message ).
         ENDIF.
 
       ENDIF.

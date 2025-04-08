@@ -25,5 +25,5 @@ define view entity ZSH_CONDITYPE
       @Search.defaultSearchElement: true 
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #LOW
-      _Text[1: Language = $session.system_language].ConditionTypeName as Description
+      _Text_2[1: Language = $session.system_language].ConditionTypeName as Description
 }

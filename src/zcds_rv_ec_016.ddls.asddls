@@ -1,8 +1,10 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Download Electronic Withholdings  - Roow View Interface'
+@EndUserText.label: 'Download Electronic Withholdings' // Roow View Interface'
 @Metadata.ignorePropagatedAnnotations: true
+@Metadata.allowExtensions: true
+
 define view entity ZCDS_RV_EC_016
-  as select from zdt_ec_016
+  as select from zdt_ec_016 as Withholdings
   association to parent ZCDS_RV_EC_015 as _ElectronicDocuments 
                   on $projection.Companycode            = _ElectronicDocuments.Companycode
                  and $projection.Documentsri            = _ElectronicDocuments.Documentsri

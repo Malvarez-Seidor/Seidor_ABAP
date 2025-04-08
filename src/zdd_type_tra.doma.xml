@@ -18,42 +18,42 @@
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>01</DOMVALUE_L>
-     <DDTEXT>Purchases</DDTEXT>
+     <DDTEXT>Compras</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TYPE_TRA</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>02</DOMVALUE_L>
-     <DDTEXT>Sales</DDTEXT>
+     <DDTEXT>Ventas</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TYPE_TRA</DOMNAME>
      <VALPOS>0003</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>04</DOMVALUE_L>
-     <DDTEXT>Exports</DDTEXT>
+     <DDTEXT>Exportaciones</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TYPE_TRA</DOMNAME>
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>05</DOMVALUE_L>
-     <DDTEXT>Credit Cards</DDTEXT>
+     <DDTEXT>Tarjetas de Crédito</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TYPE_TRA</DOMNAME>
      <VALPOS>0005</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>06</DOMVALUE_L>
-     <DDTEXT>Financial Performance</DDTEXT>
+     <DDTEXT>Desempeño Financiero</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TYPE_TRA</DOMNAME>
      <VALPOS>0006</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>07</DOMVALUE_L>
-     <DDTEXT>Funds and Financial</DDTEXT>
+     <DDTEXT>Fondos y Finanzas</DDTEXT>
     </DD07V>
    </DD07V_TAB>
   </asx:values>

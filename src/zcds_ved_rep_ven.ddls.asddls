@@ -11,10 +11,14 @@
 }
 
 define view entity ZCDS_VED_REP_VEN
- with parameters P_CompanyCode  : bukrs,
-                 P_FiscalYear   : gjahr,
-                 P_FiscalPeriod : fins_fiscalperiod
-as select from ZCDS_P_VENTAS
+ with parameters 
+    @Consumption.valueHelpDefinition: [ { entity:  { name: 'I_CompanyCodeVH', element: 'CompanyCode' } } ]
+    P_CompanyCode  : bukrs,
+    @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_FISCALYEAR' , element: 'FiscalYear' }, distinctValues: true } ]
+    P_FiscalYear   : gjahr,
+    @Consumption.valueHelpDefinition: [ { entity: { name: 'I_FiscalYearPeriodText' , element: 'FiscalPeriod' }, distinctValues: true } ]
+    P_FiscalPeriod : fins_fiscalperiod
+as select from ZCDS_P_VENTAS as SalesReport
   association [1..*] to ZCDS_VC_DET_VEN     as _BillingDocumentItem     on   $projection.BillingDocument        = _BillingDocumentItem.BillingDocument
   association [0..*] to ZCDS_VC_DET_RET     as _Withholdingtaxitem      on   $projection.AccountingDocumentWith = _Withholdingtaxitem.AccountingDocument
                                                                         and  $projection.FiscalYearWith         = _Withholdingtaxitem.FiscalYear
@@ -42,7 +46,7 @@ as select from ZCDS_P_VENTAS
   
   @Semantics.fiscal.yearPeriod: true
   @Consumption.valueHelpDefinition: [ { entity: { name: 'I_FiscalYearPeriod' , element: 'FiscalPeriod' }, distinctValues: true } ]
-      FiscalPeriod                 as FiscalPeriod,
+  cast( FiscalPeriod           as fins_fiscalperiod preserving type )                 as FiscalPeriod,
       
   @ObjectModel.text.element: [ 'Businessname' ]
       Customer                     as Customer,
@@ -61,7 +65,7 @@ as select from ZCDS_P_VENTAS
       BillingDocumentIsCancelled   as BillingDocumentIsCancelled,
       
 //  @ObjectModel.text.element: [ 'PaymentTermsConditionDesc' ]
-//      CustomerPaymentTerms         as CustomerPaymentTerms,
+      CustomerPaymentTerms         as CustomerPaymentTerms,
 //      PaymentMethod                as PaymentMethod,
       
   @Semantics.amount.currencyCode: 'TransactionCurrency'

@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Retenciones",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "withholdings.eclocalizacion019"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_05F941369889C007629C9F8CE9F44768971EC721_TM",
+    "semanticObject": "ZEMI_EC_019",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_05F941369889C007629C9F8CE9F44768971EC721_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Retenciones",
+        "subtitle": "Emision de Retenciones"
+      }
+    }
+  ]
+}

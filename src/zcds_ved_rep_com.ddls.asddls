@@ -11,18 +11,27 @@
 }
 define view entity ZCDS_VED_REP_COM
   with parameters
+    @Consumption.valueHelpDefinition: [ { entity:  { name: 'I_CompanyCodeVH', element: 'CompanyCode' } } ]
     P_CompanyCode  : bukrs,
+    @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_FISCALYEAR' , element: 'FiscalYear' }, distinctValues: true } ]
     P_FiscalYear   : gjahr,
+    @Consumption.valueHelpDefinition: [ { entity: { name: 'I_FiscalYearPeriodText' , element: 'FiscalPeriod' }, distinctValues: true } ]
     P_FiscalPeriod : fins_fiscalperiod
   as select from ZCDS_P_COMPRAS
 
-  association [0..*] to ZCDS_VC_DET_COM as _AccountingDocumentItem on  $projection.CompanyCode        = _AccountingDocumentItem.CompanyCode
+  association [0..*] to ZCDS_VC_DET_COM as _AccountingDocumentItem  on $projection.CompanyCode        = _AccountingDocumentItem.CompanyCode
                                                                    and $projection.FiscalYear         = _AccountingDocumentItem.FiscalYear
                                                                    and $projection.AccountingDocument = _AccountingDocumentItem.AccountingDocument
                                                                    
-  association [0..*] to ZCDS_VC_DET_RET as _Withholdingtaxitem     on  $projection.CompanyCode        = _Withholdingtaxitem .CompanyCode
-                                                                   and $projection.FiscalYear         = _Withholdingtaxitem .FiscalYear
-                                                                   and $projection.AccountingDocument = _Withholdingtaxitem .AccountingDocument
+  association [0..*] to ZCDS_VC_DET_RET as _Withholdingtaxitem      on $projection.CompanyCode        = _Withholdingtaxitem.CompanyCode
+                                                                   and $projection.FiscalYear         = _Withholdingtaxitem.FiscalYear
+                                                                   and $projection.AccountingDocument = _Withholdingtaxitem.AccountingDocument
+                                                                   
+  association [0..*] to ZCDS_VC_DET_REEM as _RefundsPurchases       on $projection.CompanyCode            = _RefundsPurchases.Companycode
+                                                                   and $projection.FiscalYear             = _RefundsPurchases.Fiscalyear
+                                                                   and $projection.AccountingDocument     = _RefundsPurchases.Accountingdocument
+                                                                   and $projection.AccountingDocumentType = _RefundsPurchases.Accountingdocumenttype
+                                                                   
 {
   @ObjectModel.text.element: [ 'CompanyCodeName' ]
   @Consumption.valueHelpDefinition: [ { entity:  { name: 'I_CompanyCodeVH', element: 'CompanyCode' },
@@ -84,7 +93,7 @@ define view entity ZCDS_VED_REP_COM
       
       @Semantics.fiscal.yearPeriod: true
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_FiscalYearPeriod' , element: 'FiscalPeriod' }, distinctValues: true } ]
-      FiscalPeriod                 as FiscalPeriod,
+      cast( FiscalPeriod           as fins_fiscalperiod preserving type ) as FiscalPeriod,
       PostingDate                  as PostingDate,
       AccountingDocumentHeaderText as AccountingDocumentHeaderText,
       DocumentReferenceID          as DocumentReferenceID,
@@ -109,7 +118,8 @@ define view entity ZCDS_VED_REP_COM
       DescriptionW                 as DescriptionWith,
 
       _AccountingDocumentItem,
-      _Withholdingtaxitem
+      _Withholdingtaxitem,
+      _RefundsPurchases
       
 } where CompanyCode  = $parameters.P_CompanyCode
     and FiscalYear   = $parameters.P_FiscalYear

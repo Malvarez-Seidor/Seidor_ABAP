@@ -1,0 +1,20 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'Código de Repote', typeNamePlural : 'Códigos de Reportes',
+            title : { type :#STANDARD, value : 'Description' }, description.value: 'CodeSri'  } }
+annotate view ZCDS_P_EC_023
+    with 
+{
+  
+  @UI.facet: [{ id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE } ]
+              
+  @UI: { lineItem: [ { position : 10, label : 'Documento SRI', importance : #HIGH } ],
+   identification: [ { position : 10, label : 'Documento SRI' } ],
+   selectionField: [ { position : 10 } ] }
+ CodeSri;
+ 
+ @UI: { lineItem: [ { position : 20, label: 'Descripción', importance : #HIGH } ],
+  identification: [ { position : 20, label: 'Descripción' } ],
+  selectionField: [ { position : 20 } ] }
+ Description;
+    
+}

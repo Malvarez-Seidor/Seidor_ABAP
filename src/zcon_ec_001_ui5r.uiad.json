@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Documentos Electronicos",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "electronicdocuments.eclocalizacion001"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_D3412AEDF45D582F70F6660B74B57F8479491A03_TM",
+    "semanticObject": "ZCON_EC_001",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_D3412AEDF45D582F70F6660B74B57F8479491A03_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Documentos Electronicos",
+        "subtitle": "Configurar Documentos Electronicos"
+      }
+    }
+  ]
+}

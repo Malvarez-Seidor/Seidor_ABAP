@@ -1,0 +1,13 @@
+projection;
+strict;
+
+define behavior for ZCDS_P_EC_021 alias ReportTransactionalAnnex
+{
+  use update;
+
+  field ( readonly: update ) Companycode, Fiscalyear, Monat, Purchases, Sales, Export, Cancel,
+                             Filename, Mimetype, Status, Criticality;
+//                             , CompanyCodeName, Description, StatusXML;
+
+  use action Download;
+}

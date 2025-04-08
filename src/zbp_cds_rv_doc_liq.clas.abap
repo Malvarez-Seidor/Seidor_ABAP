@@ -1,4 +1,6 @@
 CLASS zbp_cds_rv_doc_liq DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zcds_rv_doc_liq.
+protected section.
+private section.
 ENDCLASS.
 
 

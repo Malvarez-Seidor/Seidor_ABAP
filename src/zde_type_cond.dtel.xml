@@ -10,11 +10,11 @@
     <SCRLEN1>10</SCRLEN1>
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Tipo de Condicion</DDTEXT>
-    <REPTEXT>Type of Condition</REPTEXT>
-    <SCRTEXT_S>Type Cond.</SCRTEXT_S>
-    <SCRTEXT_M>Type of Condition</SCRTEXT_M>
-    <SCRTEXT_L>Type of Condition</SCRTEXT_L>
+    <DDTEXT>Type of Condition</DDTEXT>
+    <REPTEXT>Tipo de Condición</REPTEXT>
+    <SCRTEXT_S>Tipo Cond.</SCRTEXT_S>
+    <SCRTEXT_M>Tipo Condición</SCRTEXT_M>
+    <SCRTEXT_L>Tipo de Condición</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
     <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>

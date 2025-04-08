@@ -1,0 +1,150 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'Electronic Document', typeNamePlural : 'Electronic Document',
+            title : { type :#STANDARD, label : 'Electronic Document', value : 'CompanyCodeName' },
+                            description.value: 'CompanyCode'  } }
+ 
+annotate entity ZCDS_P_EC_015
+    with 
+{
+  
+  @UI.facet: [ { label: 'Header Data',   purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10 },
+               { label: 'Document Info', purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 20, targetQualifier: 'Detail'   },
+               { label: 'Withholdings',  purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30, targetElement: '_Withholdings', id: 'Withholdings' },
+               { label: 'PurchaseOrders',purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30, targetElement: '_PurchaseOrders', id: 'PurchaseOrders' } ]
+
+  @UI: { lineItem: [ { position : 10, importance : #HIGH } ], textArrangement: #TEXT_ONLY,
+   selectionField: [ { position : 10 } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  CompanyCode;
+  
+  @UI: { lineItem: [ { position : 100,  label : 'Document Status', importance : #HIGH, criticality: 'Criticality' },
+                     { type: #FOR_ACTION, dataAction: 'DocumentLogistics', label: 'Document Logistics' },
+                     { type: #FOR_ACTION, dataAction: 'FinancialDocument', label: 'Financial Document' } ],
+   selectionField: [ { position : 60 } ],
+   identification: [ { type: #FOR_ACTION, dataAction: 'DocumentLogistics', label: 'Document Logistics' },
+                     { type: #FOR_ACTION, dataAction: 'FinancialDocument', label: 'Financial Document' } ] }
+  
+  @UI.textArrangement: #TEXT_ONLY
+  @UI: { dataPoint: { title: 'Document Status',  criticality : 'Criticality', criticalityRepresentation: #WITH_ICON } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  DocumentStatus;
+  
+  @UI: { lineItem: [ { position : 20, importance : #HIGH, cssDefault.width: '4rem' } ], textArrangement: #TEXT_ONLY, 
+   selectionField: [ { position : 20 } ] }
+  @UI: { dataPoint: { title: 'Document SRI' } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  DocumentSri;
+  
+  @UI: { lineItem: [ { position : 120, label : 'Document Supplier', importance : #MEDIUM } ] }
+  @UI: { dataPoint: { title: 'Document Supplier' } }
+  DocumentSupplier;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Establishment', importance : #HIGH, cssDefault.width: '4rem' } ],
+   selectionField: [ { position : 30 } ],
+   identification: [ { position : 10, label : 'Establishment' } ] }
+  Establishment;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Emission Point', importance : #HIGH, cssDefault.width: '4rem' } ],
+   selectionField: [ { position : 40 } ],
+   identification: [ { position : 70, label : 'Emission Point' } ] }
+  EmissionpPoint;
+  
+  @UI: { lineItem: [ { position : 50,  label : 'Sequential', importance : #HIGH, cssDefault.width: '6rem' } ],
+   selectionField: [ { position : 50 } ],
+   identification: [ { position : 130, label : 'Sequential' } ] }
+  Sequential;
+
+  @UI: { lineItem: [ { position : 60, label : 'Customer Name', importance : #HIGH } ],
+   identification: [ { position : 80, label : 'Customer Name' } ] }
+  CustomerName;
+  
+  @UI: { lineItem: [ { position : 70, label : 'Supplier Name', importance : #HIGH } ],
+   identification: [ { position : 90, label : 'Supplier Name' } ] }
+  SupplierName;
+
+  @UI: { lineItem: [ { position : 80, label : 'Supplier', importance : #MEDIUM } ],
+   identification: [ { position : 30, label : 'Supplier' } ] }
+  Supplier;
+  
+  @UI: { lineItem: [ { position : 90, label : 'Supplier Id', importance : #MEDIUM } ],
+   identification: [ { position : 150, label : 'Supplier Id' } ] }
+  SupplierId;
+  
+  @UI: { lineItem: [ { position : 100, label : 'Customer', importance : #MEDIUM } ],
+   identification: [ { position : 20, label : 'Customer' } ] }
+  Customer;
+  
+  @UI: { lineItem: [ { position : 110, label : 'Customer Id', importance : #MEDIUM } ],
+   identification: [ { position : 140, label : 'Customer Id' } ] }
+  CustomerId;
+
+  @UI: { lineItem: [ { position : 120, label : 'Accesskey', importance : #MEDIUM } ],
+   identification: [ { position : 60, label : 'Accesskey' } ] }
+  Accesskey;
+
+  @UI: { lineItem: [ { position : 140, label : 'Message', importance : #MEDIUM } ],
+   identification: [ { position : 180, label : 'Message' } ] }
+  Message;
+  
+  @UI: { lineItem: [ { position : 150, label : 'ICE Amount', importance : #MEDIUM } ],
+   identification: [ { position : 110, label : 'ICE Amount' } ] }
+  IceAmount;
+  
+  @UI: { lineItem: [ { position : 160, label : 'Tax', importance : #MEDIUM } ],
+   identification: [ { position : 40, label : 'Tax' } ] }
+  TaxAmount;
+  
+  @UI: { lineItem: [ { position : 170, label : 'Discount', importance : #MEDIUM } ],
+   identification: [ { position : 50, label : 'Discount' } ] }
+  DiscountAmount;
+  
+  @UI: { lineItem: [ { position : 180, label : 'Subtotal', importance : #MEDIUM } ],
+   identification: [ { position : 100, label : 'Subtotal' } ] }
+  SubtotalAmount;
+  
+  @UI: { lineItem: [ { position : 190, label : 'Total', importance : #MEDIUM } ],
+   identification: [ { position : 160, label : 'Total' } ] }
+  TotalAmount;
+  
+  @UI: { lineItem: [ { position : 200, label : 'Reason', importance : #MEDIUM } ],
+   identification: [ { position : 120, label : 'Reason' } ] }
+  Reason;
+  
+  @UI: { lineItem: [ { position : 200, label : 'Authorization Date', importance : #MEDIUM } ],
+   identification: [ { position : 170, label : 'Authorization Date' } ] }
+  AuthorizationDate;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Reception Status', position: 10 } ]
+  ReceptionStatus;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Type Support', position: 20 } ]
+  TypeSupport;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Support Document Type', position: 30 } ]
+  SupportDocumentType;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Support Document', position: 40 } ]
+  SupportDocument;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Support Document Date', position: 50 } ]
+  SupportDocumentDate;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Purchasing Document', position: 60 } ]
+  PurchasingDocument;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Supplier Invoice', position: 70 } ]
+  SupplierInvoice;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Supplier Fiscal Year', position: 80 } ]
+  FiscalYear;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Accounting Document', position: 90 } ]
+  AccountingDocument;
+  
+  @UI.fieldGroup:  [ { qualifier: 'Detail', label : 'Accounting Fisca lYear', position: 100 } ]
+  AccountingFiscalYear;
+
+}

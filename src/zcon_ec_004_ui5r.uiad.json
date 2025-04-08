@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Identificaciones",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "typeidentification.eclocalizacion004"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_C93BFAD27401193D5A6ECBFAB7B6DDD59F5D6A83_TM",
+    "semanticObject": "ZCON_EC_004",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_C93BFAD27401193D5A6ECBFAB7B6DDD59F5D6A83_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Identificaciones",
+        "subtitle": "Tipos de Identificaciones"
+      }
+    }
+  ]
+}

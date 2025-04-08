@@ -18,42 +18,42 @@
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>01</DOMVALUE_L>
-     <DDTEXT>Deleted</DDTEXT>
+     <DDTEXT>Eliminado</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_STATUS_DOC</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>02</DOMVALUE_L>
-     <DDTEXT>Passed Validations</DDTEXT>
+     <DDTEXT>Validaciones Aprobadas</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_STATUS_DOC</DOMNAME>
      <VALPOS>0003</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>03</DOMVALUE_L>
-     <DDTEXT>Did Not Pass Validations</DDTEXT>
+     <DDTEXT>No pasó las Validaciones</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_STATUS_DOC</DOMNAME>
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>04</DOMVALUE_L>
-     <DDTEXT>With Redirect</DDTEXT>
+     <DDTEXT>Con Redireccionamiento</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_STATUS_DOC</DOMNAME>
      <VALPOS>0005</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>05</DOMVALUE_L>
-     <DDTEXT>Errors</DDTEXT>
+     <DDTEXT>Errores</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_STATUS_DOC</DOMNAME>
      <VALPOS>0006</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>06</DOMVALUE_L>
-     <DDTEXT>Rejected by User</DDTEXT>
+     <DDTEXT>Rechazado por el Usuario</DDTEXT>
     </DD07V>
    </DD07V_TAB>
   </asx:values>

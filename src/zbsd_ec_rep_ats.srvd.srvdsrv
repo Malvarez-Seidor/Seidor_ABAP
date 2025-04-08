@@ -1,0 +1,14 @@
+@EndUserText.label: 'Report ATS'
+define service ZBSD_EC_REP_ATS {
+  expose ZCDS_P_EC_021        as ReportTransactionalAnnex;
+  expose ZCDS_VED_REP_ATS     as SimplifiedTransactionalAnnex;
+  expose ZCDS_P_ATS           as DetailsTransactionalAnnex;
+  expose ZCDS_P_ATS_CONT      as TransactionalAnnexAmounts;
+  expose ZCDS_VC_TAX_COM      as DetailsTaxes;
+  expose ZCDS_VC_DET_COM      as DetailPurchases;
+  expose ZCDS_VC_DET_VEN      as DetailSales;
+  expose ZCDS_VC_DET_RET      as DetailWithholdings;
+  expose ZCDS_VC_DET_REEM     as RefundsPurchases;
+  expose ZCDS_VED_REP_COM_ATS as PurchasingDocuments;
+  expose ZCDS_VED_REP_VEN_ATS as SalesDocuments;
+}

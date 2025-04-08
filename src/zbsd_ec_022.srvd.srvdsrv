@@ -1,0 +1,4 @@
+@EndUserText.label: 'Purchasing Document ATS - Bussiness Servivces Definition'
+define service ZBSD_EC_022 {
+  expose ZCDS_P_EC_022 as PurchasingDocumentATS;
+}

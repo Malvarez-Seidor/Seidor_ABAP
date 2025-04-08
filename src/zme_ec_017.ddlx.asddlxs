@@ -1,0 +1,50 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'Purchase Orders', typeNamePlural : 'Purchase Order',
+            title : { type :#STANDARD, label : 'Electronic Document', value : 'DocumentSupplier' },
+                            description.value: 'Accesskey'  } }
+                            
+annotate entity ZCDS_P_EC_017
+    with 
+{
+  
+  @UI.facet: [ { label: 'Detail',   purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10 } ]
+  
+  @UI: { dataPoint: { title: 'Company Code' } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  CompanyCode;
+  
+  @UI: { dataPoint: { title: 'Document SRI' } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  DocumentSri;
+  
+  @UI: { lineItem: [ { position : 10, label : 'Purchasing Document', importance : #HIGH } ],
+   identification: [ { position : 10, label : 'Purchasing Document' } ] }
+  PurchasingDocument;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Purchasing Item', importance : #HIGH } ],
+   identification: [ { position : 20, label : 'Purchasing Item' } ] }
+  PurchasingDocumentItem;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Material Document', importance : #HIGH } ],
+   identification: [ { position : 30, label : 'Material Document' } ] }
+  Materialdocument;
+  
+  @UI: { lineItem: [ { position : 40, label : 'Material Item', importance : #HIGH } ],
+   identification: [ { position : 40, label : 'Material Item' } ] }
+  MaterialDocumentItem;
+  
+  @UI: { lineItem: [ { position : 50, label : 'Reference Document', importance : #HIGH } ],
+   identification: [ { position : 50, label : 'Reference Document' } ] }
+  InvtryMgmtReferenceDocument;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Fiscal Year', importance : #HIGH } ],
+   identification: [ { position : 60, label : 'Fiscal Year' } ] }
+  ReferenceDocumentFiscalYear;
+
+  @UI: { lineItem: [ { position : 70, label : 'Reference Item', importance : #HIGH } ],
+   identification: [ { position : 70, label : 'Reference Item' } ] }
+  InvtryMgmtRefDocumentItem;
+
+}

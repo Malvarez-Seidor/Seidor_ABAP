@@ -2,7 +2,7 @@
 
 @UI :{ headerInfo : { typeName          : 'Purchase Detail',
                       typeNamePlural    : 'Purchases Details',
-                      title             : { type :#STANDARD, label : 'Accounting Document', value : 'AccountingDocument' },
+                      title             : { type :#STANDARD, value : 'AccountingDocument' },
                       description       : { type :#STANDARD, value : 'AccountingDocumentItem' } },
                       
  presentationVariant: [ { sortOrder: [ { by: 'AccountingDocumentItem', direction:  #ASC } ],
@@ -11,55 +11,51 @@
 annotate entity ZCDS_VC_DET_COM with
 {
 
-  @UI.facet: [ { id : 'Detail', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Detail', position: 10 } ]
+  @UI.facet: [ { id : 'Detail', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Detalle', position: 10 } ]
   
   @UI: { lineItem: [ { position : 10, importance : #HIGH, cssDefault.width: '3rem' } ],
-   identification: [ { position : 10, label : 'Posting Item' } ] }
+   identification: [ { position : 10 } ] }
   AccountingDocumentItem;
   
   @UI: { lineItem: [ { position : 20, importance : #HIGH, cssDefault.width: '16rem' } ],
-   identification: [ { position : 20, label : 'Product' } ] }
+   identification: [ { position : 20 } ] }
   Product;
   
-//  @UI: { lineItem: [ { position : 30, importance : #HIGH, cssDefault.width: '16rem' } ],
-//   identification: [ { position : 30, label : 'Product Description' } ] }
-//  ProductDescription;
-  
   @UI: { lineItem: [ { position : 40, importance : #HIGH, cssDefault.width: '12rem' } ],
-   identification: [ { position : 40, label : 'Item Text' } ] }
+   identification: [ { position : 40 } ] }
   DocumentItemText;
   
   @UI: { lineItem: [ { position : 50, importance : #HIGH, cssDefault.width: '7rem' } ],
-   identification: [ { position : 50, label : 'Quantity' } ] }
+   identification: [ { position : 50 } ] }
   Quantity;
   
-  @UI: { lineItem: [ { position : 60, importance : #HIGH, label : 'Net Amount', cssDefault.width: '9rem' } ],
-   identification: [ { position : 60, label : 'Net Amount' } ] }
+  @UI: { lineItem: [ { position : 60, importance : #HIGH, label : 'Importe Neto', cssDefault.width: '9rem' } ],
+   identification: [ { position : 60, label : 'Importe Neto' } ] }
   TaxBaseAmountInCoCodeCrcy;
   
-  @UI: { lineItem: [ { position : 70, importance : #HIGH, label : 'Tax Amount', cssDefault.width: '9rem' } ],
-   identification: [ { position : 70, label : 'Tax Amount' } ] }
+  @UI: { lineItem: [ { position : 70, importance : #HIGH, label : 'Impuesto', cssDefault.width: '9rem' } ],
+   identification: [ { position : 70, label : 'Impuesto' } ] }
   TaxAmountInCoCodeCrcy;
   
   @UI: { lineItem: [ { position : 80, importance : #HIGH, cssDefault.width: '5rem' } ],
-   identification: [ { position : 80, label : 'Tax Code' } ] }
+   identification: [ { position : 80 } ] }
   TaxCode;
   
-  @UI: { lineItem: [ { position : 90, importance : #HIGH, label : 'Percent', cssDefault.width: '5rem' } ],
-   identification: [ { position : 90, label : 'Percent' } ] }
+  @UI: { lineItem: [ { position : 90, importance : #HIGH, label : 'Porcentaje', cssDefault.width: '5rem' } ],
+   identification: [ { position : 90, label : 'Porcentaje' } ] }
   TaxRatePercent;
   
-  @UI: { lineItem: [ { position : 100, importance : #HIGH, label : 'Total Amount', cssDefault.width: '9rem' } ],
-   identification: [ { position : 100, label : 'Total Amount' } ] }
+  @UI: { lineItem: [ { position : 100, importance : #HIGH, label : 'Importe Total', cssDefault.width: '9rem' } ],
+   identification: [ { position : 100, label : 'Importe Total' } ] }
   TotalAmountInCoCodeCrcy;
 
-  @UI: { identification: [ { position : 110, label : 'Tax Support Id' } ] }
+  @UI: { identification: [ { position : 110, label : 'Tipo Código' } ] }
   taxSupportId;
   
-  @UI: { identification: [ { position : 120, label : 'Support Code' } ] }
+  @UI: { identification: [ { position : 120, label : 'Código Sustento' } ] }
   SupportTaxCode;
   
-  @UI: { identification: [ { position : 130, label : 'Tax Id Rate' } ] }
+  @UI: { identification: [ { position : 130, label : 'Id Porcentaje' } ] }
   TaxsIdRate; 
     
 }

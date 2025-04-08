@@ -10,19 +10,20 @@ define root view entity ZCDS_P_EC_012
 
       @Consumption.valueHelpDefinition: [ { entity:  { name: 'I_CompanyCodeVH', element: 'CompanyCode' } } ]
       //                     additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' } ] } ]
-  key Companycode                 as CompanyCode,
+  key CompanyCode                 as CompanyCode,
       @Semantics.fiscal.year: true
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_FISCALYEAR' , element: 'FiscalYear' }, distinctValues: true } ]
-  key Fiscalyear                  as FiscalYear,
+  key FiscalYear                  as FiscalYear,
 
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_DOCUMENT_FI' , element: 'AccountingDocument' }, distinctValues: true } ]
-  key Accountingdocument          as AccountingDocument,
+  key AccountingDocument          as AccountingDocument,
 
       @Search.defaultSearchElement: true
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_AccountingDocumentTypeText' , element: 'AccountingDocumentType' },
       //                     additionalBinding: [ { localElement: 'AccountingDocumentTypeName', element: 'AccountingDocumentTypeName' } ],
                      distinctValues: true } ]
-  key Accountingdocumenttype      as AccountingDocumentType,
+  key AccountingDocumentType      as AccountingDocumentType,
+  
       Filestatus                  as FileStatus,
 
       @Semantics.largeObject: { mimeType: 'MimeType', fileName: 'FileName', acceptableMimeTypes: [ 'text/csv' ], contentDispositionPreference: #ATTACHMENT }

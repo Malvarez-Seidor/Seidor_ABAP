@@ -1,10 +1,10 @@
-managed implementation in class zbp_cds_rv_doc_ret unique;
-//strict ( 2 );
+unmanaged implementation in class zbp_cds_rv_doc_ret unique;
+strict;
 
 define behavior for ZCDS_RV_DOC_RET alias Withholdings
-persistent table zdt_fi_doc_ret
+//persistent table zdt_fi_doc_ret
 lock master
-//authorization master ( instance )
+authorization master ( global, instance )
 //etag master <field_name>
 {
 
@@ -12,8 +12,36 @@ lock master
   update;
   delete;
 
+  field ( readonly: update ) CompanyCode, FiscalYear, AccountingDocument, AccountingDocumentType;
+
   // instance action and dynamic action control
   action ( features : instance ) SendDocument result [1] $self;
   action ( features : instance ) UpdateStatus result [1] $self;
+
+  mapping for zdt_fi_doc_ret{
+
+  CompanyCode            = CompanyCode;
+  FiscalYear             = FiscalYear;
+  AccountingDocument     = AccountingDocument;
+  AccountingDocumentType = AccountingDocumentType;
+  Supplier               = supplier;
+  BusinessName           = BusinessName;
+  TypeId                 = TypeId;
+  IdNumber               = IdNumber;
+  Establishment          = Establishment;
+  emissionpoint          = EmissionPoint;
+  Sequential             = Sequential;
+  Accesskey              = Accesskey;
+  DocumentType           = DocumentType;
+  IssueDate              = IssueDate;
+  DocumentStatus         = DocumentStatus;
+  MessageDocument        = MessageDocument;
+  AuthorizationDate      = AuthorizationDate;
+  Xml                    = Xml;
+  MimeType               = MimeType;
+  FileName               = FileName;
+  DocumentSupplier       = DocumentSupplier;
+
+  }
 
 }

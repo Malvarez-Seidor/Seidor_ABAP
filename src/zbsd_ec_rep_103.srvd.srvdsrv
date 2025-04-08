@@ -1,0 +1,4 @@
+@EndUserText.label: 'Report 103'
+define service ZBSD_EC_REP_103 {
+  expose ZCDS_VED_REP_103 as Report103;
+}

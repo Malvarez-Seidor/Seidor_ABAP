@@ -18,56 +18,56 @@
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>01</DOMVALUE_L>
-     <DDTEXT>Without Using the Financial System</DDTEXT>
+     <DDTEXT>Sin Utilización del Sistema Financiero</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_PAYMENT</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>15</DOMVALUE_L>
-     <DDTEXT>Debt Compensation</DDTEXT>
+     <DDTEXT>Compensación de Deuda</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_PAYMENT</DOMNAME>
      <VALPOS>0003</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>16</DOMVALUE_L>
-     <DDTEXT>Debit Card</DDTEXT>
+     <DDTEXT>Tarjeta de Débito</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_PAYMENT</DOMNAME>
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>17</DOMVALUE_L>
-     <DDTEXT>Electronic Cash</DDTEXT>
+     <DDTEXT>Dinero Electrónico</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_PAYMENT</DOMNAME>
      <VALPOS>0005</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>18</DOMVALUE_L>
-     <DDTEXT>Prepaid Card</DDTEXT>
+     <DDTEXT>Tarjeta Prepago</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_PAYMENT</DOMNAME>
      <VALPOS>0006</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>19</DOMVALUE_L>
-     <DDTEXT>Credit Card</DDTEXT>
+     <DDTEXT>Tarjeta de Crédito</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_PAYMENT</DOMNAME>
      <VALPOS>0007</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>20</DOMVALUE_L>
-     <DDTEXT>Others With Use of the System</DDTEXT>
+     <DDTEXT>Otros con uso del Sistema Financiero</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_PAYMENT</DOMNAME>
      <VALPOS>0008</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>21</DOMVALUE_L>
-     <DDTEXT>Endorsement of Securities</DDTEXT>
+     <DDTEXT>Endoso de Títulos</DDTEXT>
     </DD07V>
    </DD07V_TAB>
   </asx:values>

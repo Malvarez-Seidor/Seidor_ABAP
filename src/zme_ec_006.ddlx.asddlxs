@@ -1,34 +1,34 @@
 @Metadata.layer: #CORE
 
-@UI :{ headerInfo : { typeName : 'Payment Method', typeNamePlural : 'Payment Methods',
-            title : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+@UI :{ headerInfo : { typeName : 'Método de Pago', typeNamePlural : 'Métodos de Pago',
+            title : { type :#STANDARD, value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
             
 annotate view ZCDS_P_EC_006 with
 {
-  @UI.facet: [ { id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Company Code' } ]
+  @UI.facet: [ { id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE } ]
           
-  @UI: { lineItem: [ { position : 10, label : 'Company Code', importance :  #HIGH } ],
-   identification: [ { position : 10, label : 'Company Code' } ],
-   selectionField: [ { position: 10 } ] }
+  @UI: { lineItem: [ { position : 10, importance :  #HIGH } ],
+   identification: [ { position : 10 } ],
+   selectionField: [ { position : 10 } ] }
   CompanyCode;
 
-  @UI: { lineItem: [ { position : 20, label : 'Company Name', importance :  #HIGH } ],
-   identification: [ { position : 20, label : 'Company Name' } ] }
+  @UI: { lineItem: [ { position : 20, importance :  #HIGH } ],
+   identification: [ { position : 20 } ] }
   @UI.hidden: true
   CompanyCodeName;
   
-  @UI: { lineItem: [ { position : 30, label : 'Payment Method', importance : #HIGH } ],
-   identification: [ { position : 30, label : 'Payment Sri' } ],
-   selectionField: [ { position: 20 } ] }
+  @UI: { lineItem: [ { position : 30, importance : #HIGH } ],
+   identification: [ { position : 30 } ],
+   selectionField: [ { position : 20 } ] }
   PaymentMethod;
   
-  @UI: { lineItem: [ { position : 40, label : 'Payment Method', importance : #HIGH } ],
-   identification: [ { position : 40, label : 'Payment Sri' } ],
-   selectionField: [ { position: 30 } ] }
+  @UI: { lineItem: [ { position : 40, label : 'Código SRI', importance : #HIGH } ],
+   identification: [ { position : 40, label : 'Código SRI' } ],
+   selectionField: [ { position : 30 } ] }
   PaymentSri;
   
-  @UI: { lineItem: [ { position : 50, label : 'Payment Description', importance : #LOW } ],
-   identification: [ { position : 50, label : 'Payment Description' } ] }
+  @UI: { lineItem: [ { position : 50, importance : #LOW } ],
+   identification: [ { position : 50 } ] }
   PaymentMethodDescription;
 
 }

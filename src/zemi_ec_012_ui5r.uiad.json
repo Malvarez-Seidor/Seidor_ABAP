@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Liquidacion Soportes",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "liquidationsupports.eclocalizacion012"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_F00FD103C4DF7CC6214D40646E654DDAE90B7DEA_TM",
+    "semanticObject": "ZEMI_EC_012",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_F00FD103C4DF7CC6214D40646E654DDAE90B7DEA_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Liquidacion Soportes",
+        "subtitle": "Carga de Sustentos"
+      }
+    }
+  ]
+}

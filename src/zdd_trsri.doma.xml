@@ -18,42 +18,42 @@
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>01</DOMVALUE_L>
-     <DDTEXT>Invoices</DDTEXT>
+     <DDTEXT>Facturas</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TRSRI</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>03</DOMVALUE_L>
-     <DDTEXT>Purchase Settlement</DDTEXT>
+     <DDTEXT>Liquidación de Compra</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TRSRI</DOMNAME>
      <VALPOS>0003</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>04</DOMVALUE_L>
-     <DDTEXT>Credit Note</DDTEXT>
+     <DDTEXT>Nota de Crédito</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TRSRI</DOMNAME>
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>05</DOMVALUE_L>
-     <DDTEXT>Debit Note</DDTEXT>
+     <DDTEXT>Nota de Débito</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TRSRI</DOMNAME>
      <VALPOS>0005</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>06</DOMVALUE_L>
-     <DDTEXT>Remittance Guide</DDTEXT>
+     <DDTEXT>Guía Remisión</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TRSRI</DOMNAME>
      <VALPOS>0006</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>07</DOMVALUE_L>
-     <DDTEXT>Retention Certificate</DDTEXT>
+     <DDTEXT>Certificado de Retención</DDTEXT>
     </DD07V>
    </DD07V_TAB>
   </asx:values>

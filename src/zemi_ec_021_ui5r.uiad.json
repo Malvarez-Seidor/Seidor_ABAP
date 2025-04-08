@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Guias de Traslado",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "transferguides.eclocalizacion021"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_2E74F58509F0ED0F22DCE27E9EE9E96B4AC737AE_TM",
+    "semanticObject": "ZEMI_EC_021",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_2E74F58509F0ED0F22DCE27E9EE9E96B4AC737AE_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Guias de Traslado",
+        "subtitle": "Emision de Guias Traslado"
+      }
+    }
+  ]
+}

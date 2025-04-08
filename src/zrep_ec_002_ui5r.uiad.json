@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Reporte 104",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "report104.eclocalizacion027"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_D95FF67FFECEA68EE59FA3D06F2EA137A96D52ED_TM",
+    "semanticObject": "ZREP_EC_002",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_D95FF67FFECEA68EE59FA3D06F2EA137A96D52ED_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Reporte 104",
+        "subtitle": "Declaración del Impuesto al Valor Agregado"
+      }
+    }
+  ]
+}

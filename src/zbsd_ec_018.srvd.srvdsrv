@@ -1,0 +1,4 @@
+@EndUserText.label: 'Code Reports'
+define service ZBSD_EC_018 {
+  expose ZCDS_P_EC_018 as CodeReports;
+}

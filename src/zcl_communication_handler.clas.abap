@@ -8,10 +8,15 @@ CLASS zcl_communication_handler DEFINITION
       send_request_by_url "*    HTTP Comunicacion via URL  *
         IMPORTING url                TYPE string
                   documenttype       TYPE zde_trsri
+                  ruc                TYPE string
+                  clave              TYPE string
                   xml                TYPE string
                   documentsupplier   TYPE sgtxt
                   username           TYPE string
                   password           TYPE string
+                  establishment      TYPE zde_estab      OPTIONAL
+                  emissionpoint      TYPE zde_emission   OPTIONAL
+                  sequential         TYPE zde_secuencial OPTIONAL
         RETURNING VALUE(lo_responce) TYPE REF TO if_web_http_response
         RAISING   cx_web_http_client_error,
 
@@ -125,9 +130,10 @@ CLASS ZCL_COMMUNICATION_HANDLER IMPLEMENTATION.
         DATA(lo_request) = lo_http_client->get_http_request( ).
 
         IF documenttype IS NOT INITIAL AND xml IS NOT INITIAL.
-          CONCATENATE '{ "TipoDocumento": "'  documenttype  '", "xmlBase64": "'  xml  '" }' INTO lv_body.
+          CONCATENATE '{ "RucEmpresa": "'  ruc  '", "xmlBase64": "'  xml  '", "NombreArchivo": "' clave '" }' INTO lv_body.
         ELSEIF documentsupplier IS NOT INITIAL.
-          CONCATENATE '{ "id": "'  documentsupplier  '" }' INTO lv_body.
+          CONCATENATE '{ "RucEmpresa": "'  ruc  '", "TipoDocumento": "' documenttype '", "Establecimiento": "' establishment
+                     '", "PtoEmision": "' emissionpoint '", "Secuencial": "' sequential '", "NombreArchivo": "' clave '.txt" }' INTO lv_body.
         ENDIF.
 
         "lo_request->set_header_fields( VALUE #(
@@ -145,7 +151,7 @@ CLASS ZCL_COMMUNICATION_HANDLER IMPLEMENTATION.
         lo_request->append_text( lv_body ).
 
         "adding HTTP GET-request and store response
-        lo_responce = lo_http_client->execute( if_web_http_client=>put ).
+        lo_responce = lo_http_client->execute( if_web_http_client=>post ).
 
         "Print response text in console
         DATA(ls_status) = lo_responce->get_status( ).

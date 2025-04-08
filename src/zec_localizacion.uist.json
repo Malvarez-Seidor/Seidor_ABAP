@@ -1,0 +1,17 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Localizacion Ecuador",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "title": "Localizacion Ecuador",
+    "sortPriority": 100.0
+  },
+  "pages": [
+    {
+      "name": "ZEC_P_LOCALIZACION"
+    }
+  ]
+}

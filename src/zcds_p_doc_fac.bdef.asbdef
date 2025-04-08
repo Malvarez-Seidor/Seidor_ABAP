@@ -1,6 +1,5 @@
 projection;
-
-//strict ( 2 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+strict;
 
 define behavior for ZCDS_P_DOC_FAC
 alias InvoiceDocuments use etag
@@ -14,7 +13,7 @@ alias InvoiceDocuments use etag
                                Xml, FileName, MimeType, AuthorizationDate, DocumentSupplier, UserFullName, TransactionCurrency,
                                TotalTaxAmount, TotalNetAmount, SalesOrganizationName, SalesOrganization, DocumentReferenceID,
                                Criticality, CreationDate, CreatedByUser, CompanyCodeName, BillingDocumentIsCancelled,
-                               BillingDocumentTypeName, BillingDocumentDate, AccountingDocumentTypeName;
+                               BillingDocumentTypeName, BillingDocumentDate,AccountingDocumentTypeName;
 
     use action SendDocument;
     use action UpdateStatus;

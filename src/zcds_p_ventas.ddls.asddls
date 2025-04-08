@@ -12,7 +12,14 @@ define view ZCDS_P_VENTAS
 
     inner join I_Businesspartnertaxnumber as I_Businesspartnertaxnumber // Identificacion Cliente
            on  I_Businesspartnertaxnumber.BusinessPartner    = I_BillingDocument.SoldToParty
-
+    
+    inner join      I_Customer                           as I_Customer
+            on I_Customer.Customer                                     = I_BillingDocument.SoldToParty
+           
+    inner join      I_CustomerCompany                    as I_CustomerCompany
+            on I_CustomerCompany.Customer                              = I_BillingDocument.SoldToParty
+           and I_CustomerCompany.CompanyCode                           = I_BillingDocument.CompanyCode
+    
     inner join      I_BusinessUserVH          as I_BusinessUser // Usuario Creador Documento de Ventas
             on I_BusinessUser.UserID                         = I_BillingDocument.CreatedByUser
 
@@ -106,7 +113,10 @@ define view ZCDS_P_VENTAS
           
     left outer join zdt_ec_004                as I_TypeIdentification  // Typo Identificacion Cliente del SRI
             on I_TypeIdentification.bptaxtype                = I_Businesspartnertaxnumber.BPTaxType
-           and I_TypeIdentification.typedoccument            = '02' 
+           and ( ( ElectronicDocuments.export                is initial
+               and I_TypeIdentification.typedoccument        = '02' )
+              or ( ElectronicDocuments.export                is not initial
+              and I_TypeIdentification.typedoccument         = '04' ) )
            and I_TypeIdentification.companycode              = I_BillingDocument.CompanyCode
            
     left outer join ZSH_STATUS                as I_Status                  
@@ -221,6 +231,9 @@ define view ZCDS_P_VENTAS
 //        when DebitNotes.documenttype       is not initial
 //        then DebitNotes.documenttype
         when ElectronicDocuments.documentsri = '01'
+         and ElectronicDocuments.export is not initial
+        then '16'
+        when ElectronicDocuments.documentsri = '01'
         then '18'
         else ElectronicDocuments.documentsri
         end                                                   as Documenttype,
@@ -247,6 +260,17 @@ define view ZCDS_P_VENTAS
         then DebitNotes.documentstatus
         else 'PENDING'
         end                                                   as Documentstatus,
+        
+      
+      case
+        when InvoiceDocuments.authorizationdate is not initial
+        then InvoiceDocuments.authorizationdate
+        when CreditNotes.authorizationdate      is not initial
+        then CreditNotes.authorizationdate
+        when DebitNotes.authorizationdate       is not initial
+        then DebitNotes.authorizationdate
+        else '00000000'
+        end                                                   as AuthorizationDate,
       
       I_BillingDocument.BillingDocumentIsCancelled            as BillingDocumentIsCancelled,
       
@@ -333,6 +357,14 @@ define view ZCDS_P_VENTAS
         when I_Status.Description       is not initial
         then I_Status.Description
         else 'Pending'
-      end                                                    as Description
+      end                                                    as Description,
+      
+      I_JournalEntry.IsReversed                              as IsReversed, 
+      
+      ElectronicDocuments.export                             as Export,
+      
+      I_CustomerCompany.CustomerAccountNote                  as CustomerAccountNote,
+      
+      I_Customer.Country                                     as Country
 
-}
+} where I_JournalEntry.IsReversal is initial

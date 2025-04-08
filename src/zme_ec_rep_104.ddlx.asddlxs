@@ -1,0 +1,65 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName          : 'Reporte de 104',
+                      typeNamePlural    : 'Reporte de 104',
+                      title : { type :#STANDARD, value : 'DescriptionBase' }, description.value: 'CodeBase'  },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'CodeBase', direction:  #ASC  } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+
+annotate entity ZCDS_VED_REP_104 with
+  parameters
+    @EndUserText.quickInfo: 'Sociedad'
+    P_CompanyCode,
+    @EndUserText.quickInfo: 'Periodo'
+    P_FiscalPeriod,
+    @EndUserText.quickInfo: 'Ejercicio'
+    P_FiscalYear
+{
+  
+  @UI.facet: [ { id : 'CodeBase', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE } ]
+  
+  @UI: { lineItem: [ { position : 10, importance : #HIGH, label: 'Casillero Base', cssDefault.width: '4rem' } ],
+   identification: [ { position : 10, label : 'Casillero Base' } ] }
+  CodeBase;
+  
+  @UI: { lineItem: [ { position : 20, importance : #HIGH, label: 'Descripcion', cssDefault.width: '8rem' } ],
+   identification: [ { position : 20, label : 'Descripcion' } ] }
+  DescriptionBase;
+  
+  @UI: { lineItem: [ { position : 30, importance : #HIGH, label: 'Valor Base', cssDefault.width: '8rem' } ],
+   identification: [ { position : 30, label : 'Valor Base' } ] }
+  TaxBaseAmount;
+  
+  @UI: { lineItem: [ { position : 40, importance : #HIGH, label: 'Codigo Impuesto', cssDefault.width: '4rem' } ],
+   identification: [ { position : 40, label : 'Codigo Impuesto' } ] }
+  CodeTax;
+  
+  @UI: { lineItem: [ { position : 50, importance : #HIGH, label: 'Descripcion', cssDefault.width: '8rem' } ],
+   identification: [ { position : 40, label : 'Descripcion' } ] }
+  DescriptionTax;
+  
+  @UI: { lineItem: [ { position : 60, importance : #HIGH, label: 'Valor Impuesto', cssDefault.width: '8rem' } ],
+   identification: [ { position : 40, label : 'Valor Impuesto' } ] }
+  TaxAmount;
+  
+  @UI: { lineItem: [ { position : 70, importance : #HIGH, label: 'Codigo Neto', cssDefault.width: '4rem'  } ],
+   identification: [ { position : 40, label : 'Codigo Neto' } ] }
+  CodeNeto;
+  
+  @UI: { lineItem: [ { position : 80, importance : #HIGH, label: 'Descripcion', cssDefault.width: '8rem' } ],
+   identification: [ { position : 80, label : 'Descripcion' } ] }
+  DescriptionNeto;
+  
+  @UI: { lineItem: [ { position : 90, importance : #HIGH, label: 'Valor Neto', cssDefault.width: '8rem' } ],
+   identification: [ { position : 40, label : 'Valor Neto' } ] }
+  NetoAmount;
+  
+  @UI: { lineItem: [ { position : 100, importance : #HIGH, label: 'Base Retentencion', cssDefault.width: '8rem' } ],
+   identification: [ { position : 40, label : 'Base Retentencion' } ] }
+  BaseRetencion;
+  
+  @UI: { lineItem: [ { position : 110, importance : #HIGH, label: 'Valor Retenido', cssDefault.width: '8rem' } ],
+  identification: [ { position : 40, label : 'Valor Retenido' } ] }
+  ValoRetencion;
+
+}

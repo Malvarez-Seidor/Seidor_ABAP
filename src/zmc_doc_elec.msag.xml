@@ -5,7 +5,7 @@
    <T100A>
     <ARBGB>ZMC_DOC_ELEC</ARBGB>
     <MASTERLANG>E</MASTERLANG>
-    <STEXT>Clase de mensajes de Documentos Electronicos</STEXT>
+    <STEXT>Mensajes de Localizacion</STEXT>
    </T100A>
    <T100>
     <T100>
@@ -49,6 +49,12 @@
      <ARBGB>ZMC_DOC_ELEC</ARBGB>
      <MSGNR>007</MSGNR>
      <TEXT>Se debe Ingresar el Susntento de Liquidcion de Reembolso</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>ZMC_DOC_ELEC</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Objecto de Rango de Numeros &amp; No Creado Correcto</TEXT>
     </T100>
    </T100>
   </asx:values>

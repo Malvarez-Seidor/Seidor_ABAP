@@ -1,11 +1,14 @@
 projection;
-//strict ( 2 );
+strict;
 
 define behavior for ZCDS_P_EC_015 alias ElectronicDocuments
 {
   use create;
   use update;
   use delete;
+
+  use action DocumentLogistics;
+  use action FinancialDocument;
 
   use association _Withholdings { create; }
   use association _PurchaseOrders { create; }

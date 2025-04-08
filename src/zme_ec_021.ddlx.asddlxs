@@ -1,0 +1,69 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'Anexo Transaccional', typeNamePlural : 'Anexos Transaccionales',
+            title : { type :#STANDARD, value : 'CompanyCodeName' }, description.value: 'CompanyCode' }, 
+
+presentationVariant: [ { sortOrder: [ { by: 'FiscalYear',  direction:  #DESC },
+                                      { by: 'Monat', direction:  #ASC  } ],
+                    visualizations: [ { type: #AS_LINEITEM } ] } ] }
+                     
+annotate entity ZCDS_P_EC_021
+    with 
+{
+      
+  @UI.facet: [ { label: 'Inf. Cabecera',  purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10 },
+               { label: 'Adjunto',        purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 20, targetQualifier: 'Attached' },
+               { label: 'Detalles',       purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30, targetQualifier: 'Data', targetElement: '_DetailsTransactionalAnnex' } ]
+              
+  @UI: { lineItem: [ { position : 10, importance : #HIGH } ], textArrangement: #TEXT_ONLY,
+   selectionField: [ { position : 10 } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  Companycode;
+ 
+  @UI: { lineItem: [ { position : 20, importance : #HIGH } ],
+   selectionField: [ { position : 20 } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  FiscalYear;
+  
+  @UI: { lineItem: [ { position : 30, label: 'Perido', importance : #HIGH } ],
+   selectionField: [ { position : 30 } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  Monat;
+ 
+  @UI: { lineItem: [ { position : 40, label: 'Cant. Compras', importance : #HIGH } ] }
+//   identification: [ { position : 10, label: 'Cantidad Compras' } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  Purchases;
+
+  @UI: { lineItem: [ { position : 50, label: 'Cant. Ventas', importance : #HIGH } ] }
+//   identification: [ { position : 20, label: 'Cant. Ventas' } ] }
+  Sales;
+  
+  @UI: { lineItem: [ { position : 60, label: 'Cant. Exportaciones', importance : #HIGH } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+//   identification: [ { position : 30, label: 'Cantidad Exportaciones' } ] }
+  Export;
+ 
+  @UI: { lineItem: [ { position : 70, label: 'Cant. Anulados', importance : #HIGH } ] }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+//   identification: [ { position : 40, label: 'Cantidad Anulados' } ] }
+  Cancel;
+  
+  @UI.fieldGroup: [ { qualifier:'Attached',  label :'Xml', position: 10 } ]
+  Xml;
+  
+  @UI: { lineItem: [ { position : 100,  label : 'Estado XML', importance : #HIGH, criticality: 'Criticality' },
+                     { type: #FOR_ACTION, dataAction: 'Download', label: 'Descargar XML' } ],
+   identification: [ { type: #FOR_ACTION, dataAction: 'Download', label: 'Descargar XML' } ] }
+  @UI.textArrangement: #TEXT_ONLY
+  @UI: { dataPoint: { title: 'Estado XML',  criticality : 'Criticality', criticalityRepresentation: #WITH_ICON } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  Status;
+  
+}

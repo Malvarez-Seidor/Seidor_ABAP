@@ -4,15 +4,14 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Purchase Report - View'
 @Metadata.ignorePropagatedAnnotations: true
+/*+[hideWarning] { "IDS" : [ "CARDINALITY_CHECK" ]  } */
 define view ZCDS_P_COMPRAS
   as select from I_JournalEntry  // Documento Contable del Documento de Compras
     
-    inner join      zdt_ec_001                           as ElectronicDocuments  // Configuracion de Documentos Electonicos
-            on ElectronicDocuments.companycode                         = I_JournalEntry.CompanyCode
-           and ElectronicDocuments.documenttype                        = I_JournalEntry.AccountingDocumentType
-           and ( ElectronicDocuments.documentsri                       = '03'
-            or   ElectronicDocuments.documentsri                       = '07' )
-           and ElectronicDocuments.sequence                            = '01'
+    inner join      zdt_ec_022                           as PurchasingDocumentATS  // Configuracion de Documentos Compras
+            on PurchasingDocumentATS.companycode                         = I_JournalEntry.CompanyCode
+           and PurchasingDocumentATS.accountingdocumenttype              = I_JournalEntry.AccountingDocumentType
+           and PurchasingDocumentATS.codesri                             is not initial
            
     inner join      I_OperationalAcctgDocItem            as I_JournalEntryItemSupplier // Documento Contable del Documento de Compras Proveedor
             on I_JournalEntryItemSupplier.CompanyCode                  = I_JournalEntry.CompanyCode
@@ -24,6 +23,13 @@ define view ZCDS_P_COMPRAS
           
     inner join      I_BusinessPartner                    as I_BusinessPartner // Proveedor
             on I_BusinessPartner.BusinessPartner                       = I_JournalEntryItemSupplier.Supplier
+    
+    inner join      I_Supplier                           as I_Supplier
+            on I_Supplier.Supplier                                     = I_JournalEntryItemSupplier.Supplier
+    
+    inner join      I_SupplierCompany                    as I_SupplierCompany
+            on I_SupplierCompany.Supplier                              = I_JournalEntryItemSupplier.Supplier
+           and I_SupplierCompany.CompanyCode                           = I_JournalEntryItemSupplier.CompanyCode
 
     inner join I_Businesspartnertaxnumber                as I_Businesspartnertaxnumber // Identificacion Proveedor
             on I_Businesspartnertaxnumber.BusinessPartner              = I_JournalEntryItemSupplier.Supplier
@@ -43,6 +49,29 @@ define view ZCDS_P_COMPRAS
            and I_OperationalAcctgDocTaxItem.CompanyCode                = I_JournalEntry.CompanyCode
            and I_OperationalAcctgDocTaxItem.FiscalYear                 = I_JournalEntry.FiscalYear
     
+    left outer join I_JournalEntryItem        as I_JournalEntryItem  // Factura Asociada a la Nota Credito/Nota Debito en Compras 
+           on  I_JournalEntryItem.InvoiceReferenceFiscalYear           = I_JournalEntry.FiscalYear
+          and  I_JournalEntryItem.CompanyCode                          = I_JournalEntry.CompanyCode
+          and  I_JournalEntryItem.InvoiceReference                     = I_JournalEntry.AccountingDocument
+          and  I_JournalEntryItem.AccountingDocumentType              <> I_JournalEntry.AccountingDocumentType
+          and  I_JournalEntryItem.Ledger                               = '0L'
+          and  I_JournalEntryItem.IsReversal is initial    
+          and  I_JournalEntryItem.IsReversed is initial 
+          
+    left outer join I_JournalEntry            as I_AssociatedInvoice // Factura a la Compras 
+           on  I_AssociatedInvoice.FiscalYear                          = I_JournalEntryItem.FiscalYear
+          and  I_AssociatedInvoice.CompanyCode                         = I_JournalEntryItem.CompanyCode
+          and  I_AssociatedInvoice.AccountingDocument                  = I_JournalEntryItem.AccountingDocument
+          and  I_AssociatedInvoice.IsReversal is initial    
+          and  I_AssociatedInvoice.IsReversed is initial
+    
+    left outer join zdt_ec_001                           as ElectronicDocuments  // Configuracion de Documentos Electonicos
+            on ElectronicDocuments.companycode                         = I_JournalEntry.CompanyCode
+           and ElectronicDocuments.documenttype                        = I_JournalEntry.AccountingDocumentType
+           and ( ElectronicDocuments.documentsri                       = '03'
+            or   ElectronicDocuments.documentsri                       = '07' )
+           and ElectronicDocuments.sequence                            = '01'
+           
     left outer join zdt_fi_doc_liq                       as LiquidationPurchase // Liquidacion de Compras Documento Electronico
             on LiquidationPurchase.companycode                         = I_JournalEntry.CompanyCode
            and LiquidationPurchase.accountingdocument                  = I_JournalEntry.AccountingDocument
@@ -80,13 +109,7 @@ define view ZCDS_P_COMPRAS
   @ObjectModel.text.element: [ 'AccountingDocumentTypeName' ]
   key I_JournalEntry.AccountingDocumentType                   as AccountingDocumentType,
 
-      case
-        when LiquidationPurchase.supplier                     is not initial
-        then LiquidationPurchase.supplier
-        when Withholdings.supplier                            is not initial
-        then Withholdings.supplier
-        else I_JournalEntryItemSupplier.Supplier
-        end                                                   as Supplier,
+      I_JournalEntryItemSupplier.Supplier                     as Supplier,
 
       case
         when LiquidationPurchase.businessname                 is not initial
@@ -118,8 +141,10 @@ define view ZCDS_P_COMPRAS
         when LiquidationPurchase.establishment                is not initial
          and ElectronicDocuments.documentsri                  = '03'
         then LiquidationPurchase.establishment
-        when ElectronicDocuments.documentsri                  = '07' 
+        when ElectronicDocuments.documentsri                  = '07'
          and I_JournalEntry.DocumentReferenceID               is not initial
+        then substring( I_JournalEntry.DocumentReferenceID, 1, 3 )
+        when I_JournalEntry.DocumentReferenceID is not initial
         then substring( I_JournalEntry.DocumentReferenceID, 1, 3 )
         else '000'
         end                                                   as Establishment,
@@ -131,6 +156,8 @@ define view ZCDS_P_COMPRAS
         when ElectronicDocuments.documentsri                  = '07' 
          and I_JournalEntry.DocumentReferenceID               is not initial
         then substring( I_JournalEntry.DocumentReferenceID, 4, 3 )
+        when I_JournalEntry.DocumentReferenceID is not initial
+        then substring( I_JournalEntry.DocumentReferenceID, 4, 3 )
         else '000'
         end                                                   as Emissionpoint,
 
@@ -140,6 +167,8 @@ define view ZCDS_P_COMPRAS
         then LiquidationPurchase.sequential
         when ElectronicDocuments.documentsri                  = '07'
          and I_JournalEntry.DocumentReferenceID               is not initial
+        then substring( I_JournalEntry.DocumentReferenceID, 7, 9 )
+        when I_JournalEntry.DocumentReferenceID is not initial
         then substring( I_JournalEntry.DocumentReferenceID, 7, 9 )
         else '000000000'
         end                                                   as Sequential,
@@ -156,13 +185,14 @@ define view ZCDS_P_COMPRAS
         
       case
         when LiquidationPurchase.documenttype                 is not initial
-         and ElectronicDocuments.documentsri                  = '03'
-        then LiquidationPurchase.documenttype
-        when ElectronicDocuments.documentsri                  = '03'
-        then ElectronicDocuments.documentsri
-        when ElectronicDocuments.documentsri                  = '07'
-        then '01'
-        else ''
+        and ElectronicDocuments.refunds                       is not initial
+        then '41'
+        when LiquidationPurchase.documenttype                 is not initial
+        then LiquidationPurchase.documenttype                       
+        when Withholdings.documenttype                        is not initial
+        and ElectronicDocuments.refunds                       is not initial
+        then '41'
+        else PurchasingDocumentATS.codesri
         end                                                   as DocumentType,
 
       case
@@ -170,12 +200,19 @@ define view ZCDS_P_COMPRAS
          and ElectronicDocuments.documentsri                  = '03'
         then LiquidationPurchase.issuedate
         when ElectronicDocuments.documentsri                  = '03'
-        then I_JournalEntry.PostingDate
+        then I_JournalEntry.DocumentDate
         when ElectronicDocuments.documentsri                  = '07'
          and I_JournalEntry.DocumentDate                      is not initial
         then I_JournalEntry.DocumentDate
-        else '00000000'
+        else I_JournalEntry.DocumentDate
         end                                                   as IssueDate,
+        
+      case
+        when LiquidationPurchase.authorizationdate            is not initial
+         and ElectronicDocuments.documentsri                  = '03'
+        then LiquidationPurchase.authorizationdate
+        else I_JournalEntry.PostingDate
+        end                                                   as AuthorizationDate,
 
       @ObjectModel.text.element: [ 'Description' ]
       @Search.defaultSearchElement: true
@@ -187,6 +224,8 @@ define view ZCDS_P_COMPRAS
         when ElectronicDocuments.documentsri                  = '03'
         then 'PENDING'
         when ElectronicDocuments.documentsri                  = '07'
+        then 'AUTHORIZED'
+        when PurchasingDocumentATS.codesri                    is not initial
         then 'AUTHORIZED'
         else ''
         end                                                   as DocumentStatus,
@@ -218,9 +257,7 @@ define view ZCDS_P_COMPRAS
       case
         when Withholdings.documenttype                        is not initial
         then Withholdings.documenttype
-        when ElectronicDocuments.documentsri                  = '03'
-        then '07'
-        else ElectronicDocuments.documentsri
+        else ''
         end                                                   as DocumentTypeWith,
 
       case
@@ -228,6 +265,12 @@ define view ZCDS_P_COMPRAS
         then Withholdings.issuedate
         else '00000000'
         end                                                   as IssueDateWith,
+      
+      case
+        when Withholdings.authorizationdate                   is not initial
+        then Withholdings.authorizationdate
+        else '00000000'
+        end                                                   as AuthorizationDateWith,
 
       @ObjectModel.text.element: [ 'DescriptionW' ]
       @Search.defaultSearchElement: true
@@ -314,6 +357,58 @@ define view ZCDS_P_COMPRAS
         when I_StatusWithholdings.Description       is not initial
         then I_StatusWithholdings.Description
         else 'Pending'
-      end                                                    as DescriptionW
+      end                                                    as DescriptionW,
       
-}
+      I_JournalEntry.IsReversed                              as IsReversed,
+      
+      I_SupplierCompany.SupplierAccountNote                  as SupplierAccountNote,
+      
+      I_Supplier.Country                                     as Country,
+      
+      case
+        when I_JournalEntry.DocumentReferenceID               is not initial
+         and PurchasingDocumentATS.codesri                    = '04'
+        then substring( I_JournalEntry.DocumentReferenceID, 1, 3 )
+        when PurchasingDocumentATS.codesri                    = '05'
+         and I_JournalEntry.DocumentReferenceID               is not initial
+        then substring( I_JournalEntry.DocumentReferenceID, 1, 3 )
+        else '000'
+        end                                                   as EstablishmentRef,
+
+      case
+        when I_AssociatedInvoice.DocumentReferenceID          is not initial
+         and PurchasingDocumentATS.codesri                    = '04'
+        then substring( I_AssociatedInvoice.DocumentReferenceID, 4, 3 )
+        when I_AssociatedInvoice.DocumentReferenceID          is not initial
+         and PurchasingDocumentATS.codesri                    = '05'
+        then substring( I_AssociatedInvoice.DocumentReferenceID, 4, 3 )
+        else '000'
+        end                                                   as EmissionpointRef,
+
+      case
+        when I_AssociatedInvoice.DocumentReferenceID          is not initial
+         and PurchasingDocumentATS.codesri                    = '04'
+        then substring( I_AssociatedInvoice.DocumentReferenceID, 7, 9 )
+        when I_AssociatedInvoice.DocumentReferenceID          is not initial
+         and PurchasingDocumentATS.codesri                    = '05'
+        then substring( I_AssociatedInvoice.DocumentReferenceID, 7, 9 )
+        else '000000000'
+        end                                                   as SequentialRef,
+      
+      case
+        when I_JournalEntryItem.DocumentItemText              is not initial
+         and PurchasingDocumentATS.codesri                    = '04'
+        then I_JournalEntryItem.DocumentItemText
+        when I_JournalEntryItem.DocumentItemText              is not initial
+         and PurchasingDocumentATS.codesri                    = '05'
+        then I_JournalEntryItem.DocumentItemText
+        else ''
+        end                                                   as AccesskeyRef,
+        
+      case
+        when I_AssociatedInvoice.AccountingDocument          is not initial
+        then '01'
+        else '00'
+        end                                                   as DocumentTypeRef
+      
+} where I_JournalEntry.IsReversal is initial

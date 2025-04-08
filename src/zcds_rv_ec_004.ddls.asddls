@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Types of Identification' //  - Roow View Interface
 
 define root view entity ZCDS_RV_EC_004 

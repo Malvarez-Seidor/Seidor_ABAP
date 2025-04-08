@@ -1,27 +1,31 @@
 //@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Withholdings' //- Roow View Interface'
 @Metadata.ignorePropagatedAnnotations: true
+
 define root view entity ZCDS_RV_DOC_RET
   as select from    I_JournalEntry
     left outer join zdt_fi_doc_ret             as Withholdings
-            on Withholdings.accountingdocument            = I_JournalEntry.AccountingDocument
+            on Withholdings.companycode                   = I_JournalEntry.CompanyCode
+           and Withholdings.accountingdocument            = I_JournalEntry.AccountingDocument
            and Withholdings.accountingdocumenttype        = I_JournalEntry.AccountingDocumentType
-
+           and Withholdings.fiscalyear                    = I_JournalEntry.FiscalYear
+           
     inner join ZCDS_P_EMI_RET         as ElectronicDocuments
             on ElectronicDocuments.Companycode            = I_JournalEntry.CompanyCode
            and ElectronicDocuments.Accountingdocument     = I_JournalEntry.AccountingDocument
            and ElectronicDocuments.Accountingdocumenttype = I_JournalEntry.AccountingDocumentType
+           and ElectronicDocuments.Fiscalyear             = I_JournalEntry.FiscalYear
            and ElectronicDocuments.Documenttype           = '07'
-           and ElectronicDocuments.Documentstatus        = 'PENDING'
-    inner join    I_JournalEntryItem          as I_JournalEntryItem
+           and ( ElectronicDocuments.Documentstatus       = 'PENDING'
+            or ElectronicDocuments.Documentstatus         = 'AUTHORIZED'
+            or ElectronicDocuments.Documentstatus         = 'ERROR'
+            or ElectronicDocuments.Documentstatus         = 'PROCESS' )
+
+    inner join    ZCDS_VC_BP          as I_JournalEntryItem
             on I_JournalEntryItem.CompanyCode             = I_JournalEntry.CompanyCode
            and I_JournalEntryItem.FiscalYear              = I_JournalEntry.FiscalYear
            and I_JournalEntryItem.AccountingDocument      = I_JournalEntry.AccountingDocument
            and I_JournalEntryItem.Supplier                is not initial
-           and I_JournalEntryItem.FinancialAccountType    = 'K'
-           and I_JournalEntryItem.Ledger                  = '0L'
-           and I_JournalEntryItem.IsReversal is initial    
-           and I_JournalEntryItem.IsReversed is initial
     
     inner join    I_BusinessPartner            as I_BusinessPartner
             on I_BusinessPartner.BusinessPartner          = I_JournalEntryItem.Supplier
@@ -30,47 +34,26 @@ define root view entity ZCDS_RV_DOC_RET
             on I_BusinessUser.UserID                      = I_JournalEntryItem.AccountingDocCreatedByUser
     inner join    I_CompanyCode                as I_Company
             on I_Company.CompanyCode                      = I_JournalEntry.CompanyCode
+           and I_Company.Language                         = $session.system_language
             
     inner join    I_AccountingDocumentTypeText as I_AccountingDocumentTypeText 
             on I_AccountingDocumentTypeText.AccountingDocumentType = I_JournalEntry.AccountingDocumentType
            and I_AccountingDocumentTypeText.Language               = $session.system_language
     left outer join ZSH_STATUS                 as I_Status                  
             on I_Status.value_low =   Withholdings.documentstatus
+    left outer join ZSH_STATUS                as I_StatusPending           
+            on I_StatusPending.value_low = 'PENDING'
 {
 
-  key
-        case
-            when Withholdings.companycode is not initial
-            then Withholdings.companycode
-          else   I_JournalEntry.CompanyCode
-          end                             as Companycode,
+  key I_JournalEntry.CompanyCode as CompanyCode,
 
-  key
-        case
-            when Withholdings.fiscalyear is not initial
-            then Withholdings.fiscalyear
-          else   I_JournalEntry.FiscalYear
-          end                             as Fiscalyear,
+  key I_JournalEntry.FiscalYear as FiscalYear,
 
-  key   case
-        when Withholdings.accountingdocument is not initial
-        then Withholdings.accountingdocument
-      else   I_JournalEntry.AccountingDocument
-      end                                 as Accountingdocument,
+  key I_JournalEntry.AccountingDocument as AccountingDocument,
 
+  key I_JournalEntry.AccountingDocumentType as AccountingDocumentType,
 
-  key   case
-        when Withholdings.accountingdocumenttype is not initial
-        then Withholdings.accountingdocumenttype
-      else   I_JournalEntry.AccountingDocumentType
-      end                                 as Accountingdocumenttype,
-
-
-        case
-           when Withholdings.supplier is not initial
-           then Withholdings.supplier
-         else   I_JournalEntryItem.Supplier
-         end                              as Supplier,
+      I_JournalEntryItem.Supplier as Supplier,
 
         case
             when Withholdings.businessname is not initial
@@ -158,6 +141,10 @@ define root view entity ZCDS_RV_DOC_RET
         I_AccountingDocumentTypeText.AccountingDocumentTypeName,
         
         @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 }
-        I_Status.Description
+        case
+         when I_Status.Description is not initial
+         then I_Status.Description
+         else I_StatusPending.Description
+         end as Description
       
 }

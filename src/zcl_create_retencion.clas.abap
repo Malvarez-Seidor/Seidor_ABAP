@@ -4,6 +4,18 @@ CLASS zcl_create_retencion DEFINITION
 
   PUBLIC SECTION.
 
+    TYPES: BEGIN OF ty_email,
+           AddressID        TYPE I_AddressEmailAddress_2-AddressID,
+           AddressPersonID  TYPE I_AddressEmailAddress_2-AddressPersonID,
+           EmailAddress     TYPE string,
+          END OF ty_email.
+
+          TYPES: BEGIN OF ty_Phone,
+           AddressID        TYPE I_AddressPhoneNumber_2-AddressID,
+           AddressPersonID  TYPE I_AddressPhoneNumber_2-AddressPersonID,
+           PhoneAreaCodeSubscriberNumber     TYPE string,
+          END OF ty_Phone.
+
     TYPES: ty_pagos     TYPE STANDARD TABLE OF zts_pago,
            ty_reembolso TYPE STANDARD TABLE OF zts_fac_det_reembolso,
            ty_reem_imp  TYPE STANDARD TABLE OF zts_reem_imp,
@@ -32,7 +44,8 @@ CLASS zcl_create_retencion DEFINITION
                                        t_sustento   TYPE zcl_create_retencion=>ty_sustento
                                        t_impuesto_s TYPE zcl_create_retencion=>ty_imp_sust
                                        t_retencion  TYPE zcl_create_retencion=>ty_retencion
-                                       t_head_add   TYPE zcl_create_retencion=>ty_head_add.
+                                       t_head_add   TYPE zcl_create_retencion=>ty_head_add
+                                       message      TYPE string.
 
   PROTECTED SECTION.
 
@@ -101,8 +114,8 @@ CLASS zcl_create_retencion DEFINITION
           gs_SupplierCompany          TYPE I_SupplierCompany,"I_SupplierCompany-SupplierAccountNote Parte Relacionada
           gs_Supplier                 TYPE I_Supplier,
           gs_Address                  TYPE i_address_2,
-          gs_email                    TYPE I_AddressEmailAddress_2,
-          gs_telefono                 TYPE I_AddressPhoneNumber_2,
+          gs_email                    TYPE ty_email,
+          gs_telefono                 TYPE ty_phone,
           gs_Businesspartnertaxnumber TYPE I_Businesspartnertaxnumber,
           gs_BusPartAddress           TYPE I_BusPartAddress,
           gs_PaymentTerms             TYPE I_PaymentTermsConditions.
@@ -121,13 +134,15 @@ CLASS zcl_create_retencion DEFINITION
           gt_Withholdingtaxitem       TYPE STANDARD TABLE OF I_Withholdingtaxitem,
           gt_BusinessPartner          TYPE STANDARD TABLE OF I_BusinessPartner,
           gt_ADDRESS                  TYPE STANDARD TABLE OF i_address_2,
-          gt_email                    TYPE STANDARD TABLE OF I_AddressEmailAddress_2,
-          gt_telefono                 TYPE STANDARD TABLE OF I_AddressPhoneNumber_2,
+          gt_email                    TYPE STANDARD TABLE OF ty_email,
+          gt_telefono                 TYPE STANDARD TABLE OF ty_phone,
           gt_Businesspartnertaxnumber TYPE STANDARD TABLE OF I_Businesspartnertaxnumber,
           gt_PaymentTerms             TYPE STANDARD TABLE OF I_PaymentTermsConditions.
 
     METHODS get_data .
-    METHODS infoTributaria      CHANGING inf_tribu   TYPE zts_inf_tribu.
+
+    METHODS infoTributaria      CHANGING inf_tribu   TYPE zts_inf_tribu
+                                         message     TYPE string.
 
     METHODS getClaveAcceso     IMPORTING inf_tribu   TYPE zts_inf_tribu
                                          fecha       TYPE string
@@ -135,7 +150,8 @@ CLASS zcl_create_retencion DEFINITION
                                 CHANGING estab       TYPE zts_inf_tribu-estab
                                          ptoemi      TYPE zts_inf_tribu-ptoemi
                                          secuencial  TYPE zts_inf_tribu-secuencial
-                                         claveacceso TYPE zts_inf_tribu-claveacceso.
+                                         claveacceso TYPE zts_inf_tribu-claveacceso
+                                         message      TYPE string.
 
     METHODS getHeaderRetencion  CHANGING header_r   TYPE zts_rete_header
                                          reembolso  TYPE zcl_create_retencion=>ty_reembolso
@@ -160,17 +176,10 @@ CLASS zcl_create_retencion DEFINITION
 
 ENDCLASS.
 
+
+
 CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
 
-
-  METHOD constructor.
-
-    gv_companycode            = companycode.
-    gv_fiscalyear             = fiscalyear.
-    gv_accountingdocument     = accountingdocument.
-    gv_accountingdocumenttype = accountingdocumenttype.
-
-  ENDMETHOD.
 
   METHOD calldocumenttype.
 
@@ -178,15 +187,14 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
 
     me->get_data( ).
 
-    me->infoTributaria( CHANGING inf_tribu = me->gs_inf_tribu ).
+    me->infoTributaria( CHANGING inf_tribu = me->gs_inf_tribu
+                                 message   = message ).
 
     me->gettotalimpuestos( EXPORTING sustento = gs_journalentry-DocumentReferenceID CHANGING impuesto        = me->gt_imp_sust ).
 
     me->getheaderretencion(  CHANGING header_r      = me->gs_header_r
                                       reembolso     = me->gt_reembolso
                                       reem_imp      = me->gt_reem_imp ).
-
-    me->getViaPago(        CHANGING pagos           = me->gt_pagos    ).
 
     me->getHeaderAdd(      CHANGING header_add      = me->gt_head_add ).
 
@@ -206,289 +214,16 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD get_data.
 
-    SELECT client, companycode, documenttype, documentsri, sequence, export, refunds, reason
-    FROM zdt_ec_001
-    WHERE companycode    EQ @me->gv_companycode
-      AND documenttype   EQ @me->gv_accountingdocumenttype
-      AND ( documentsri  EQ @me->gv_documenttype
-       OR   documentsri  EQ '03' )
-    INTO TABLE @gt_ec_001.
+  METHOD constructor.
 
-    SELECT client, companycode, documentsri, establishment, emissionpoint, objet, address
-    FROM zdt_ec_002
-    WHERE companycode  EQ @me->gv_companycode
-      AND documentsri  EQ @me->gv_documenttype
-    INTO TABLE @gt_ec_002.
-
-    SELECT client, companycode, taxcode, notax, tax0, exempttax, tax, taxsupportid, taxsidrate, taxratepercent
-    FROM zdt_ec_003
-    WHERE companycode  EQ @me->gv_companycode
-    INTO TABLE @gt_ec_003.
-
-    SELECT client, companycode, bptaxtype, typedoccument, typedi
-    FROM zdt_ec_004
-    WHERE companycode  EQ @me->gv_companycode
-    INTO TABLE @gt_ec_004.
-
-    SELECT client, companycode, paymentmethod, paymentsri
-    FROM zdt_ec_006
-    WHERE companycode  EQ @me->gv_companycode
-    INTO TABLE @gt_ec_006.
-
-    SELECT client, companycode, api, fieldname, sign, options, sequence, low, high
-    FROM zdt_ec_007
-    WHERE companycode  EQ @me->gv_companycode
-    INTO TABLE @gt_ec_007.
-
-    SELECT client, companycode, documentsri, establishment, emissionpoint, users, sequence, accountingdocumenttype,
-           billingdocumenttype, deliverydocumenttype, goodsmovementtype, salesorganization, plant, storagelocation
-    FROM zdt_ec_008
-    WHERE companycode  EQ @me->gv_companycode
-    INTO TABLE @gt_ec_008.
-
-    SELECT client, country, countrysri, taxhavencountry, pais_conv
-    FROM zdt_ec_009
-    INTO TABLE @gt_ec_009.
-
-    SELECT client, withholdingtaxtype, withholdingtaxcode, officialwhldgtaxcode, withholdingtype
-    FROM zdt_ec_014
-    INTO TABLE @gt_ec_014.
-
-    SELECT SINGLE client, companycode, fiscalyear, accountingdocument, accountingdocumenttype, supplier,
-                  businessname,typeid, idnumber, establishment, emissionpoint, sequential, accesskey,
-                  documenttype, issuedate, documentstatus, messagedocument, authorizationdate, xml, mimetype, filename
-      FROM zdt_fi_doc_ret
-      WHERE companycode             EQ @me->gv_companycode
-        AND fiscalyear              EQ @me->gv_fiscalyear
-        AND accountingdocument      EQ @me->gv_accountingdocument
-        AND accountingdocumenttype  EQ @me->gv_accountingdocumenttype
-       INTO @gs_retencion.
-
-    SELECT SINGLE client, companycode, fiscalyear, accountingdocument, accountingdocumenttype, supplier,
-                  businessname,typeid, idnumber, establishment, emissionpoint, sequential, accesskey,
-                  documenttype, issuedate, documentstatus, messagedocument, authorizationdate, xml, mimetype, filename
-      FROM zdt_fi_doc_liq
-      WHERE companycode             EQ @me->gv_companycode
-        AND fiscalyear              EQ @me->gv_fiscalyear
-        AND accountingdocument      EQ @me->gv_accountingdocument
-        AND accountingdocumenttype  EQ @me->gv_accountingdocumenttype
-       INTO @gs_liquida.
-
-    IF sy-subrc EQ 0.
-
-      SELECT client, companycode, fiscalyear, accountingdocument, accountingdocumenttype, documentitem,
-           typeid, idnumber, documenttype, establishment, emissionpoint, sequential, accesskey, issuedate,
-           taxcode, amountbasetax, amountbasetax0, amountbasenotax, amountbaseexetax, amounttax, amountice,
-           total_price, currency
-        FROM zdt_ec_013
-        WHERE companycode             EQ @me->gv_companycode
-          AND fiscalyear              EQ @me->gv_fiscalyear
-          AND accountingdocument      EQ @me->gv_accountingdocument
-          AND accountingdocumenttype  EQ @me->gv_accountingdocumenttype
-        INTO TABLE @gt_ec_013.
-
-    ENDIF.
-
-    SELECT SINGLE *
-      FROM I_JournalEntry
-      WHERE companycode            EQ @me->gv_companycode
-        AND AccountingDocument     EQ @me->gv_accountingdocument
-        AND FiscalYear             EQ @me->gv_fiscalyear
-        AND AccountingDocumentType EQ @me->gv_accountingdocumenttype
-        AND IsReversal             EQ @space
-        AND IsReversed             EQ @space
-       INTO @gs_journalentry.
-
-    IF sy-subrc EQ 0.
-
-      SELECT  *
-        FROM I_OperationalAcctgDocItem
-        WHERE companycode          EQ @me->gv_companycode
-          AND AccountingDocument   EQ @me->gv_accountingdocument
-          AND FiscalYear           EQ @me->gv_fiscalyear
-      INTO TABLE @gt_JournalEntryItem.
-
-      SELECT  *
-        FROM I_OperationalAcctgDocTaxItem
-        WHERE companycode          EQ @me->gv_companycode
-          AND AccountingDocument   EQ @me->gv_accountingdocument
-          AND FiscalYear           EQ @me->gv_fiscalyear
-      INTO TABLE @gt_AcctgDocTaxItem.
-
-      SELECT *
-        FROM I_Withholdingtaxitem
-        WHERE companycode          EQ @me->gv_companycode
-          AND AccountingDocument   EQ @me->gv_accountingdocument
-          AND FiscalYear           EQ @me->gv_fiscalyear
-        INTO TABLE @gt_Withholdingtaxitem.
-
-    ENDIF.
-
-    SELECT SINGLE *
-    FROM I_CompanyCode
-    WHERE companycode = @me->gv_companycode
-    INTO @me->gs_CompanyCode.
-
-    SELECT *
-      FROM I_AddlCompanyCodeInformation
-      WHERE companycode = @me->gv_companycode
-      INTO TABLE @me->gt_AddlInformation.
+    gv_companycode            = companycode.
+    gv_fiscalyear             = fiscalyear.
+    gv_accountingdocument     = accountingdocument.
+    gv_accountingdocumenttype = accountingdocumenttype.
 
   ENDMETHOD.
 
-  METHOD getheaderretencion.
-
-     DATA: lv_fecha      TYPE string,
-           lv_fiscalyear TYPE gjahr,
-           lv_api        TYPE zde_type_api.
-
-    lv_api = 'WH'.
-
-    lv_fecha = me->gs_journalentry-PostingDate.
-    CONCATENATE lv_fecha+6(2) lv_fecha+4(2) lv_fecha(4) INTO header_r-fechaemision SEPARATED BY '/'.
-
-    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'CON_ESPECI'.
-    IF sy-subrc EQ 0.
-      header_r-contribuyenteespecial = gs_ec_007-low.
-    ENDIF.
-
-    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'OBLIG_CONT'.
-    IF sy-subrc EQ 0.
-      header_r-obligadocontabilidad = gs_ec_007-low.
-    ENDIF.
-
-    me->getDatosBP( CHANGING header_r = header_r ).
-
-    READ TABLE gt_ec_001 INTO gs_ec_001 WITH KEY  CompanyCode =  me->gs_journalentry-companycode documenttype = me->gs_journalentry-AccountingDocumentType
-                                                  documentsri  = me->gv_documenttype.
-
-    IF sy-subrc EQ 0 AND gs_ec_001-refunds IS NOT INITIAL.
-
-*      header_r-coddocreembolso   = '41'.
-      me->getReembolso( CHANGING header_r = header_r
-                                reembolso = reembolso
-                                reem_imp  = reem_imp  ).
-
-    ENDIF.
-
-    header_r-periodofiscal = |{ me->gs_journalentry-FiscalPeriod+1(2) }/{ me->gs_journalentry-FiscalYear }|.
-
-    IF me->gs_ec_002 IS NOT INITIAL.
-      header_r-direstablecimiento = me->gs_ec_002-address.
-    ENDIF.
-
-  ENDMETHOD.
-
-  METHOD infoTributaria.
-
-    DATA: lv_api          TYPE zde_type_api,
-          lv_fecha        TYPE string,
-          lv_documenttype TYPE zdt_ec_001-documenttype.
-
-    lv_api = 'WH'.
-    lv_documenttype = me->gv_accountingdocumenttype.
-
-    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'AMBIENTE' low = sy-sysid. "Ambiente
-    IF sy-subrc EQ 0.
-      inf_tribu-ambiente = gs_ec_007-high(1).
-    ENDIF.
-
-    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'TIPO_EMISI'. "Tipo Emision
-    IF sy-subrc EQ 0.
-      inf_tribu-tipoemision = gs_ec_007-low.
-    ENDIF.
-
-    IF me->gs_companycode IS NOT INITIAL."Razon Social
-      inf_tribu-razonsocial = me->gs_companycode-CompanyCodeName.
-    ENDIF.
-
-    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'NOMB_COMER'.
-    IF sy-subrc EQ 0.
-      inf_tribu-nombrecomercial = gs_ec_007-low.
-    ELSE.
-      IF me->gs_companycode IS NOT INITIAL.
-        inf_tribu-nombrecomercial = me->gs_companycode-CompanyCodeName.
-      ENDIF.
-    ENDIF.
-
-    IF me->gt_AddlInformation[] IS NOT INITIAL."Ruc
-      READ TABLE me->gt_AddlInformation INTO gs_AddlInformation WITH KEY CompanyCode =  me->gv_companycode CompanyCodeParameterType = 'CGIID'.
-      IF sy-subrc EQ 0.
-        inf_tribu-ruc = gs_AddlInformation-CompanyCodeParameterValue.
-      ENDIF.
-    ENDIF.
-
-    IF me->gt_ec_007[] IS NOT INITIAL."Direccion Matriz
-      READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'DIR_MATRIZ'.
-      IF sy-subrc EQ 0.
-        inf_tribu-dirmatriz = gs_ec_007-low.
-      ENDIF.
-    ENDIF.
-
-    IF me->gt_ec_007[] IS NOT INITIAL."Micro Empresa
-
-      READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'MICROEMPRE'.
-      IF sy-subrc EQ 0.
-        inf_tribu-regimenmicroempresas = gs_ec_007-low.
-      ENDIF.
-
-    ENDIF.
-
-    IF me->gt_ec_007[] IS NOT INITIAL."Agente de Retencion
-
-      READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'AG_RETENCI'.
-      IF sy-subrc EQ 0.
-        inf_tribu-agenteretencion = gs_ec_007-low.
-      ENDIF.
-
-    ENDIF.
-
-    IF me->gt_ec_001[] IS NOT INITIAL."Tipo de Documento
-
-      READ TABLE me->gt_ec_001 INTO gs_ec_001 WITH KEY CompanyCode =  me->gv_companycode documenttype = lv_documenttype.
-      IF sy-subrc EQ 0.
-        IF gs_ec_001-documentsri EQ '03'.
-          gs_ec_001-documentsri = inf_tribu-coddoc = '07'.
-        ELSE.
-          inf_tribu-coddoc = gs_ec_001-documentsri.
-        ENDIF.
-      ENDIF.
-
-    ENDIF.
-
-    IF gs_ec_001 IS NOT INITIAL.
-
-      lv_fecha = me->gs_journalentry-PostingDate.
-
-      READ TABLE gt_ec_008 INTO gs_ec_008 WITH KEY companycode            = me->gs_journalentry-CompanyCode
-                                                   accountingdocumenttype = me->gs_journalentry-AccountingDocumentType
-                                                   documentsri            = me->gs_ec_001-documentsri
-                                                   users                  = sy-uname.
-
-      IF sy-subrc EQ 0.
-
-        READ TABLE me->gt_ec_002 INTO gs_ec_002 WITH KEY companycode    = me->gv_CompanyCode
-                                                         establishment  = gs_ec_008-establishment
-                                                         emissionpoint  = gs_ec_008-emissionpoint
-                                                         documentsri    = me->gs_ec_001-documentsri.
-        IF sy-subrc EQ 0.
-
-          me->getclaveacceso( EXPORTING inf_tribu   = inf_tribu
-                                        fecha       = lv_fecha
-                                        api         = lv_api
-                               CHANGING estab       = inf_tribu-estab
-                                        ptoemi      = inf_tribu-ptoemi
-                                        secuencial  = inf_tribu-secuencial
-                                        claveacceso = inf_tribu-claveacceso ).
-        ENDIF.
-
-      ENDIF.
-
-    ENDIF.
-
-  ENDMETHOD.
 
   METHOD getclaveacceso.
 
@@ -499,7 +234,8 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
           lv_six     TYPE i,
           lv_mod     TYPE i,
           lv_rep     TYPE p,
-          lv_rep2(2) TYPE c.
+          lv_rep2(2) TYPE c,
+          lv_mensaje TYPE string.
 
     CASE me->gv_documenttype.
       WHEN '07'.
@@ -546,6 +282,12 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
           ENDIF.
 
         CATCH cx_number_ranges INTO DATA(lr_error).
+
+          message = me->gs_ec_002-Objet.
+          lv_mensaje = lr_error->get_longtext( ).
+          IF lv_mensaje IS INITIAL.
+            lv_mensaje = lr_error->get_text( ).
+          ENDIF.
 
       ENDTRY.
 
@@ -609,104 +351,6 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD getviapago.
-
-    DATA: ls_SupplierPurchasingOrg TYPE I_SupplierPurchasingOrg.
-
-    DATA: lv_cantidad TYPE i,
-          lv_texto    TYPE c LENGTH 10.
-    SELECT SINGLE *
-      FROM I_SupplierPurchasingOrg
-      WHERE Supplier EQ @me->gs_journalentryitempartner-Supplier
-      INTO @ls_SupplierPurchasingOrg.
-
-    SELECT *
-    FROM I_PaymentTermsConditions
-    WHERE PaymentTerms EQ @ls_SupplierPurchasingOrg-PaymentTerms
-    INTO TABLE @gt_PaymentTerms.
-
-    READ TABLE gt_ec_006 INTO gs_ec_006 WITH KEY paymentmethod = ls_SupplierPurchasingOrg-PaymentTerms.
-    IF sy-subrc EQ 0.
-      gs_pagos-formapago = gs_ec_006-paymentsri.
-      gs_pagos-unidadtiempo = 'DÍAS'.
-    ELSE.
-      gs_pagos-formapago = '20'.
-      gs_pagos-unidadtiempo = 'DÍAS'.
-    ENDIF.
-
-    SORT me->gt_PaymentTerms BY CashDiscount2AdditionalMonths DESCENDING.
-
-    READ TABLE me->gt_PaymentTerms INTO gs_PaymentTerms INDEX 1.
-    IF sy-subrc EQ 0.
-      IF gs_PaymentTerms-CashDiscount2AdditionalMonths EQ 0 OR gs_PaymentTerms-CashDiscount1Days IS INITIAL.
-        lv_cantidad = 1.
-      ELSE.
-        lv_cantidad = gs_PaymentTerms-CashDiscount2AdditionalMonths.
-      ENDIF.
-    ENDIF.
-
-    SORT me->gt_PaymentTerms BY CashDiscount1Days DESCENDING.
-    LOOP AT gt_PaymentTerms INTO gs_PaymentTerms.
-      gs_pagos-plazo = gs_PaymentTerms-CashDiscount1Days. "Days from Baseline Date for
-      gs_pagos-total = me->gs_header_l-importetotal / lv_cantidad.
-      APPEND gs_pagos TO pagos.
-    ENDLOOP.
-
-    SORT pagos BY formapago unidadtiempo plazo total.
-    DELETE ADJACENT DUPLICATES FROM pagos COMPARING ALL FIELDS.
-
-  ENDMETHOD.
-
-  METHOD getheaderadd.
-
-    CLEAR: gs_head_add.
-    gs_head_add-valor = me->gs_journalentry-AccountingDocument.
-    gs_head_add-nombre = 'Documento SAP'.
-    APPEND gs_head_add TO header_add.
-
-*    CLEAR: gs_head_add.
-*    IF me->gs_salesdocument-yy1_observ_sdh IS NOT INITIAL.
-*        gs_head_add-nombre = 'Observacion'.
-*        gs_head_add-valor = me->gs_salesdocument-yy1_observ_sdh.
-*      APPEND gs_head_add TO header_add. "Z001 A_BillingDocumentText
-*    ENDIF.
-
-    CLEAR: gs_head_add.
-    LOOP AT me->gt_email INTO gs_email.
-      IF sy-tabix EQ 1.
-        CONCATENATE gs_head_add-valor gs_email-EmailAddress INTO gs_head_add-valor.
-      ELSE.
-        CONCATENATE gs_head_add-valor  '; ' gs_email-EmailAddress INTO gs_head_add-valor.
-      ENDIF.
-    ENDLOOP.
-
-    IF gs_head_add IS NOT INITIAL.
-      gs_head_add-nombre = 'Email'.
-      APPEND gs_head_add TO header_add.
-    ENDIF.
-
-    CLEAR: gs_head_add.
-    LOOP AT me->gt_telefono INTO gs_telefono.
-      IF sy-tabix EQ 1.
-        CONCATENATE  gs_head_add-valor gs_telefono-PhoneAreaCodeSubscriberNumber INTO gs_head_add-valor.
-      ELSE.
-        CONCATENATE gs_head_add-valor '; ' gs_telefono-PhoneAreaCodeSubscriberNumber INTO gs_head_add-valor.
-      ENDIF.
-    ENDLOOP.
-
-    IF gs_head_add IS NOT INITIAL.
-      gs_head_add-nombre = 'Telefono'.
-      APPEND gs_head_add TO header_add.
-    ENDIF.
-
-    CLEAR: gs_head_add.
-    IF me->gs_Address IS NOT INITIAL.
-      gs_head_add-valor = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
-      gs_head_add-nombre = 'Direccion'.
-      APPEND gs_head_add TO header_add.
-    ENDIF.
-
-  ENDMETHOD.
 
   METHOD getdatosbp.
 
@@ -750,16 +394,18 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
 *          header_r-direccionproveedor = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
 *        ENDIF.
 
-        SELECT *
+        SELECT AddressID, AddressPersonID, STRING_AGG( EmailAddress, '; '  ) as EmailAddress
           FROM I_AddressEmailAddress_2
           WITH PRIVILEGED ACCESS
           WHERE AddressID EQ @me->gs_BusPartAddress-AddressID
+          GROUP BY AddressID, AddressPersonID
            INTO TABLE @me->gt_email.
 
-        SELECT *
+        SELECT AddressID, AddressPersonID, STRING_AGG( PhoneAreaCodeSubscriberNumber, '; '  ) as PhoneAreaCodeSubscriberNumber
           FROM I_AddressPhoneNumber_2
           WITH PRIVILEGED ACCESS
           WHERE AddressID EQ @me->gs_BusPartAddress-AddressID
+          GROUP BY AddressID, AddressPersonID
           INTO TABLE @me->gt_telefono.
 
       ENDIF.
@@ -802,25 +448,33 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
       IF sy-subrc EQ 0.
 
         IF gs_supplier-Country EQ 'EC'.
+
           gs_sustento-pagolocext           = '01'.
           gs_sustento-pagextsujretnorleg   = 'NO'.
+
         ELSE.
+
           gs_sustento-pagolocext           = '02'.
           gs_sustento-pagoregfis           = 'NO'.
           gs_sustento-pagextsujretnorleg   = 'SI'.
 
           IF gs_ec_009-taxhavencountry IS NOT INITIAL.
+
             gs_sustento-paisefecpago         = gs_ec_009-taxhavencountry.
-            gs_sustento-tiporegi           = '02'.
-            IF gs_ec_009-pais_conv IS NOT INITIAL.
+            gs_sustento-tiporegi             = gs_ec_009-taxregime.
+
+            IF gs_ec_009-taxagreement IS NOT INITIAL.
               gs_sustento-aplicconvdobtrib = 'SI'.
             ELSE.
               gs_sustento-aplicconvdobtrib = 'NO'.
             ENDIF.
+
           ELSE.
+
             gs_sustento-paisefecpago         = gs_ec_009-countrysri.
-            gs_sustento-tiporegi           = '01'.
-            gs_sustento-aplicconvdobtrib   = 'NO'.
+            gs_sustento-tiporegi             = gs_ec_009-taxregime.
+            gs_sustento-aplicconvdobtrib     = 'NO'.
+
           ENDIF.
         ENDIF.
 
@@ -829,6 +483,96 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
+
+
+  METHOD getheaderadd.
+
+    DATA: lv_api   TYPE zde_type_api.
+
+    lv_api = 'WH'.
+
+    CLEAR: gs_head_add.
+    gs_head_add-valor = me->gs_journalentry-AccountingDocument.
+    gs_head_add-nombre = 'Documento SAP'.
+    APPEND gs_head_add TO header_add.
+
+    CLEAR: gs_head_add.
+    READ TABLE me->gt_email INTO gs_email INDEX  1.
+    IF sy-subrc EQ 0.
+      gs_head_add-valor = gs_email-EmailAddress.
+      gs_head_add-nombre = 'Email'.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    READ TABLE me->gt_telefono INTO gs_telefono INDEX  1.
+    IF sy-subrc EQ 0.
+      gs_head_add-valor = gs_telefono-PhoneAreaCodeSubscriberNumber.
+      gs_head_add-nombre = 'Telefono'.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    IF me->gs_Address IS NOT INITIAL.
+      gs_head_add-valor = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
+      gs_head_add-nombre = 'Direccion'.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'AGENTE_RET'. "Agente de Retencion
+    IF sy-subrc EQ 0.
+      gs_head_add-nombre = 'Agente de Retencion'.
+      gs_head_add-valor  = gs_ec_007-low.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD getheaderretencion.
+
+     DATA: lv_fecha      TYPE string,
+           lv_fiscalyear TYPE gjahr,
+           lv_api        TYPE zde_type_api.
+
+    lv_api = 'WH'.
+
+    lv_fecha = me->gs_journalentry-PostingDate.
+    CONCATENATE lv_fecha+6(2) lv_fecha+4(2) lv_fecha(4) INTO header_r-fechaemision SEPARATED BY '/'.
+
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'CON_ESPECI'.
+    IF sy-subrc EQ 0.
+      header_r-contribuyenteespecial = gs_ec_007-low.
+    ENDIF.
+
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'OBLIG_CONT'.
+    IF sy-subrc EQ 0.
+      header_r-obligadocontabilidad = gs_ec_007-low.
+    ENDIF.
+
+    me->getDatosBP( CHANGING header_r = header_r ).
+
+    READ TABLE gt_ec_001 INTO gs_ec_001 WITH KEY  CompanyCode =  me->gs_journalentry-companycode documenttype = me->gs_journalentry-AccountingDocumentType
+                                                  documentsri  = me->gv_documenttype.
+
+    IF sy-subrc EQ 0 AND gs_ec_001-refunds IS NOT INITIAL.
+
+*      header_r-coddocreembolso   = '41'.
+      me->getReembolso( CHANGING header_r = header_r
+                                reembolso = reembolso
+                                reem_imp  = reem_imp  ).
+
+    ENDIF.
+
+    header_r-periodofiscal = |{ me->gs_journalentry-FiscalPeriod+1(2) }/{ me->gs_journalentry-FiscalYear }|.
+
+    IF me->gs_ec_002 IS NOT INITIAL.
+      header_r-direstablecimiento = me->gs_ec_002-address.
+    ENDIF.
+
+  ENDMETHOD.
+
 
   METHOD getreembolso.
 
@@ -954,6 +698,162 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
 
   ENDMETHOD.
 
+
+  METHOD getSustento.
+
+    DATA: lv_tarifa    TYPE i,
+          lv_sustentos TYPE i,
+          lv_navnw     TYPE navnw,
+          lv_baseimp   TYPE navnw,
+          lv_impuesto  TYPE navnw,
+          lv_fecha     TYPE string.
+
+    DATA: ls_ec_003                   TYPE zdt_ec_003,
+          lt_ec_003                   TYPE STANDARD TABLE OF zdt_ec_003.
+
+    LOOP AT gt_AcctgDocTaxItem INTO gs_AcctgDocTaxItem WHERE CompanyCode        EQ gs_journalentry-CompanyCode
+                                                         AND FiscalYear         EQ gs_journalentry-FiscalYear
+                                                         AND AccountingDocument EQ gs_journalentry-AccountingDocument.
+
+      READ TABLE gt_ec_003 INTO gs_ec_003 WITH KEY taxcode = gs_AcctgDocTaxItem-TaxCode CompanyCode = gs_AcctgDocTaxItem-CompanyCode.
+      IF sy-subrc EQ 0.
+        APPEND gs_ec_003 TO lt_ec_003.
+      ENDIF.
+
+    ENDLOOP.
+
+    gt_ec_003[] = lt_ec_003[]. "Solo Codigos de Impuestos que se aplican en el documento
+
+    SORT lt_ec_003 BY supporttaxcode.
+    DELETE ADJACENT DUPLICATES FROM lt_ec_003 COMPARING supporttaxcode. "Solo Codigos de Sustentos Distintos
+
+    lv_sustentos = LINES( lt_ec_003 ).
+
+    LOOP AT lt_ec_003 INTO ls_ec_003 WHERE CompanyCode        EQ gs_journalentry-CompanyCode.
+
+      CLEAR: lv_baseimp, lv_impuesto.
+
+      LOOP AT gt_ec_003 INTO gs_ec_003 WHERE CompanyCode        EQ ls_ec_003-CompanyCode
+                                         AND supporttaxcode     EQ ls_ec_003-supporttaxcode.
+
+          LOOP AT gt_AcctgDocTaxItem INTO gs_AcctgDocTaxItem WHERE CompanyCode        EQ gs_journalentry-CompanyCode
+                                                               AND FiscalYear         EQ gs_journalentry-FiscalYear
+                                                               AND AccountingDocument EQ gs_journalentry-AccountingDocument
+                                                               AND TaxCode            EQ gs_ec_003-taxcode.
+
+            lv_baseimp  += gs_AcctgDocTaxItem-TaxBaseAmountInCoCodeCrcy.
+            lv_impuesto += gs_AcctgDocTaxItem-TaxAmountInCoCodeCrcy.
+
+          ENDLOOP.
+
+      ENDLOOP.
+
+      gs_sustento-importetotal      = lv_baseimp + lv_impuesto.
+      gs_sustento-totalsinimpuestos = lv_baseimp.
+
+      gs_sustento-codsustento       = ls_ec_003-supporttaxcode.
+
+      IF gs_liquida IS NOT INITIAL.
+
+        gs_sustento-coddocsustento    = gs_liquida-documenttype.
+        gs_sustento-numautdocsustento = |{ gs_liquida-establishment }{ gs_liquida-emissionpoint }{ gs_liquida-sequential }|.
+        gs_sustento-numdocsustento    = gs_liquida-accesskey.
+
+        lv_fecha = me->gs_liquida-issuedate.
+
+      ELSE.
+
+        gs_sustento-coddocsustento    = '01'.
+        gs_sustento-numautdocsustento = gs_journalentryitempartner-DocumentItemText.
+        gs_sustento-numdocsustento    = gs_journalentry-DocumentReferenceID.
+
+        lv_fecha = me->gs_journalentry-DocumentDate.
+
+      ENDIF.
+
+      CONCATENATE lv_fecha+6(2) lv_fecha+4(2) lv_fecha(4) INTO gs_sustento-fechaemisiondocsustento SEPARATED BY '/'.
+
+      CLEAR: lv_fecha.
+      lv_fecha = me->gs_journalentry-PostingDate.
+      CONCATENATE lv_fecha+6(2) lv_fecha+4(2) lv_fecha(4) INTO gs_sustento-fecharegistrocontable SEPARATED BY '/'.
+
+      me->getViaPago(        CHANGING pagos           = me->gt_pagos    ).
+
+      APPEND gs_sustento TO sustento.
+
+      LOOP AT gt_withholdingtaxitem INTO gs_withholdingtaxitem WHERE CompanyCode        EQ gs_journalentry-CompanyCode
+                                                                 AND FiscalYear         EQ gs_journalentry-FiscalYear
+                                                                 AND AccountingDocument EQ gs_journalentry-AccountingDocument.
+
+        READ TABLE gt_ec_014 INTO gs_ec_014 WITH KEY withholdingtaxcode = gs_withholdingtaxitem-withholdingtaxcode
+                                                     withholdingtaxtype = gs_withholdingtaxitem-withholdingtaxtype.
+        IF sy-subrc EQ 0.
+          gs_retenciones-codigo           = gs_ec_014-withholdingtype. "1- Withholding at Source  OR 2- Withholding at Tax OR 6- Withholding at ISD
+          gs_retenciones-codigoretencion  = gs_ec_014-officialwhldgtaxcode.
+        ENDIF.
+
+        gs_retenciones-numdocsustento = gs_sustento-numdocsustento.
+        IF lv_sustentos EQ 1.
+
+          CLEAR: lv_navnw.
+          lv_navnw = abs( gs_withholdingtaxitem-WhldgTaxBaseAmtInCoCodeCrcy ).
+          gs_retenciones-baseimponible = lv_navnw.
+
+          CLEAR: lv_navnw.
+          lv_navnw = abs( gs_withholdingtaxitem-WhldgTaxAmtInTransacCrcy ).
+          gs_retenciones-valorretenido = lv_navnw.
+
+        ELSE.
+
+          CLEAR: lv_navnw.
+          IF gs_retenciones-codigo EQ '1'. "Withholding at Source
+            lv_navnw = lv_baseimp.
+          ELSEIF gs_retenciones-codigo EQ '2'. "Withholding at Tax
+            lv_navnw = lv_impuesto.
+          ELSE."Withholding at ISD
+            lv_navnw = abs( gs_withholdingtaxitem-WhldgTaxBaseAmtInCoCodeCrcy ).
+          ENDIF.
+          gs_retenciones-baseimponible = lv_navnw.
+          CLEAR: lv_navnw.
+          lv_navnw = ( gs_retenciones-baseimponible * abs( gs_withholdingtaxitem-WithholdingTaxPercent ) ) / 100.
+          gs_retenciones-valorretenido = lv_navnw.
+
+        ENDIF.
+
+
+        CLEAR: lv_navnw.
+        lv_navnw = abs( gs_withholdingtaxitem-WithholdingTaxPercent ).
+        gs_retenciones-porcentajeretener = lv_navnw.
+
+      "Dividendos
+*      IF gs_journalentryitempartner-Reference1IDByBusinessPartner IS NOT INITIAL or gs_journalentry-JrnlEntryCntrySpecificRef1 .
+*        IF gs_journalentry-JrnlEntryCntrySpecificRef1.
+*          gs_retenciones-ejerfisutdiv.
+*          gs_retenciones-fechapagodiv.
+*          gs_retenciones-imrentasoc.
+*        ENDIF.
+*      ENDIF.
+
+       "Banana
+*      IF gs_journalentryitempartner-Reference1IDByBusinessPartner IS NOT INITIAL or gs_journalentry-JrnlEntryCntrySpecificRef1 .
+*        IF gs_journalentry-JrnlEntryCntrySpecificRef1.
+*          gs_retenciones-numcajban.
+*          gs_retenciones-preccajban.
+*        ENDIF.
+*      ENDIF.
+
+        APPEND gs_retenciones TO retencion.
+        CLEAR: gs_retenciones.
+
+      ENDLOOP.
+
+      CLEAR: gs_sustento.
+
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
   METHOD gettotalimpuestos.
 
     DATA: lv_tarifa    TYPE i,
@@ -1002,145 +902,299 @@ CLASS ZCL_CREATE_RETENCION IMPLEMENTATION.
 
     ENDLOOP.
 
-    gs_sustento-importetotal      = lv_base + lv_impuesto.
-    gs_sustento-totalsinimpuestos = lv_base.
-
   ENDMETHOD.
 
-  METHOD getSustento.
 
-    DATA: lv_tarifa    TYPE i,
-          lv_sustentos TYPE i,
-          lv_navnw     TYPE navnw,
-          lv_baseimp   TYPE navnw,
-          lv_impuesto  TYPE navnw,
-          lv_fecha     TYPE string.
+  METHOD getviapago.
 
-    DATA: ls_ec_003                   TYPE zdt_ec_003,
-          lt_ec_003                   TYPE STANDARD TABLE OF zdt_ec_003.
+    DATA: lv_cantidad TYPE i,
+          lv_texto    TYPE c LENGTH 10.
 
-    LOOP AT gt_AcctgDocTaxItem INTO gs_AcctgDocTaxItem WHERE CompanyCode        EQ gs_journalentry-CompanyCode
-                                                         AND FiscalYear         EQ gs_journalentry-FiscalYear
-                                                         AND AccountingDocument EQ gs_journalentry-AccountingDocument.
+    SELECT SINGLE Supplier, PaymentTerms
+      FROM I_SupplierPurchasingOrg
+      WHERE Supplier EQ @me->gs_journalentryitempartner-Supplier
+      INTO @DATA(ls_SupplierPurchasingOrg).
 
-      READ TABLE gt_ec_003 INTO gs_ec_003 WITH KEY taxcode = gs_AcctgDocTaxItem-TaxCode CompanyCode = gs_AcctgDocTaxItem-CompanyCode.
-      IF sy-subrc EQ 0.
-        APPEND gs_ec_003 TO lt_ec_003.
-      ENDIF.
+    SELECT *
+    FROM I_PaymentTermsConditions
+    WHERE PaymentTerms EQ @ls_SupplierPurchasingOrg-PaymentTerms
+    INTO TABLE @gt_PaymentTerms.
 
-    ENDLOOP.
+    READ TABLE gt_ec_006 INTO gs_ec_006 WITH KEY paymentmethod = ls_SupplierPurchasingOrg-PaymentTerms.
+    IF sy-subrc EQ 0.
+      gs_pagos-formapago = gs_ec_006-paymentsri.
+      gs_pagos-unidadtiempo = 'DÍAS'.
+    ELSE.
+      gs_pagos-formapago = '20'.
+      gs_pagos-unidadtiempo = 'DÍAS'.
+    ENDIF.
 
-    gt_ec_003[] = lt_ec_003[]. "Solo Codigos de Impuestos que se aplican en el documento
+    SORT me->gt_PaymentTerms BY CashDiscount2AdditionalMonths DESCENDING.
 
-    SORT lt_ec_003 BY supporttaxcode.
-    DELETE ADJACENT DUPLICATES FROM lt_ec_003 COMPARING supporttaxcode. "Solo Codigos de Sustentos Distintos
-
-    lv_sustentos = LINES( lt_ec_003 ).
-
-    LOOP AT lt_ec_003 INTO ls_ec_003 WHERE CompanyCode        EQ gs_journalentry-CompanyCode.
-
-      CLEAR: lv_baseimp, lv_impuesto.
-
-      LOOP AT lt_ec_003 INTO gs_ec_003 WHERE CompanyCode        EQ ls_ec_003-CompanyCode
-                                         AND supporttaxcode     EQ ls_ec_003-supporttaxcode.
-
-          LOOP AT gt_AcctgDocTaxItem INTO gs_AcctgDocTaxItem WHERE CompanyCode        EQ gs_journalentry-CompanyCode
-                                                               AND FiscalYear         EQ gs_journalentry-FiscalYear
-                                                               AND AccountingDocument EQ gs_journalentry-AccountingDocument
-                                                               AND TaxCode            EQ gs_ec_003-taxcode.
-
-            lv_baseimp  += gs_AcctgDocTaxItem-TaxBaseAmountInCoCodeCrcy.
-            lv_impuesto += gs_AcctgDocTaxItem-TaxAmountInCoCodeCrcy.
-
-          ENDLOOP.
-
-      ENDLOOP.
-
-      gs_sustento-codsustento       = gs_ec_003-supporttaxcode.
-
-      IF gs_liquida IS NOT INITIAL.
-
-        gs_sustento-coddocsustento    = gs_liquida-documenttype.
-        gs_sustento-numautdocsustento = |{ gs_liquida-establishment }{ gs_liquida-emissionpoint }{ gs_liquida-sequential }|.
-        gs_sustento-numdocsustento    = gs_liquida-accesskey.
-
-        lv_fecha = me->gs_liquida-issuedate.
-
+    READ TABLE me->gt_PaymentTerms INTO gs_PaymentTerms INDEX 1.
+    IF sy-subrc EQ 0.
+      IF gs_PaymentTerms-CashDiscount2AdditionalMonths EQ 0 OR gs_PaymentTerms-CashDiscount1Days IS INITIAL.
+        lv_cantidad = 1.
       ELSE.
-
-        gs_sustento-coddocsustento    = '01'.
-        gs_sustento-numautdocsustento = gs_journalentryitempartner-DocumentItemText.
-        gs_sustento-numdocsustento    = gs_journalentry-DocumentReferenceID.
-
-        lv_fecha = me->gs_journalentry-DocumentDate.
-
+        lv_cantidad = gs_PaymentTerms-CashDiscount2AdditionalMonths.
       ENDIF.
+    ENDIF.
 
-      CONCATENATE lv_fecha+6(2) lv_fecha+4(2) lv_fecha(4) INTO gs_sustento-fechaemisiondocsustento SEPARATED BY '/'.
-
-      CLEAR: lv_fecha.
-      lv_fecha = me->gs_journalentry-PostingDate.
-      CONCATENATE lv_fecha+6(2) lv_fecha+4(2) lv_fecha(4) INTO gs_sustento-fecharegistrocontable SEPARATED BY '/'.
-
-      APPEND gs_sustento TO sustento.
-
-      LOOP AT gt_withholdingtaxitem INTO gs_withholdingtaxitem WHERE CompanyCode        EQ gs_journalentry-CompanyCode
-                                                                 AND FiscalYear         EQ gs_journalentry-FiscalYear
-                                                                 AND AccountingDocument EQ gs_journalentry-AccountingDocument.
-
-        READ TABLE gt_ec_014 INTO gs_ec_014 WITH KEY withholdingtaxcode = gs_withholdingtaxitem-withholdingtaxcode
-                                                     withholdingtaxtype = gs_withholdingtaxitem-withholdingtaxtype.
-        IF sy-subrc EQ 0.
-          gs_retenciones-codigo           = gs_ec_014-withholdingtype. "1- Withholding at Source  OR 2- Withholding at Tax OR 6- Withholding at ISD
-          gs_retenciones-codigoretencion  = gs_ec_014-officialwhldgtaxcode.
-        ENDIF.
-
-        gs_retenciones-numdocsustento = gs_sustento-numdocsustento.
-
-        CLEAR: lv_navnw.
-        IF gs_retenciones-codigo EQ '1'. "Withholding at Source
-          lv_navnw = lv_baseimp.
-        ELSEIF gs_retenciones-codigo EQ '2'. "Withholding at Tax
-          lv_navnw = lv_impuesto.
-        ELSE."Withholding at ISD
-          lv_navnw = gs_withholdingtaxitem-WhldgTaxBaseAmtInCoCodeCrcy.
-        ENDIF.
-        gs_retenciones-baseimponible = lv_navnw.
-
-        CLEAR: lv_navnw.
-        lv_navnw = ( gs_retenciones-baseimponible * gs_withholdingtaxitem-WithholdingTaxPercent ) / 100.
-        gs_retenciones-valorretenido = lv_navnw.
-
-        CLEAR: lv_navnw.
-        lv_navnw = gs_withholdingtaxitem-WithholdingTaxPercent.
-        gs_retenciones-porcentajeretener = lv_navnw.
-
-      "Dividendos
-*      IF gs_journalentryitempartner-Reference1IDByBusinessPartner IS NOT INITIAL or gs_journalentry-JrnlEntryCntrySpecificRef1 .
-*        IF gs_journalentry-JrnlEntryCntrySpecificRef1.
-*          gs_retenciones-ejerfisutdiv.
-*          gs_retenciones-fechapagodiv.
-*          gs_retenciones-imrentasoc.
-*        ENDIF.
-*      ENDIF.
-
-       "Banana
-*      IF gs_journalentryitempartner-Reference1IDByBusinessPartner IS NOT INITIAL or gs_journalentry-JrnlEntryCntrySpecificRef1 .
-*        IF gs_journalentry-JrnlEntryCntrySpecificRef1.
-*          gs_retenciones-numcajban.
-*          gs_retenciones-preccajban.
-*        ENDIF.
-*      ENDIF.
-
-        APPEND gs_retenciones TO retencion.
-        CLEAR: gs_retenciones.
-
-      ENDLOOP.
-
-      CLEAR: gs_sustento.
-
+    SORT me->gt_PaymentTerms BY CashDiscount1Days DESCENDING.
+    LOOP AT gt_PaymentTerms INTO gs_PaymentTerms.
+      gs_pagos-plazo = gs_PaymentTerms-CashDiscount1Days. "Days from Baseline Date for
+      gs_pagos-total = me->gs_sustento-importetotal / lv_cantidad.
+      APPEND gs_pagos TO pagos.
     ENDLOOP.
+
+    SORT pagos BY formapago unidadtiempo plazo total.
+    DELETE ADJACENT DUPLICATES FROM pagos COMPARING ALL FIELDS.
 
   ENDMETHOD.
 
+
+  METHOD get_data.
+
+    SELECT client, companycode, documenttype, documentsri, sequence, export, refunds, reason
+      FROM zdt_ec_001
+      WHERE companycode    EQ @me->gv_companycode
+        AND documenttype   EQ @me->gv_accountingdocumenttype
+        AND ( documentsri  EQ @me->gv_documenttype
+         OR   documentsri  EQ '03' )
+    INTO TABLE @gt_ec_001.
+
+    SELECT client, companycode, documentsri, establishment, emissionpoint, objet, address
+      FROM zdt_ec_002
+      WHERE companycode  EQ @me->gv_companycode
+        AND documentsri  EQ @me->gv_documenttype
+    INTO TABLE @gt_ec_002.
+
+    SELECT client, companycode, taxcode, notax, tax0, exempttax, tax, taxsupportid, taxsidrate, taxratepercent, supporttaxcode
+      FROM zdt_ec_003
+      WHERE companycode  EQ @me->gv_companycode
+    INTO TABLE @gt_ec_003.
+
+    SELECT client, companycode, bptaxtype, typedoccument, typedi
+      FROM zdt_ec_004
+      WHERE companycode  EQ @me->gv_companycode
+    INTO TABLE @gt_ec_004.
+
+    SELECT client, companycode, paymentmethod, paymentsri
+      FROM zdt_ec_006
+      WHERE companycode  EQ @me->gv_companycode
+    INTO TABLE @gt_ec_006.
+
+    SELECT client, companycode, api, fieldname, sign, options, sequence, low, high
+      FROM zdt_ec_007
+      WHERE companycode  EQ @me->gv_companycode
+    INTO TABLE @gt_ec_007.
+
+    SELECT client, companycode, documentsri, establishment, emissionpoint, users, sequence, accountingdocumenttype,
+           billingdocumenttype, deliverydocumenttype, goodsmovementtype, salesorganization, plant, storagelocation
+      FROM zdt_ec_008
+      WHERE companycode  EQ @me->gv_companycode
+    INTO TABLE @gt_ec_008.
+
+    SELECT client, country, countrysri, taxhavencountry, taxagreement, taxregime
+      FROM zdt_ec_009
+      WHERE country NE @space
+    INTO TABLE @gt_ec_009.
+
+    SELECT client, withholdingtaxtype, withholdingtaxcode, officialwhldgtaxcode, withholdingtype
+      FROM zdt_ec_014
+      WHERE withholdingtaxtype NE @space
+    INTO TABLE @gt_ec_014.
+
+    SELECT SINGLE client, companycode, fiscalyear, accountingdocument, accountingdocumenttype, supplier,
+                  businessname,typeid, idnumber, establishment, emissionpoint, sequential, accesskey,
+                  documenttype, issuedate, documentstatus, messagedocument, authorizationdate, xml, mimetype, filename
+      FROM zdt_fi_doc_ret
+      WHERE companycode             EQ @me->gv_companycode
+        AND fiscalyear              EQ @me->gv_fiscalyear
+        AND accountingdocument      EQ @me->gv_accountingdocument
+        AND accountingdocumenttype  EQ @me->gv_accountingdocumenttype
+    INTO @gs_retencion.
+
+    SELECT SINGLE client, companycode, fiscalyear, accountingdocument, accountingdocumenttype, supplier,
+                  businessname,typeid, idnumber, establishment, emissionpoint, sequential, accesskey,
+                  documenttype, issuedate, documentstatus, messagedocument, authorizationdate, xml, mimetype, filename
+      FROM zdt_fi_doc_liq
+      WHERE companycode             EQ @me->gv_companycode
+        AND fiscalyear              EQ @me->gv_fiscalyear
+        AND accountingdocument      EQ @me->gv_accountingdocument
+        AND accountingdocumenttype  EQ @me->gv_accountingdocumenttype
+    INTO @gs_liquida.
+
+    IF sy-subrc EQ 0.
+
+      SELECT client, companycode, fiscalyear, accountingdocument, accountingdocumenttype, draftuuid,
+           typeid, idnumber, documenttype, establishment, emissionpoint, sequential, accesskey, issuedate,
+           taxcode, amountbasetax, amountbasetax0, amountbasenotax, amountbaseexetax, amounttax, amountice,
+           total_price, currency
+        FROM zdt_ec_013
+        WHERE companycode             EQ @me->gv_companycode
+          AND fiscalyear              EQ @me->gv_fiscalyear
+          AND accountingdocument      EQ @me->gv_accountingdocument
+          AND accountingdocumenttype  EQ @me->gv_accountingdocumenttype
+      INTO TABLE @gt_ec_013.
+
+    ENDIF.
+
+    SELECT SINGLE *
+      FROM I_JournalEntry
+      WHERE companycode            EQ @me->gv_companycode
+        AND AccountingDocument     EQ @me->gv_accountingdocument
+        AND FiscalYear             EQ @me->gv_fiscalyear
+        AND AccountingDocumentType EQ @me->gv_accountingdocumenttype
+        AND IsReversal             EQ @space
+        AND IsReversed             EQ @space
+    INTO @gs_journalentry.
+
+    IF sy-subrc EQ 0.
+
+      SELECT  *
+        FROM I_OperationalAcctgDocItem
+        WHERE companycode          EQ @me->gv_companycode
+          AND AccountingDocument   EQ @me->gv_accountingdocument
+          AND FiscalYear           EQ @me->gv_fiscalyear
+      INTO TABLE @gt_JournalEntryItem.
+
+      SELECT  *
+        FROM I_OperationalAcctgDocTaxItem
+        WHERE companycode          EQ @me->gv_companycode
+          AND AccountingDocument   EQ @me->gv_accountingdocument
+          AND FiscalYear           EQ @me->gv_fiscalyear
+      INTO TABLE @gt_AcctgDocTaxItem.
+
+      SELECT *
+        FROM I_Withholdingtaxitem
+        WHERE companycode          EQ @me->gv_companycode
+          AND AccountingDocument   EQ @me->gv_accountingdocument
+          AND FiscalYear           EQ @me->gv_fiscalyear
+        INTO TABLE @gt_Withholdingtaxitem.
+
+    ENDIF.
+
+    SELECT SINGLE *
+      FROM I_CompanyCode
+      WHERE companycode EQ @me->gv_companycode
+    INTO @me->gs_CompanyCode.
+
+    SELECT *
+      FROM I_AddlCompanyCodeInformation
+      WHERE companycode EQ @me->gv_companycode
+    INTO TABLE @me->gt_AddlInformation.
+
+  ENDMETHOD.
+
+
+  METHOD infoTributaria.
+
+    DATA: lv_api          TYPE zde_type_api,
+          lv_fecha        TYPE string,
+          lv_documenttype TYPE zdt_ec_001-documenttype.
+
+    lv_api = 'WH'.
+    lv_documenttype = me->gv_accountingdocumenttype.
+
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'AMBIENTE' low = sy-sysid. "Ambiente
+    IF sy-subrc EQ 0.
+      inf_tribu-ambiente = gs_ec_007-high(1).
+    ENDIF.
+
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'TIPO_EMISI'. "Tipo Emision
+    IF sy-subrc EQ 0.
+      inf_tribu-tipoemision = gs_ec_007-low.
+    ENDIF.
+
+    IF me->gs_companycode IS NOT INITIAL."Razon Social
+      inf_tribu-razonsocial = me->gs_companycode-CompanyCodeName.
+    ENDIF.
+
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'NOMB_COMER'.
+    IF sy-subrc EQ 0.
+      inf_tribu-nombrecomercial = gs_ec_007-low.
+    ELSE.
+      IF me->gs_companycode IS NOT INITIAL.
+        inf_tribu-nombrecomercial = me->gs_companycode-CompanyCodeName.
+      ENDIF.
+    ENDIF.
+
+    IF me->gt_AddlInformation[] IS NOT INITIAL."Ruc
+      READ TABLE me->gt_AddlInformation INTO gs_AddlInformation WITH KEY CompanyCode =  me->gv_companycode CompanyCodeParameterType = 'CGIID'.
+      IF sy-subrc EQ 0.
+        inf_tribu-ruc = gs_AddlInformation-CompanyCodeParameterValue.
+      ENDIF.
+    ENDIF.
+
+    IF me->gt_ec_007[] IS NOT INITIAL."Direccion Matriz
+      READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'DIR_MATRIZ'.
+      IF sy-subrc EQ 0.
+        inf_tribu-dirmatriz = gs_ec_007-low.
+      ENDIF.
+    ENDIF.
+
+    IF me->gt_ec_007[] IS NOT INITIAL."Micro Empresa
+
+      READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'MICROEMPRE'.
+      IF sy-subrc EQ 0.
+        inf_tribu-regimenmicroempresas = gs_ec_007-low.
+      ENDIF.
+
+    ENDIF.
+
+    IF me->gt_ec_007[] IS NOT INITIAL."Agente de Retencion
+
+      READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'AG_RETENCI'.
+      IF sy-subrc EQ 0.
+        inf_tribu-agenteretencion = gs_ec_007-low.
+      ENDIF.
+
+    ENDIF.
+
+    IF me->gt_ec_001[] IS NOT INITIAL."Tipo de Documento
+
+      READ TABLE me->gt_ec_001 INTO gs_ec_001 WITH KEY CompanyCode =  me->gv_companycode documenttype = lv_documenttype.
+      IF sy-subrc EQ 0.
+        IF gs_ec_001-documentsri EQ '03'.
+          gs_ec_001-documentsri = inf_tribu-coddoc = '07'.
+        ELSE.
+          inf_tribu-coddoc = gs_ec_001-documentsri.
+        ENDIF.
+      ENDIF.
+
+    ENDIF.
+
+    IF gs_ec_001 IS NOT INITIAL.
+
+      lv_fecha = me->gs_journalentry-PostingDate.
+
+      READ TABLE gt_ec_008 INTO gs_ec_008 WITH KEY companycode            = me->gs_journalentry-CompanyCode
+                                                   accountingdocumenttype = me->gs_journalentry-AccountingDocumentType
+                                                   documentsri            = me->gs_ec_001-documentsri
+                                                   users                  = sy-uname.
+
+      IF sy-subrc EQ 0.
+
+        READ TABLE me->gt_ec_002 INTO gs_ec_002 WITH KEY companycode    = me->gv_CompanyCode
+                                                         establishment  = gs_ec_008-establishment
+                                                         emissionpoint  = gs_ec_008-emissionpoint
+                                                         documentsri    = me->gs_ec_001-documentsri.
+        IF sy-subrc EQ 0.
+
+          me->getclaveacceso( EXPORTING inf_tribu   = inf_tribu
+                                        fecha       = lv_fecha
+                                        api         = lv_api
+                               CHANGING estab       = inf_tribu-estab
+                                        ptoemi      = inf_tribu-ptoemi
+                                        secuencial  = inf_tribu-secuencial
+                                        claveacceso = inf_tribu-claveacceso
+                                        message     = message ).
+        ENDIF.
+
+      ENDIF.
+
+    ENDIF.
+
+  ENDMETHOD.
 ENDCLASS.

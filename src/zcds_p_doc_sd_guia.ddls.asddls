@@ -1,7 +1,8 @@
-///@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Transport Guides - Projection View'
 @Metadata.allowExtensions: true
 define root view entity ZCDS_P_DOC_SD_GUIA
+  provider contract transactional_query
   as projection on ZCDS_RV_DOC_SD_GUIA
 {
 
@@ -9,24 +10,24 @@ define root view entity ZCDS_P_DOC_SD_GUIA
       @ObjectModel.text.element: [ 'CompanyCodeName' ]
       @Consumption.valueHelpDefinition: [ { entity:  { name: 'I_CompanyCodeVH', element: 'CompanyCode' },
                      additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' } ] } ]
-  key Companycode                  as CompanyCode,
+  key CompanyCode                  as CompanyCode,
 
       @Semantics.fiscal.year: true
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_FISCALYEAR' , element: 'FiscalYear' }, distinctValues: true } ]
-  key Fiscalyear                   as FiscalYear,
+  key FiscalYear                   as FiscalYear,
 
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_DeliveryDocumentStdVH' , element: 'DeliveryDocument'  } } ]
-  key Deliverydocument             as DeliveryDocument,
+  key DeliveryDocument             as DeliveryDocument,
 
       @Search.defaultSearchElement: true
       @ObjectModel.text.element: [ 'DeliveryDocumentTypeName' ]
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_DeliveryDocumentTypeText' , element: 'DeliveryDocumentType' }, distinctValues: true } ]
-  key Deliverydocumenttype         as DeliveryDocumentType,
+  key DeliveryDocumentType         as DeliveryDocumentType,
 
       @Search.defaultSearchElement: true
       @ObjectModel.text.element: [ 'BusinessName' ]
       @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Customer_VH' , element: 'Customer' }, distinctValues: true } ]
-      Shiptoparty                  as ShiptParty,
+      SoldToParty                  as SoldToParty,
 
       @Search.defaultSearchElement: true
       Businessname                 as BusinessName,

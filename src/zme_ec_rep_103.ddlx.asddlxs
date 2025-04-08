@@ -1,0 +1,46 @@
+@Metadata.layer: #CORE               
+@UI :{ headerInfo : { typeName          : 'Reporte de 103',
+                      typeNamePlural    : 'Reporte de 103',
+                      title : { type :#STANDARD, value : 'Description' }, description.value: 'CodeBase' },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'CodeReport', direction:  #ASC  } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+
+annotate entity ZCDS_VED_REP_103 with
+  parameters
+    @EndUserText.quickInfo: 'Company Code'
+    P_CompanyCode,
+    @EndUserText.quickInfo: 'Fiscal Period'
+    P_FiscalPeriod,
+    @EndUserText.quickInfo: 'Fiscal Year'
+    P_FiscalYear
+{
+  
+  @UI.facet: [ { id : 'CodeBase', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE } ]
+  
+  @UI: { lineItem: [ { position : 10, importance : #HIGH, label: 'Codigo', cssDefault.width: '4rem' } ],
+   identification: [ { position : 10, label : 'Codigo' } ] }
+  CodeReport;
+  
+  @UI: { lineItem: [ { position : 20, importance : #HIGH, label: 'Descripcion' } ],
+   identification: [ { position : 20, label : 'Descripcion' } ] }
+  Description;
+
+  @UI: { lineItem: [ { position : 30, importance : #HIGH, label: 'Casillero Base' } ],
+   identification: [ { position : 20, label : 'Casillero Base' } ] }
+  CodeBase;
+  
+  @UI: { lineItem: [ { position : 40, importance : #HIGH, label: 'Valor Base' } ],
+   identification: [ { position : 20, label : 'Valor Base' } ] }
+  WhldgTaxBaseAmtInCoCodeCrcy;
+
+  @UI: { lineItem: [ { position : 50, importance : #HIGH, label: 'Casillero Valor Retenido' } ],
+   identification: [ { position : 20, label : 'Casillero Valor Retenido' } ] }
+  CodeWithholding;
+  
+  @UI: { lineItem: [ { position : 60, importance : #HIGH, label: 'Valor Retentencion' } ],
+   identification: [ { position : 20, label : 'Valor Retentencion' } ] }
+  WhldgTaxAmtInCoCodeCrcy;
+  
+
+}

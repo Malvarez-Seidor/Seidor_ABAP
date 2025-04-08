@@ -25,35 +25,35 @@
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>05</DOMVALUE_L>
-     <DDTEXT>Identity Card</DDTEXT>
+     <DDTEXT>Cédula de Identidad</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TISRI</DOMNAME>
      <VALPOS>0003</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>06</DOMVALUE_L>
-     <DDTEXT>Passport</DDTEXT>
+     <DDTEXT>Pasaporte</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TISRI</DOMNAME>
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>07</DOMVALUE_L>
-     <DDTEXT>Final Consumer</DDTEXT>
+     <DDTEXT>Consumidor Final</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TISRI</DOMNAME>
      <VALPOS>0005</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>08</DOMVALUE_L>
-     <DDTEXT>Foreign Identification</DDTEXT>
+     <DDTEXT>Identificación Extranjera</DDTEXT>
     </DD07V>
     <DD07V>
      <DOMNAME>ZDD_TISRI</DOMNAME>
      <VALPOS>0006</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>09</DOMVALUE_L>
-     <DDTEXT>License Plate</DDTEXT>
+     <DDTEXT>Licencia</DDTEXT>
     </DD07V>
    </DD07V_TAB>
   </asx:values>

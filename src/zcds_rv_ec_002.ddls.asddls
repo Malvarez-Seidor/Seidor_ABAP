@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Sequential Administrator' //- Roow View Interface'
 define root view entity ZCDS_RV_EC_002
   as select from zdt_ec_002 as SeqAdministrator
@@ -10,6 +10,5 @@ define root view entity ZCDS_RV_EC_002
   key emissionpoint as Emissionpoint,
       objet         as Objet,
       address       as Address,
-      sequential    as Sequential,
       _Company
 }

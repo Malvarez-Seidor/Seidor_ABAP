@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Pagos",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "paymentconditions.eclocalizacion006"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_585B4297DF34DD274CD46190AA66580606BB787D_TM",
+    "semanticObject": "ZCON_EC_006",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_585B4297DF34DD274CD46190AA66580606BB787D_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Pagos",
+        "subtitle": "Condiciones de Pago"
+      }
+    }
+  ]
+}

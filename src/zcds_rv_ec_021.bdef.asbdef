@@ -1,0 +1,36 @@
+unmanaged implementation in class zbp_cds_rv_ec_021 unique;
+strict;
+
+define behavior for ZCDS_RV_EC_021 alias ReportTransactionalAnnex
+//persistent table zdt_ec_021
+lock master
+authorization master ( global, instance )
+//etag master <field_name>
+{
+
+  create;
+  update;
+  delete;
+  field ( readonly: update ) Companycode, Fiscalyear, Monat, Purchases, Sales, Export, Cancel,
+                             Filename, Mimetype, Status, Criticality;
+//                             , CompanyCodeName, Description, StatusXML;
+
+  action (  authorization : update, features : instance ) Download  result [1] $self;
+
+  mapping for zdt_ec_021{
+
+  CompanyCode            = CompanyCode;
+  FiscalYear             = FiscalYear;
+  Monat                  = monat;
+  Purchases              = Purchases;
+  Sales                  = Sales;
+  Export                 = Export;
+  Cancel                 = Cancel;
+  Xml                    = Xml;
+  Filename               = Filename;
+  Mimetype               = Mimetype;
+  Status                 = Status;
+
+  }
+
+}

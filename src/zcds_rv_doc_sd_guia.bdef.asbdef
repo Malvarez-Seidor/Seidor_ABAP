@@ -1,16 +1,17 @@
-managed;
-//strict ( 2 );
+unmanaged implementation in class zbp_cds_rv_doc_sd_guia unique;
+strict;
 
 define behavior for ZCDS_RV_DOC_SD_GUIA alias TransportGuides
-implementation in class zbp_cds_rv_doc_sd_guia unique
-persistent table zdt_sd_doc_guia
+//persistent table zdt_sd_doc_guia
 lock master
-//authorization master ( instance )
+authorization master ( global, instance )
 //etag master <field_name>
 {
   create;
   update;
   delete;
+
+  field ( readonly: update ) CompanyCode, FiscalYear, DeliveryDocument, DeliveryDocumentType;
 
   association _TransportData { create  ( features : instance );  }
 
@@ -23,7 +24,7 @@ lock master
   Fiscalyear               = fiscalyear;
   Deliverydocument         = deliverydocument;
   Deliverydocumenttype     = deliverydocumenttype;
-  Shiptoparty              = shiptoparty;
+  SoldToParty              = shiptoparty;
   Businessname             = businessname;
   Typeid                   = typeid;
   Idnumber                 = idnumber;
@@ -47,9 +48,9 @@ lock master
 
 define behavior for ZCDS_RV_EC_010 alias TransportData
 implementation in class zbp_cds_rv_ec_010 unique
-persistent table zdt_ec_010
+//persistent table zdt_ec_010
 lock dependent by _TransportGuides
-//authorization dependent by _TransportGuides
+authorization dependent by _TransportGuides
 //etag master <field_name>
 {
 
@@ -58,7 +59,7 @@ lock dependent by _TransportGuides
 
   association _TransportGuides{ }
 
-  field ( readonly ) Companycode, Fiscalyear, Deliverydocument, Deliverydocumenttype;
+  field ( readonly: update ) Companycode, Fiscalyear, Deliverydocument, Deliverydocumenttype, CarrierId;
 
   mapping for zdt_ec_010
       {

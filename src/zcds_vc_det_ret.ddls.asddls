@@ -29,6 +29,7 @@ define view entity ZCDS_VC_DET_RET
   key I_Withholdingtaxitem.WithholdingTaxType                 as WithholdingTaxType,
       I_Withholdingtaxitem.WithholdingTaxCode                 as WithholdingTaxCode,
       I_OfficialCode.officialwhldgtaxcode                     as OfficialWhldgTaxCode,
+      I_OfficialCode.withholdingtype                          as WithholdingType,
       
       @Aggregation.default: #SUM
       @Semantics.amount.currencyCode: 'CompanyCodeCurrency'

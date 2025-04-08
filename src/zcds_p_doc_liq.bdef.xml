@@ -5,7 +5,7 @@
    <BDEF>
     <NAME>ZCDS_P_DOC_LIQ</NAME>
     <TYPE>BDEF/BDO</TYPE>
-    <DESCRIPTION>Liquidation for Purchase - Projection View</DESCRIPTION>
+    <DESCRIPTION>Liquidation for Purchase - Behavior Definition Projection</DESCRIPTION>
     <DESCRIPTION_TEXT_LIMIT>60</DESCRIPTION_TEXT_LIMIT>
     <LANGUAGE>EN</LANGUAGE>
     <LINKS>

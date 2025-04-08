@@ -1,8 +1,9 @@
 @EndUserText.label: 'Withholdings' //'- Projection View'
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 //@Search.searchable: true
 @Metadata.allowExtensions: true
 define root view entity ZCDS_P_DOC_RET
+  provider contract transactional_query
   as projection on ZCDS_RV_DOC_RET
 {
 
@@ -10,18 +11,18 @@ define root view entity ZCDS_P_DOC_RET
       @ObjectModel.text.element: [ 'CompanyCodeName' ]
       @Consumption.valueHelpDefinition: [ { entity:  { name: 'I_CompanyCodeVH', element: 'CompanyCode' },
                      additionalBinding: [ { localElement: 'CompanyCodeName', element: 'CompanyCodeName' } ] } ]
-  key Companycode                    as CompanyCode,
+  key CompanyCode                    as CompanyCode,
 
       @Semantics.fiscal.year: true
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_FISCALYEAR' , element: 'FiscalYear' }, distinctValues: true } ]
-  key Fiscalyear                     as FiscalYear,
+  key FiscalYear                     as FiscalYear,
   
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_DOCUMENT_FI' , element: 'AccountingDocument' }, distinctValues: true } ]
-  key Accountingdocument             as AccountingDocument,
+  key AccountingDocument             as AccountingDocument,
       
       @Search.defaultSearchElement: true
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_DOCUMENTTYPE' , element: 'AccountingDocumentType' }, distinctValues: true } ]
-  key Accountingdocumenttype         as AccountingDocumentType,
+  key AccountingDocumentType         as AccountingDocumentType,
   
       @Search.defaultSearchElement: true
       @ObjectModel.text.element: [ 'BusinessName' ]
@@ -104,7 +105,6 @@ define root view entity ZCDS_P_DOC_RET
       @Search.defaultSearchElement: true
       UserFullName                   as UserFullName,
       
-      @Semantics.text:true 
       @Search.defaultSearchElement: true
       AccountingDocumentTypeName     as AccountingDocumentTypeName,
       
@@ -113,5 +113,5 @@ define root view entity ZCDS_P_DOC_RET
       Description                    as Description,
       
       criticality                    as Criticality
-      
+
 }

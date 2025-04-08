@@ -11,18 +11,24 @@ CLASS zcl_hs_emision_doc DEFINITION
         reason TYPE string,
       END OF http_status .
 
+    DATA: http_response TYPE REF TO if_web_http_response.
 
     INTERFACES if_oo_adt_classrun.
 
     METHODS: constructor IMPORTING documenttype TYPE zde_trsri
+                                   clave        TYPE string
                                    xml          TYPE string
                               documentsupplier  TYPE sgtxt
-                                   CompanyCode  TYPE bukrs,
+                                   CompanyCode  TYPE bukrs
+                                 establishment  TYPE zde_estab      OPTIONAL
+                                 emissionpoint  TYPE zde_emission   OPTIONAL
+                                    sequential  TYPE zde_secuencial OPTIONAL,
 
        send_request_by_url        EXPORTING estado            TYPE zde_status
                                             messagedocument   TYPE string
                                             documentsupplier  TYPE sgtxt
                                             authorizationdate TYPE datum.
+
 
   PROTECTED SECTION.
     METHODS:
@@ -35,9 +41,19 @@ CLASS zcl_hs_emision_doc DEFINITION
 
       send_request_by_arrengement IMPORTING out TYPE REF TO if_oo_adt_classrun_out,
 
-      parse_json                  IMPORTING json_string       TYPE string
+      parse_json_datil            IMPORTING json_string       TYPE string
 *                                            out               TYPE REF TO if_oo_adt_classrun_out " For local testing
-                                            http_status       TYPE http_status
+*                                            http_status       TYPE http_status
+                                            http_response     TYPE REF TO if_web_http_response
+                                  EXPORTING estado            TYPE zde_status
+                                            messagedocument   TYPE string
+                                            documentsupplier  TYPE sgtxt
+                                            authorizationdate TYPE datum,
+
+      parse_json_TuFactura        IMPORTING json_string       TYPE string
+*                                            out               TYPE REF TO if_oo_adt_classrun_out " For local testing
+*                                            http_status       TYPE http_status
+                                            http_response     TYPE REF TO if_web_http_response
                                   EXPORTING estado            TYPE zde_status
                                             messagedocument   TYPE string
                                             documentsupplier  TYPE sgtxt
@@ -54,6 +70,8 @@ CLASS zcl_hs_emision_doc DEFINITION
       uri                   TYPE string,
       query                 TYPE string,
       url                   TYPE string,
+      ruc                   TYPE string,
+      clave                 TYPE string,
       json_string           TYPE string,
       xml                   TYPE string,
       messagedocument       TYPE string,
@@ -63,7 +81,10 @@ CLASS zcl_hs_emision_doc DEFINITION
       documenttype          TYPE zde_trsri,
       documentsupplier      TYPE sgtxt,
       authorizationdate     TYPE datum,
-      estado                TYPE zde_status.
+      estado                TYPE zde_status,
+      establishment         TYPE zde_estab,
+      emissionpoint         TYPE zde_emission,
+      sequential            TYPE zde_secuencial.
 
 ENDCLASS.
 
@@ -79,6 +100,10 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
     me->documenttype          = documenttype.
     me->documentsupplier      = documentsupplier.
     me->companycode           = companycode.
+    me->clave                 = clave.
+    me->establishment         = establishment.
+    me->emissionpoint         = emissionpoint.
+    me->sequential            = sequential.
 
   ENDMETHOD.
 
@@ -96,7 +121,7 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD parse_json.
+  METHOD parse_json_datil.
 
     TYPES: BEGIN OF ty_mensajes,
              identificador         TYPE string,
@@ -180,8 +205,12 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
           lo_reader  TYPE REF TO if_sxml_reader,
           lo_ref_exc TYPE REF TO cx_root.
 
-    DATA: lv_xstring TYPE xstring,
-          lv_xml     TYPE xstring.
+    DATA: lv_xstring         TYPE xstring,
+          lv_xml             TYPE xstring,
+          lv_messagedocument TYPE xstring.
+
+    "Get status from response object
+    DATA(http_status) = http_response->get_status(  ).
 
     IF documentsupplier IS NOT INITIAL.
 
@@ -196,7 +225,7 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
               data         = ls_doc.
 
         CATCH cx_root INTO lo_root.
-
+          lv_messagedocument = lo_root->get_longtext( ).
       ENDTRY.
 
       IF ls_doc-autorizacion-estado EQ 'AUTORIZADO'.
@@ -256,7 +285,7 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
               data         = ls_serv.
 
         CATCH cx_root INTO lo_root.
-
+          lv_messagedocument = lo_root->get_longtext( ).
       ENDTRY.
 
       TRY.
@@ -270,7 +299,7 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
               data         = ls_error.
 
         CATCH cx_root INTO lo_root.
-
+          lv_messagedocument = lo_root->get_longtext( ).
       ENDTRY.
 
       TRY.
@@ -284,12 +313,12 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
               data         = ls_recep.
 
         CATCH cx_root INTO lo_root.
-
+          lv_messagedocument = lo_root->get_longtext( ).
       ENDTRY.
 
       IF ls_serv IS NOT INITIAL.
         estado = 'ERROR'.
-        messagedocument = ls_serv-mensaje.
+        lv_messagedocument = ls_serv-mensaje.
       ELSEIF ls_error IS NOT INITIAL.
         estado = 'ERROR'.
         LOOP AT ls_error-errors INTO DATA(ls_errors).
@@ -307,6 +336,111 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
       ELSEIF http_status-code NE '200'.
         estado = 'ERROR'.
         messagedocument = http_status-reason.
+      ENDIF.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD Parse_Json_TuFactura.
+
+    TYPES: BEGIN OF ty_envio,
+             UploadFileTxtResult         TYPE string,
+           END OF ty_envio,
+
+           BEGIN OF ty_consulta,
+             ClaveAcceso       TYPE string,
+             NumAutorizacion   TYPE string,
+             Estado            TYPE string,
+             Detalle           TYPE string,
+             EnContingencia    TYPE string,
+           END OF ty_consulta.
+
+    DATA: ls_envio      TYPE ty_envio,
+          ls_consulta   TYPE ty_consulta.
+
+    DATA: lo_root    TYPE REF TO cx_root,
+          lo_writer  TYPE REF TO cl_sxml_string_writer,
+          lo_reader  TYPE REF TO if_sxml_reader,
+          lo_ref_exc TYPE REF TO cx_root.
+
+    DATA: lv_xstring         TYPE xstring,
+          lv_xml             TYPE xstring,
+          lv_messagedocument TYPE xstring.
+
+    "Get status from response object
+    DATA(http_status) = http_response->get_status(  ).
+
+    IF documentsupplier IS NOT INITIAL."Consultar estado
+
+      TRY.
+
+          CALL METHOD /ui2/cl_json=>deserialize
+            EXPORTING
+              json         = json_string
+              pretty_name  = /ui2/cl_json=>pretty_mode-user
+              assoc_arrays = abap_true
+            CHANGING
+              data         = ls_consulta.
+
+        CATCH cx_root INTO lo_root.
+          lv_messagedocument = lo_root->get_longtext( ).
+      ENDTRY.
+
+      IF ls_consulta IS INITIAL.
+        estado = 'ERROR'.
+        lv_messagedocument = http_status-reason.
+      ELSEIF ls_consulta-estado EQ '4'.
+        estado = 'AUTHORIZED'.
+        messagedocument = ls_consulta-detalle.
+        authorizationdate = cl_abap_context_info=>get_system_date( ).
+      ELSEIF ls_consulta-estado EQ '0' OR ls_consulta-estado EQ '2' OR ls_consulta-estado EQ '3' OR ls_consulta-estado EQ '5'.
+        estado = 'ERROR'.
+        messagedocument = ls_consulta-detalle.
+      ELSEIF ls_consulta-estado EQ '1'.
+        estado = 'PROCESS'.
+        messagedocument = ls_consulta-detalle.
+        IF ls_consulta-detalle IS NOT INITIAL AND
+           ls_consulta-detalle CS 'Documento no procesado,'.
+           estado = 'ERROR'.
+        ENDIF.
+      ELSEIF http_status-code NE '200'.
+        estado = 'ERROR'.
+        messagedocument = http_status-reason.
+      ENDIF.
+
+    ELSE.
+
+      TRY.
+
+          CALL METHOD /ui2/cl_json=>deserialize
+            EXPORTING
+              json         = json_string
+              pretty_name  = /ui2/cl_json=>pretty_mode-user
+              assoc_arrays = abap_true
+            CHANGING
+              data         = ls_envio.
+
+        CATCH cx_root INTO lo_root.
+          lv_messagedocument = lo_root->get_longtext( ).
+      ENDTRY.
+
+      IF ls_envio-UploadFileTxtResult CS 'Exitosamente'.
+        estado = 'PROCESS'.
+        messagedocument = ls_envio-UploadFileTxtResult.
+      ELSEIF ls_envio-UploadFileTxtResult IS NOT INITIAL.
+        estado = 'ERROR'.
+        messagedocument = ls_envio-UploadFileTxtResult.
+      ELSEIF ls_envio-UploadFileTxtResult IS NOT INITIAL.
+        IF http_status-code EQ '200'.
+          estado = 'PROCESS'.
+          messagedocument = http_status-reason.
+        ELSE.
+          estado = 'ERROR'.
+          messagedocument = http_status-reason.
+        ENDIF.
+
       ENDIF.
 
     ENDIF.
@@ -348,20 +482,22 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
 
   METHOD send_request_by_url.
 
-    DATA: lt_ec_007   TYPE TABLE OF zdt_ec_007,
-          ls_ec_007   TYPE zdt_ec_007,
-          lv_username TYPE string,
-          lv_password TYPE string,
-          lv_uri      TYPE string,
-          lv_hostname TYPE string,
-          lv_url      TYPE string.
+    DATA: lt_ec_007          TYPE TABLE OF zdt_ec_007,
+          ls_ec_007          TYPE zdt_ec_007,
+          lv_username        TYPE string,
+          lv_password        TYPE string,
+          lv_uri             TYPE string,
+          lv_hostname        TYPE string,
+          lv_url             TYPE string,
+          lv_ruc             TYPE string,
+          lv_messagedocument TYPE string.
 
     SELECT client, companycode, api, fieldname, sign, options, sequence, low, high
     FROM zdt_ec_007
-    WHERE ( api EQ 'CS' "Consult
-       OR api EQ 'EM'   "Emission
-       OR api EQ 'GE'   "Get Inactive
-       OR api EQ 'DW' ) "Download Inactive
+    WHERE ( api EQ 'CS'   "Consult
+       OR   api EQ 'EM'   "Emission
+       OR   api EQ 'GE'   "Get Inactive
+       OR   api EQ 'DW' ) "Download Inactive
       AND companycode EQ @me->CompanyCode
       INTO TABLE @lt_ec_007.
 
@@ -392,6 +528,11 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
         lv_password = ls_ec_007-low.
       ENDIF.
 
+      READ TABLE lt_ec_007 INTO ls_ec_007 WITH KEY api = 'CS' fieldname = 'RUC'.
+      IF sy-subrc EQ 0.
+        lv_ruc = ls_ec_007-low.
+      ENDIF.
+
     ELSE.
 
       READ TABLE lt_ec_007 INTO ls_ec_007 WITH KEY api = 'EM' fieldname = 'URL'.
@@ -409,19 +550,25 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
         lv_hostname = ls_ec_007-low.
       ENDIF.
 
-      READ TABLE lt_ec_007 INTO ls_ec_007 WITH KEY api = 'CS' fieldname = 'USERNAME'.
+      READ TABLE lt_ec_007 INTO ls_ec_007 WITH KEY api = 'EM' fieldname = 'USERNAME'.
       IF sy-subrc EQ 0.
         lv_username = ls_ec_007-low.
       ENDIF.
 
-      READ TABLE lt_ec_007 INTO ls_ec_007 WITH KEY api = 'CS' fieldname = 'PASSWORD'.
+      READ TABLE lt_ec_007 INTO ls_ec_007 WITH KEY api = 'EM' fieldname = 'PASSWORD'.
       IF sy-subrc EQ 0.
         lv_password = ls_ec_007-low.
+      ENDIF.
+
+      READ TABLE lt_ec_007 INTO ls_ec_007 WITH KEY api = 'EM' fieldname = 'RUC'.
+      IF sy-subrc EQ 0.
+        lv_ruc = ls_ec_007-low.
       ENDIF.
 
     ENDIF.
 
     me->url                   = lv_url.
+    me->ruc                   = lv_ruc.
     me->hostname              = lv_hostname.
     me->uri                   = lv_uri.
     me->username              = lv_username.
@@ -439,24 +586,30 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
         "Send request
         lo_http_response = me->communication_handler->send_request_by_url( url = lv_request_string
                                                                            xml = me->xml
+                                                                           ruc = me->ruc
+                                                                         clave = me->clave
                                                               documentsupplier = me->documentsupplier
                                                                   documenttype = me->documenttype
-                                                                   username    = me->username
-                                                                   password    = me->password ).
-        "Get status from response object
-        DATA(ls_status) = lo_http_response->get_status(  ).
+                                                                      username = me->username
+                                                                      password = me->password
+                                                                 establishment = me->establishment
+                                                                 emissionpoint = me->emissionpoint
+                                                                    sequential = me->sequential ).
+*        "Get status from response object
+*        DATA(ls_status) = lo_http_response->get_status(  ).
 
         "Get json string from response object
         me->json_string = lo_http_response->get_text(  ).
 
         "Get Responce  of json
-        me->parse_json( EXPORTING json_string = me->json_string
+        me->parse_json_tufactura( EXPORTING json_string = me->json_string
 *                                  out         = out   "For local testing
-                                  http_status = ls_status
+*                                  http_status = ls_status
+                                   http_response    = lo_http_response
                         IMPORTING estado            = estado
                                   messagedocument   = me->messagedocument
                                   documentsupplier  = me->documentsupplier
-                                  authorizationdate = me->authorizationdate ).
+                                  authorizationdate = me->authorizationdate )."http_status
 
         messagedocument   = me->messagedocument.
         documentsupplier  = me->documentsupplier.
@@ -467,6 +620,7 @@ CLASS ZCL_HS_EMISION_DOC IMPLEMENTATION.
       CATCH cx_http_dest_provider_error cx_web_http_client_error INTO DATA(lx_error).
         "Display Error details
 *        out->write( lx_error->get_text(  ) ). "For local testing
+         lv_messagedocument = lx_error->get_text(  ).
     ENDTRY.
 
   ENDMETHOD.

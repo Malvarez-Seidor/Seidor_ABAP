@@ -10,11 +10,11 @@
     <SCRLEN1>10</SCRLEN1>
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Operación para selección</DDTEXT>
-    <REPTEXT>Operation</REPTEXT>
-    <SCRTEXT_S>Operation</SCRTEXT_S>
-    <SCRTEXT_M>Operation</SCRTEXT_M>
-    <SCRTEXT_L>Operation</SCRTEXT_L>
+    <DDTEXT>Operation for selection</DDTEXT>
+    <REPTEXT>Operación</REPTEXT>
+    <SCRTEXT_S>Opción</SCRTEXT_S>
+    <SCRTEXT_M>Opción</SCRTEXT_M>
+    <SCRTEXT_L>Opción</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
     <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>

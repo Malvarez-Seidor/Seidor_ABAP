@@ -1,0 +1,66 @@
+@Metadata.layer: #CORE
+@UI :{ headerInfo : { typeName : 'Withholdings', typeNamePlural : 'Withholding',
+            title : { type :#STANDARD, label : 'Electronic Document', value : 'DocumentSupplier' },
+                            description.value: 'Accesskey'  } }
+                            
+annotate entity ZCDS_P_EC_016
+    with 
+{
+   
+  @UI.facet: [ { label: 'Detail',   purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10 } ]
+
+  @UI: { dataPoint: { title: 'Company Code' } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  CompanyCode;
+  
+  @UI: { dataPoint: { title: 'Document SRI' } }
+  @Search.defaultSearchElement: true
+  @Search.fuzzinessThreshold: 0.8
+  DocumentSri;
+  
+  @UI: { lineItem: [ { position : 10, label : 'Pos Item', importance : #HIGH, cssDefault.width: '4rem' } ],
+   identification: [ { position : 10, label : 'Pos Item' } ] }
+  PosItem;
+  
+  @UI: { lineItem: [ { position : 20, label : 'Document Sri Support', importance : #MEDIUM, cssDefault.width: '4rem' } ],
+   identification: [ { position : 20, label : 'Document Sri Support' } ] }
+  DocumentSriSupport;
+  
+  @UI: { lineItem: [ { position : 30, label : 'Establishment Support', importance : #HIGH } ],
+   identification: [ { position : 30, label : 'Establishment Support' } ] }
+  EstablishmentSupport;
+  
+  @UI: { lineItem: [ { position : 40,  label : 'Emissionpoint Support', importance : #HIGH } ],
+   identification: [ { position : 40, label : 'Emissionpoint Support' } ] }
+  EmissionpointSupport;
+
+  @UI: { lineItem: [ { position : 50, label : 'Sequential Support', importance : #HIGH } ],
+   identification: [ { position : 50, label : 'Sequential Support' } ] }
+  SequentialSupport;
+  
+  @UI: { lineItem: [ { position : 60, label : 'Accesskey Support', importance : #MEDIUM } ],
+   identification: [ { position : 60, label : 'Accesskey Support' } ] }
+  AccesskeySupport;
+  
+  @UI: { lineItem: [ { position : 70, label : 'Official Code', importance : #HIGH } ],
+   identification: [ { position : 70, label : 'Official Code' } ] }
+  OfficialWhldgTaxCode;
+  
+  @UI: { lineItem: [ { position : 80, label : 'Code Id', importance : #HIGH } ],
+   identification: [ { position : 80, label : 'Code Id' } ] }
+  CodeId;
+  
+  @UI: { lineItem: [ { position : 90, label : 'Base Retained', importance : #HIGH } ],
+   identification: [ { position : 90, label : 'Base Retained' } ] }
+  BaseRetained;
+  
+  @UI: { lineItem: [ { position : 140, label : 'Percentage Retained', importance : #HIGH } ],
+   identification: [ { position : 180, label : 'Percentage Retained' } ] }
+  PercentageRetained;
+  
+  @UI: { lineItem: [ { position : 90, label : 'Amount Retained', importance : #HIGH } ],
+   identification: [ { position : 90, label : 'Amount Retained' } ] }
+  AmountRetained;
+
+}

@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Types of Taxes - Roow View Interface'
 define root view entity ZCDS_RV_EC_003
   as select from zdt_ec_003 as TypesTaxes

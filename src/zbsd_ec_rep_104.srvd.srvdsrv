@@ -1,0 +1,8 @@
+@EndUserText.label: 'Report 104'
+define service ZBSD_EC_REP_104 {
+  expose ZCDS_VED_REP_104  as Report104;
+  expose ZCDS_VC_DET_104   as Report104group1;
+  expose ZCDS_VC_DET_104_2 as Report104group2;
+  expose ZCDS_P_104_RET    as Report104Withholdings;
+  expose ZCDS_P_104_IMP    as Report104Taxes;
+}

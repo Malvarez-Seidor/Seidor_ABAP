@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Payment Method - Roow View Interface'
 define root view entity ZCDS_RV_EC_006 
 as select from zdt_ec_006 as PaymentConditions

@@ -10,11 +10,11 @@
     <SCRLEN1>10</SCRLEN1>
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Indicador include/exclude para selección</DDTEXT>
-    <REPTEXT>Sign</REPTEXT>
-    <SCRTEXT_S>Sign</SCRTEXT_S>
-    <SCRTEXT_M>Sign</SCRTEXT_M>
-    <SCRTEXT_L>Sign</SCRTEXT_L>
+    <DDTEXT>Include/Exclude flag for selection</DDTEXT>
+    <REPTEXT>Incluir / Excluir</REPTEXT>
+    <SCRTEXT_S>Signo</SCRTEXT_S>
+    <SCRTEXT_M>Signo</SCRTEXT_M>
+    <SCRTEXT_L>Signo</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
     <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>

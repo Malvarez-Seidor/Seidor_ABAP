@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Support Details - Projection View'
 @Metadata.allowExtensions: true
 @Metadata.ignorePropagatedAnnotations: true
@@ -25,13 +25,14 @@ define  view entity ZCDS_P_EC_013
   
       @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_DOCUMENTTYPE' , element: 'AccountingDocumentType' }, distinctValues: true } ]
   key Accountingdocumenttype as AccountingDocumentType,
-  key Documentitem           as DocumentItem,
+  
+  key Draftuuid              as Draftuuid,
       
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_TRSRI' , element: 'value_low' }, distinctValues: true } ]
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_TISRI' , element: 'value_low' }, distinctValues: true } ]
       Typeid                 as TypeId,
       Idnumber               as IdNumber,
       
-      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZSH_TRSRI' , element: 'value_low' }, distinctValues: true } ]
+      @Consumption.valueHelpDefinition: [ { entity: { name: 'ZCDS_P_EC_023' , element: 'CodeSri' }, distinctValues: true } ]
       Documenttype           as DocumentType,
       Establishment          as Establishment,
       Emissionpoint          as EmissionPoint,

@@ -1,8 +1,8 @@
 @Metadata.layer: #CORE
 
-@UI :{ headerInfo : { typeName          : 'Purchase Document',
-                      typeNamePlural    : 'Purchases Documents',
-                      title             : { type :#STANDARD, label : 'Sociedad', value : 'CompanyCodeName' },
+@UI :{ headerInfo : { typeName          : 'Documento de Compra',
+                      typeNamePlural    : 'Documentos de Compras',
+                      title             : { type :#STANDARD,  value : 'CompanyCodeName' },
                       description       : { type :#STANDARD,  value : 'CompanyCode' } }, 
 
  presentationVariant: [ { sortOrder: [ { by: 'DocumentStatus',  direction:  #DESC },
@@ -11,111 +11,115 @@
 
 annotate entity ZCDS_VED_REP_COM with
   parameters
-    @EndUserText.label: 'Company Code'
+    @EndUserText.quickInfo: 'Company Code'
     P_CompanyCode,
-    @EndUserText.label: 'Fiscal Period'
+    @EndUserText.quickInfo: 'Fiscal Period'
     P_FiscalPeriod,
-    @EndUserText.label: 'Fiscal Year'
+    @EndUserText.quickInfo: 'Fiscal Year'
     P_FiscalYear
 {
 
-  @UI.facet: [ { label: 'Header Data',       purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10                                        },
-               { label: 'Document Info',     purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 20, targetQualifier: 'Detail'             },
-               { label: 'Items',             purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30, targetElement: '_AccountingDocumentItem' },
-               { label: 'Withholding Taxs',  purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 40, targetElement: '_Withholdingtaxitem'  } ]
+  @UI.facet: [ { label: 'Inf. Cabecera',  purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10                                        },
+               { label: 'Inf. Documento', purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 20, targetQualifier: 'Detail'             },
+               { label: 'Detalles',       purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30, targetElement: '_AccountingDocumentItem' },
+               { label: 'Retenciones',    purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 40, targetElement: '_Withholdingtaxitem'  },
+               { label: 'Reembolsos',     purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 50, targetElement: '_RefundsPurchases'  } ]
 
-  @UI: { lineItem: [ { position : 10, importance : #HIGH, label: 'Year', cssDefault.width: '4rem' } ] }
+  @UI: { lineItem: [ { position : 10, importance : #HIGH, cssDefault.width: '4rem' } ] }
   FiscalYear;
 
-  @UI: { lineItem: [ { position : 20, importance : #HIGH, label: 'Period' } ] }
+  @UI: { lineItem: [ { position : 20, importance : #HIGH } ] }
   FiscalPeriod;
 
   @UI: { lineItem: [ { position : 30, importance : #HIGH, cssDefault.width: '7rem' } ], dataPoint: { visualization: #NUMBER  } }
-  @UI.dataPoint.title: 'Accounting Document'
+  @UI.dataPoint.hidden: false
   AccountingDocument;
 
   @UI: { lineItem: [ { position : 40, importance : #HIGH, cssDefault.width: '8rem' } ], textArrangement: #TEXT_ONLY }
-  @UI.dataPoint.title: 'Accounting Document Type'
+  @UI.dataPoint.hidden: false
   AccountingDocumentType;
   
-  @UI: { lineItem: [ { position : 50,  importance : #MEDIUM, label: 'Supplier' } ], textArrangement: #TEXT_ONLY  }
-  @UI: { identification: [ { position : 10, label: 'Supplier' } ] }
+  @UI: { lineItem: [ { position : 50,  importance : #MEDIUM } ], textArrangement: #TEXT_ONLY  }
+  @UI: { identification: [ { position : 10 } ] }
   Supplier;
   
-  @UI: { lineItem: [ { position : 60,  importance : #HIGH, label: 'Type Id' } ],
-   identification: [ { position : 40, label : 'Type Id' } ] }
+  @UI: { lineItem: [ { position : 60,  importance : #HIGH, label: 'Tipo Identificación' } ],
+   identification: [ { position : 40, label : 'Tipo Identificación' } ] }
   TypeId;
 
-  @UI: { lineItem: [ { position : 70,  importance : #HIGH, label: 'Id Number', cssDefault.width: '10rem' } ],
-   identification: [ { position : 70, label : 'Id Number' } ] }
+  @UI: { lineItem: [ { position : 70,  importance : #HIGH, label: 'Número Identificación', cssDefault.width: '10rem' } ],
+   identification: [ { position : 70, label : 'Número Identificación' } ] }
   IdNumber;
   
-  @UI: { lineItem: [ { position : 80, label : 'Document Type', importance : #HIGH, cssDefault.width: '4rem' } ],
-   identification: [ { position : 20, label : 'Document Type' } ],
+  @UI: { lineItem: [ { position : 80, label : 'Retención', importance : #HIGH, cssDefault.width: '4rem' } ],
+   identification: [ { position : 20, label : 'Retención' } ],
    textArrangement: #TEXT_ONLY }
   DocumentTypeWith;
   
   @UI.textArrangement: #TEXT_ONLY
-  @UI: { dataPoint: { title: 'Withholding Status' } }
-  @UI: { lineItem: [ { position : 90, label : 'Withholding Status', importance : #HIGH, cssDefault.width: '6rem' } ] }
+  @UI: { dataPoint: { title: 'Estado Retención' } }
+  @UI: { lineItem: [ { position : 90, label : 'Estado Retención', importance : #HIGH, cssDefault.width: '6rem' } ] }
   DocumentStatusWith;
   
-  @UI: { lineItem: [ { position : 100, label : 'Withholding Number', importance : #HIGH, cssDefault.width: '9rem' } ],
-   identification: [ { position : 60,  label : 'Withholding Number' } ] }
+  @UI: { lineItem: [ { position : 100, label : 'Numero Retención', importance : #HIGH, cssDefault.width: '9rem' } ],
+   identification: [ { position : 60,  label : 'Numero Retención' } ] }
   NumberDocumentWith;
   
-  @UI: { lineItem: [ { position : 110, label : 'Withholding Accesskey', importance : #MEDIUM } ],
-   identification: [ { position : 30,  label : 'Withholding Accesskey' } ] }
+  @UI: { lineItem: [ { position : 110, label : 'Retención Clave Acceso', importance : #MEDIUM } ],
+   identification: [ { position : 30,  label : 'Retención Clave Acceso' } ] }
   AccesskeyWith;
   
-  @UI: { lineItem: [ { position : 120, label : 'Withholding Issue Date', importance : #MEDIUM } ],
-   identification: [ { position : 80,  label : 'Withholding Issue Date' } ] }
+  @UI: { lineItem: [ { position : 120, label : 'Retención Fecha Emisión', importance : #MEDIUM } ],
+   identification: [ { position : 80,  label : 'Retención Fecha Emisión' } ] }
   IssueDateWith;
   
   @UI.textArrangement: #TEXT_ONLY
-  @UI: { lineItem: [ { position : 130, label : 'Support Type', importance : #HIGH, cssDefault.width: '4rem' } ] }
-  @UI.fieldGroup: [ { qualifier: 'Detail', position : 40, label: 'Support Type' } ]
+  @UI: { lineItem: [ { position : 130, label : 'Tipo Sustento', importance : #HIGH, cssDefault.width: '4rem' } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail', position : 40, label: 'Tipo Sustento' } ]
   DocumentType;
   
   @UI.textArrangement: #TEXT_ONLY
-  @UI: { lineItem: [ { position : 140, label : 'Support Status', importance : #HIGH, cssDefault.width: '6rem' } ] }
-  @UI.fieldGroup: [ { qualifier: 'Detail', position : 100, label: 'Support Status' } ]
+  @UI: { lineItem: [ { position : 140, label : 'Estado Sustento', importance : #HIGH, cssDefault.width: '6rem' } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail', position : 100, label: 'Estado Sustento' } ]
   DocumentStatus;
   
-  @UI: { lineItem: [ { position : 150, label : 'Support Number', importance : #HIGH, cssDefault.width: '9rem' } ] }
-  @UI.fieldGroup: [ { qualifier: 'Detail', position : 90, label: 'Support Number' } ]
+  @UI: { lineItem: [ { position : 150, label : 'Numero Sustento', importance : #HIGH, cssDefault.width: '9rem' } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail', position : 90, label: 'Numero Sustento' } ]
   NumberDocument;
 
-  @UI: { lineItem: [ { position : 160, label : 'Support Accesskey', importance : #MEDIUM } ] }
-  @UI.fieldGroup: [ { qualifier: 'Detail', position : 50, label: 'Support Accesskey' } ]
+  @UI: { lineItem: [ { position : 160, label : 'Sustento Clave Acceso', importance : #MEDIUM } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail', position : 50, label: 'Sustento Clave Acceso' } ]
   Accesskey;
 
-  @UI: { lineItem: [ { position : 170, label : 'Support Issue Date', importance : #MEDIUM } ] }
-  @UI.fieldGroup: [ { qualifier: 'Detail', position : 140, label: 'Support Issue Date' } ]
+  @UI: { lineItem: [ { position : 170, label : 'Sustento Fecha Emisión', importance : #MEDIUM } ] }
+  @UI.fieldGroup: [ { qualifier: 'Detail', position : 140, label: 'Sustento Fecha Emisión' } ]
   IssueDate;
 
-  @UI: { lineItem: [ { position : 180, label : 'Posting Date', importance : #MEDIUM } ] }
-  @UI.fieldGroup:  [ { qualifier: 'Detail', position: 110, label: 'Posting Date' } ]
+  @UI: { lineItem: [ { position : 180, importance : #MEDIUM } ] }
+  @UI.fieldGroup:  [ { qualifier: 'Detail', position: 110 } ]
   PostingDate;
   
   @UI.textArrangement: #TEXT_ONLY
-  @UI: { lineItem: [ { position : 190, label : 'Created By User', importance : #MEDIUM } ] }
-  @UI.fieldGroup:  [ { qualifier: 'Detail', position: 10, label: 'Created By User' } ]
+  @UI: { lineItem: [ { position : 190, importance : #MEDIUM } ] }
+  @UI.fieldGroup:  [ { qualifier: 'Detail', position: 10 } ]
   AccountingDocCreatedByUser;
 
-  @UI.fieldGroup: [ { qualifier: 'Detail', position : 60, label: 'Document Cancelled' } ]
+  @UI.fieldGroup: [ { qualifier: 'Detail', position : 60 } ]
   ReverseDocument;
 
   @UI.fieldGroup:  [ { qualifier: 'Detail',position: 120 } ]
   PaymentTerms;
-
-  @UI.fieldGroup:  [ { qualifier: 'Detail',position: 130, label: 'Net Amount'} ]
+  
+  @UI: { lineItem: [ { position : 200, label: 'Importe Neto', importance : #LOW } ] }
+  @UI.fieldGroup:  [ { qualifier: 'Detail',position: 130, label: 'Importe Neto'} ]
   NetAmount;
-
-  @UI.fieldGroup:  [ { qualifier: 'Detail',position: 80, label: 'Tax Amount'} ]
+  
+  @UI: { lineItem: [ { position : 210, label: 'Impuesto', importance : #LOW } ] }
+  @UI.fieldGroup:  [ { qualifier: 'Detail',position: 80, label: 'Impuesto'} ]
   TaxAmountInCoCodeCrcy;
-
-  @UI.fieldGroup:  [ { qualifier: 'Detail',position: 30, label: 'Base Amount'} ]
+  
+  @UI: { lineItem: [ { position : 220, label: 'Importe Base', importance : #LOW } ] }
+  @UI.fieldGroup:  [ { qualifier: 'Detail',position: 30, label: 'Importe Base'} ]
   TaxBaseAmountInCoCodeCrcy;
 
   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 70 } ]

@@ -1,4 +1,4 @@
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Clase de Condiciones' // Roow View Interface'
 define root view entity ZCDS_RV_EC_005
   as select from zdt_ec_005 as TypeCondition

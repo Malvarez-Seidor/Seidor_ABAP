@@ -1,4 +1,6 @@
 CLASS zbp_cds_rv_doc_ndd DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zcds_rv_doc_ndd.
+protected section.
+private section.
 ENDCLASS.
 
 

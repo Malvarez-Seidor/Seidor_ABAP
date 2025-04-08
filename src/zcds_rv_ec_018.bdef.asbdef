@@ -1,0 +1,15 @@
+managed implementation in class zbp_cds_rv_ec_018 unique;
+strict ( 2 );
+
+define behavior for ZCDS_RV_EC_018 alias CodeReports
+persistent table zdt_ec_018
+lock master
+authorization master ( global, instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+  field ( readonly:update ) CompanyCode, Report, Typecode, Code;
+
+}

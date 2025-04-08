@@ -1,5 +1,5 @@
 @EndUserText.label: 'Carrier Data - Projection View'
-//@AccessControl.authorizationCheck: #NOT_REQUIRED
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @Metadata.allowExtensions: true
 @Metadata.ignorePropagatedAnnotations: true
 @ObjectModel.usageType:{

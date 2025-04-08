@@ -10,11 +10,11 @@
     <SCRLEN1>10</SCRLEN1>
     <SCRLEN2>20</SCRLEN2>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Tipo de Transacción</DDTEXT>
-    <REPTEXT>Transaction Type</REPTEXT>
-    <SCRTEXT_S>Trans.Type</SCRTEXT_S>
-    <SCRTEXT_M>Transaction Type</SCRTEXT_M>
-    <SCRTEXT_L>Transaction Type</SCRTEXT_L>
+    <DDTEXT>Transaction Type</DDTEXT>
+    <REPTEXT>Tipo de Transacción</REPTEXT>
+    <SCRTEXT_S>Tipo Tran.</SCRTEXT_S>
+    <SCRTEXT_M>Tipo Transacción</SCRTEXT_M>
+    <SCRTEXT_L>Tipo de Transacción</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <REFKIND>D</REFKIND>
     <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>

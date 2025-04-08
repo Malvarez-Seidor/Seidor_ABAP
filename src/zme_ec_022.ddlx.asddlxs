@@ -1,0 +1,31 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName : 'Documento de Compra ATS', typeNamePlural : 'Documentos de Compras ATS',
+            title : { type :#STANDARD, value : 'CompanyCodeName' }, description.value: 'CompanyCode'  } }
+                      
+annotate view ZCDS_P_EC_022 with
+{
+  @UI.facet: [ { id : 'Companycode', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE } ]
+            
+  @UI: { lineItem: [ { position : 10, importance :  #HIGH } ],
+   identification: [ { position : 10 } ], 
+   selectionField: [ { position : 10 } ] }
+  CompanyCode;
+  
+  @UI: { lineItem: [ { position : 20, importance :  #HIGH } ] }
+  @UI.hidden: true
+  CompanyCodeName;
+  
+  @UI: { lineItem: [ { position : 30, importance :  #HIGH } ],
+   identification: [ { position : 20 } ], 
+   selectionField: [ { position: 20 } ] }
+  AccountingDocumentType;
+  
+  @UI: { lineItem: [ { position : 40, importance :  #MEDIUM } ] }
+  AccountingDocumentTypeName;
+  
+  @UI: { lineItem: [ { position : 40, label: 'Codigo SRI', importance :  #MEDIUM } ],
+   identification: [ { position : 30, label: 'Codigo SRI' } ] }
+  CodeSri;
+
+}

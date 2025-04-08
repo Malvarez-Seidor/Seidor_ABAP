@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Documento de Compras ATS",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "appType": "ui5",
+    "catalogId": "SAP_TC_UI5_REPO_UIAD"
+  },
+  "ui5AppDetails": {
+    "appId": "purchasingdocumentats.eclocalizacion025"
+  },
+  "navigation": {
+    "targetMappingId": "UI5R_7FD3BCBC16BD48F7CBE167DCB5886C2A2DF191E8_TM",
+    "semanticObject": "ZCON_EC_022",
+    "action": "Manage",
+    "desktop": true,
+    "tablet": true,
+    "phone": true
+  },
+  "tiles": [
+    {
+      "id": "UI5R_7FD3BCBC16BD48F7CBE167DCB5886C2A2DF191E8_AL",
+      "tileType": "static",
+      "isDefault": true,
+      "standard": {
+        "title": "Documento de Compras ATS",
+        "subtitle": "Clases de Documentos"
+      }
+    }
+  ]
+}

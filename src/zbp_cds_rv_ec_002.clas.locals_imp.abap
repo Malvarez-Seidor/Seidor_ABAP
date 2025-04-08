@@ -1,82 +1,71 @@
-CLASS lhc_SeqAdministrator DEFINITION INHERITING FROM cl_abap_behavior_handler.
+CLASS lhc_seqadministrator DEFINITION INHERITING FROM cl_abap_behavior_handler.
+
   PRIVATE SECTION.
+    DATA update_allowed TYPE abap_bool.
 
-    METHODS get_instance_features FOR INSTANCE FEATURES
-      IMPORTING keys REQUEST requested_features FOR SeqAdministrator RESULT result.
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR SeqAdministrator RESULT result.
 
-    METHODS getNext FOR MODIFY
-      IMPORTING keys FOR ACTION SeqAdministrator~getNext RESULT result.
+    METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
+      IMPORTING REQUEST requested_authorizations FOR SeqAdministrator RESULT result.
+
+    METHODS is_update_allowed
+      RETURNING
+        value(r_result) TYPE abap_bool.
 
 ENDCLASS.
 
-CLASS lhc_SeqAdministrator IMPLEMENTATION.
+CLASS lhc_seqadministrator IMPLEMENTATION.
 
-  METHOD get_instance_features.
+  METHOD get_global_authorizations.
 
-    READ ENTITIES OF zcds_rv_ec_002  IN LOCAL MODE
-      ENTITY SeqAdministrator
-      FIELDS ( Companycode Documentsri Emissionpoint Establishment Objet Address Sequential )
-      WITH CORRESPONDING #( keys )
-      RESULT DATA(OnlinesSeq)
-      FAILED failed.
+*   Check if EDIT operation is triggered or not
+    IF requested_authorizations-%update = if_abap_behv=>mk-on OR
+       requested_authorizations-%create = if_abap_behv=>mk-on OR
+       requested_authorizations-%delete = if_abap_behv=>mk-on.
 
-    result = VALUE #( FOR OnlineSeq IN OnlinesSeq
-                    ( %tky = OnlineSeq-%tky
-                      %features-%action-getNext "= if_abap_behv=>fc-o-enabled ) ).
-          = COND #( WHEN OnlineSeq-Objet IS NOT INITIAL THEN if_abap_behv=>fc-o-enabled ELSE if_abap_behv=>fc-o-disabled ) ) ).
+*     Check method IS_UPDATE_ALLOWED (Authorization simulation Check method)
+      IF is_update_allowed( ) = abap_false.
+
+*       update result with EDIT Allowed
+        result-%update = if_abap_behv=>auth-allowed.
+        result-%create = if_abap_behv=>auth-allowed.
+        result-%delete = if_abap_behv=>auth-allowed.
+
+      ELSE.
+
+*       update result with EDIT Not Allowed
+        result-%update = if_abap_behv=>auth-unauthorized.
+        result-%create = if_abap_behv=>auth-unauthorized.
+        result-%delete = if_abap_behv=>auth-unauthorized.
+
+      ENDIF.
+
+    ENDIF.
 
   ENDMETHOD.
 
-  METHOD getNext.
+  METHOD get_instance_authorizations.
 
-    READ ENTITIES OF zcds_rv_ec_002  IN LOCAL MODE
-      ENTITY SeqAdministrator
-      FIELDS ( Companycode Documentsri Establishment Emissionpoint Objet Address Sequential )
-      WITH CORRESPONDING #( keys )
-      RESULT DATA(OnlineSeq).
+      DATA: update_requested TYPE abap_bool,
+            update_grtanted  TYPE abap_bool.
 
-    LOOP AT OnlineSeq ASSIGNING FIELD-SYMBOL(<OnlineSeq>).
+     READ ENTITIES OF zcds_rv_ec_002  IN LOCAL MODE
+       ENTITY SeqAdministrator
+       FIELDS ( Companycode Documentsri Address Emissionpoint Establishment Objet )
+       WITH CORRESPONDING #( keys )
+       RESULT DATA(Administrator).
 
-        TRY.
-          CALL METHOD cl_numberrange_runtime=>number_get
-            EXPORTING
-              nr_range_nr = '01'
-              object      = <OnlineSeq>-Objet
-            IMPORTING
-              number      = DATA(lv_number)
-              returncode  = DATA(lv_rcode).
+     CHECK Administrator is not initial.
 
-          IF lv_number IS NOT INITIAL.
-            DATA(lv_len)  = strlen( lv_number ).
-            DATA(lv_cant) = lv_len - 9.
-            IF lv_cant LE 0.
-                lv_cant = 0.
-            ENDIF.
-            IF lv_len GT 9.
-              lv_len = 9.
-            ENDIF.
-            <OnlineSeq>-Sequential = lv_number+lv_cant(lv_len).
-          ENDIF.
+     update_requested = COND #( WHEN requested_authorizations-%update = if_abap_behv=>mk-on
+                             THEN abap_true ELSE abap_false ).
+     result = VALUE #( FOR Admin IN Administrator ( %tky = Admin-%tky ) ).
 
-        CATCH cx_number_ranges INTO DATA(lr_error).
+  ENDMETHOD.
 
-      ENDTRY.
-
-      INSERT VALUE #( %tky = <OnlineSeq>-%tky %param = <OnlineSeq> ) INTO TABLE result.
-
-    ENDLOOP.
-
-    MODIFY ENTITIES OF zcds_rv_ec_002 IN LOCAL MODE
-      ENTITY SeqAdministrator
-        UPDATE FIELDS ( Sequential )
-        WITH CORRESPONDING #( OnlineSeq ).
-
-    INSERT VALUE #(
-            %msg = new_message_with_text( text = |{ lines( OnlineSeq ) } records changed { lv_number+lv_cant(lv_len) } |
-            severity = if_abap_behv_message=>severity-success )
-      ) INTO TABLE reported-seqadministrator.
-
-
+  METHOD is_update_allowed.
+    update_allowed = abap_false.
   ENDMETHOD.
 
 ENDCLASS.

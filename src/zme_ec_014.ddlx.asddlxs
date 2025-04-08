@@ -1,39 +1,39 @@
 @Metadata.layer: #CORE
-@UI :{ headerInfo : { typeName : 'Withholding Code', typeNamePlural : 'Withholdings Codes',
-            title : { type :#STANDARD, label : 'Withholding Tax', value : 'WhldgTaxReferenceText' }, 
+@UI :{ headerInfo : { typeName : 'Código de Retención', typeNamePlural : 'Códigos de Retenciones',
+            title : { type :#STANDARD, label : 'Withholding Tax Type', value : 'WhldgTaxReferenceText' }, 
  description.value: 'WithholdingTaxCode'  } }
  
 annotate entity ZCDS_P_EC_014
     with 
 { 
     
-  @UI.facet: [ { id : 'Withholding', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Withholding' } ]
+  @UI.facet: [ { id : 'Withholding', purpose : #STANDARD, type : #IDENTIFICATION_REFERENCE, label : 'Retención' } ]
               
-  @UI: { lineItem: [ { position : 10, label : 'Withholding Tax', importance : #HIGH } ],
-   identification: [ { position : 10, label : 'Withholding Tax' } ],
-   selectionField: [ { position: 10 } ] }
+  @UI: { lineItem: [ { position : 10, label: 'Tipo de retenciones', importance : #HIGH } ],
+   identification: [ { position : 10, label: 'Tipo de retenciones' } ],
+   selectionField: [ { position : 10 } ] }
   WithholdingTaxType;
   
-  @UI: { lineItem: [ { position : 20, label : 'Withholding Code', importance : #HIGH } ],
-   identification: [ { position : 20, label : 'Withholding Code' } ],
-   selectionField: [ { position: 20 } ] }
+  @UI: { lineItem: [ { position : 20, label: 'Indicador ret.', importance : #HIGH } ],
+   identification: [ { position : 20, label: 'Indicador ret.' } ],
+   selectionField: [ { position : 20 } ] }
   WithholdingTaxCode;
   
-  @UI: { lineItem: [ { position : 30, label : 'Withholding Tax Percent', importance : #HIGH } ],
-   identification: [ { position : 30, label : 'Withholding Tax Percent' } ] } 
+  @UI: { lineItem: [ { position : 30, label : 'Porcentaje', importance : #HIGH } ],
+   identification: [ { position : 30, label : 'Porcentaje' } ] } 
   WithholdingTaxPercent;
   
-  @UI: { lineItem: [ { position : 40, label : 'Official Code', importance : #HIGH } ],
-   identification: [ { position : 40, label : 'Official Code' } ],
-   selectionField: [ { position: 30 } ] }
+  @UI: { lineItem: [ { position : 40, label : 'Código oficial', importance : #HIGH } ],
+   identification: [ { position : 40, label : 'Código oficial' } ],
+   selectionField: [ { position : 30 } ] }
   OfficialWhldgTaxCode;
   
   @UI: { lineItem: [ { position : 50, label : 'Withholding Type Code', importance : #HIGH } ],
    identification: [ { position : 50, label : 'Withholding Type Code' } ],
-   selectionField: [ { position: 40 } ] }
+   selectionField: [ { position : 40 } ] }
   WithholdingType;
   
-  @UI: { lineItem: [ { position : 60, label : 'Withholding Name', importance : #HIGH } ] }
+  @UI: { lineItem: [ { position : 60, importance : #HIGH } ] }
   WhldgTaxReferenceText;
   
 }

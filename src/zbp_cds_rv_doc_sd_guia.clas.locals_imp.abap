@@ -1,5 +1,47 @@
+CLASS lsc_zcds_rv_doc_sd_guia DEFINITION INHERITING FROM cl_abap_behavior_saver.
+
+  PROTECTED SECTION.
+
+    METHODS finalize REDEFINITION.
+
+    METHODS check_before_save REDEFINITION.
+
+    METHODS save REDEFINITION.
+
+    METHODS cleanup REDEFINITION.
+
+    METHODS cleanup_finalize REDEFINITION.
+
+ENDCLASS.
+
+CLASS lsc_zcds_rv_doc_sd_guia IMPLEMENTATION.
+
+  METHOD finalize.
+
+  ENDMETHOD.
+
+  METHOD check_before_save.
+
+  ENDMETHOD.
+
+  METHOD cleanup.
+
+  ENDMETHOD.
+
+  METHOD cleanup_finalize.
+
+  ENDMETHOD.
+
+  METHOD save.
+
+  ENDMETHOD.
+
+ENDCLASS.
+
 CLASS lhc_TransportGuides DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
+
+    DATA update_allowed TYPE abap_bool.
 
     METHODS get_instance_features FOR INSTANCE FEATURES
       IMPORTING keys REQUEST requested_features FOR TransportGuides RESULT result.
@@ -9,6 +51,37 @@ CLASS lhc_TransportGuides DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS UpdateStatus FOR MODIFY
       IMPORTING keys FOR ACTION TransportGuides~UpdateStatus RESULT result.
+
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR TransportGuides RESULT result.
+
+    METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
+      IMPORTING REQUEST requested_authorizations FOR TransportGuides RESULT result.
+
+    METHODS create FOR MODIFY
+      IMPORTING entities FOR CREATE TransportGuides.
+
+    METHODS update FOR MODIFY
+      IMPORTING entities FOR UPDATE TransportGuides.
+
+    METHODS delete FOR MODIFY
+      IMPORTING keys FOR DELETE TransportGuides.
+
+    METHODS read FOR READ
+      IMPORTING keys FOR READ TransportGuides RESULT result.
+
+    METHODS lock FOR LOCK
+      IMPORTING keys FOR LOCK TransportGuides.
+
+    METHODS rba_Transportdata FOR READ
+      IMPORTING keys_rba FOR READ TransportGuides\_Transportdata FULL result_requested RESULT result LINK association_links.
+
+    METHODS cba_Transportdata FOR MODIFY
+      IMPORTING entities_cba FOR CREATE TransportGuides\_Transportdata.
+
+    METHODS is_update_allowed
+      RETURNING
+        value(r_result) TYPE abap_bool.
 
 ENDCLASS.
 
@@ -80,11 +153,17 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
           lv_raw     TYPE xstring,
           lv_base64  TYPE string,
           lv_mensaje TYPE string,
+          lv_message TYPE string,
+          lv_clave   TYPE string,
           lv_id      TYPE sgtxt,
           lv_Fiscalyear TYPE gjahr,
-          lv_date    TYPE datum.
+          lv_date    TYPE datum,
+          lv_update  TYPE c.
 
     DATA: ls_ec_guia TYPE zdt_sd_doc_guia.
+
+    DATA: lt_cre_guia  TYPE TABLE FOR CREATE zcds_rv_doc_sd_guia,
+          lt_upd_guia  TYPE TABLE FOR UPDATE zcds_rv_doc_sd_guia.
 
     DATA: lt_ec_008 TYPE STANDARD TABLE OF zdt_ec_008,
           ls_ec_008 TYPE zdt_ec_008,
@@ -92,7 +171,7 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
           ls_ec_002 TYPE zdt_ec_002.
 
     DATA: lo_GuaiTras TYPE REF TO zcl_create_guia,
-          lo_xml      TYPE REF TO zcl_create_xml,
+          lo_xml      TYPE REF TO zcl_create_xml_emi,
           lo_emision  TYPE REF TO zcl_hs_emision_doc.
 
     DATA: ls_inf_tribu TYPE zts_inf_tribu,
@@ -103,7 +182,7 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
 
     READ ENTITIES OF zcds_rv_doc_sd_guia  IN LOCAL MODE
       ENTITY TransportGuides
-      FIELDS ( Companycode Fiscalyear Deliverydocument Deliverydocumenttype Shiptoparty
+      FIELDS ( Companycode Fiscalyear Deliverydocument Deliverydocumenttype SoldToParty
                Businessname Typeid Idnumber Establishment Emissionpoint Sequential
                Accesskey Documenttype Issuedate Documentstatus Messagedocument Authorizationdate
                Xml Mimetype Filename Documentsupplier SalesOrganization DeliveryDate )
@@ -112,11 +191,13 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
 
     SELECT client, companycode, documentsri, establishment, emissionpoint, objet, address
     FROM zdt_ec_002
+    WHERE companycode NE @space
     INTO TABLE @lt_ec_002.
 
     SELECT client, companycode, documentsri, establishment, emissionpoint, users, sequence, accountingdocumenttype,
            billingdocumenttype, deliverydocumenttype, goodsmovementtype, salesorganization, plant, storagelocation
     FROM zdt_ec_008
+    WHERE users EQ @sy-uname
     INTO TABLE @lt_ec_008.
 
     LOOP AT TransGuides ASSIGNING FIELD-SYMBOL(<fs_TransGuides>).
@@ -211,7 +292,14 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
 
       LOOP AT TransGuides ASSIGNING <fs_TransGuides>.
 
+        CLEAR: lv_update.
+
+        if <fs_TransGuides>-Accesskey IS NOT INITIAL.
+          lv_update = abap_true.
+        ENDIF.
+
         lv_fiscalyear = <fs_TransGuides>-Fiscalyear.
+
         CREATE OBJECT lo_GuaiTras
           EXPORTING
             companycode          = <fs_TransGuides>-Companycode
@@ -219,7 +307,7 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
             fiscalyear           = lv_fiscalyear
             deliverydocumenttype = <fs_TransGuides>-Deliverydocumenttype.
 
-        CLEAR: ls_inf_tribu, ls_guia, lt_detalle, lt_det_add, lt_head_add.
+        CLEAR: ls_inf_tribu, ls_guia, lt_detalle, lt_det_add, lt_head_add, lv_message.
 
         CALL METHOD lo_GuaiTras->callDocumentType
           EXPORTING
@@ -229,7 +317,28 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
             guia         = ls_guia
             t_detalle_g  = lt_detalle
             t_det_add    = lt_det_add
-            t_head_add   = lt_head_add.
+            t_head_add   = lt_head_add
+            message      = lv_message.
+
+        IF lv_message IS NOT INITIAL.
+
+          lo_msg = new_message( id = 'ZMC_DOC_ELEC'  " id = Name Of message class
+                            number = '008' "number of message defined in the message class
+                          severity = cl_abap_behv=>ms-error
+                                v1 = lv_message ). "type of message
+
+          <fs_TransGuides>-Messagedocument = lv_message.
+
+          APPEND VALUE #(  %tky = <fs_TransGuides>-%tky ) TO failed-TransportGuides.
+
+          APPEND VALUE #(  %tky      = <fs_TransGuides>-%tky
+                         %state_area = 'VALIDATE_SEQUENTIAL'
+                         %msg        =  lo_msg )
+          TO reported-TransportGuides.
+
+          CONTINUE.
+
+        ENDIF.
 
         <fs_TransGuides>-Idnumber      = ls_guia-id_destinatario.
         <fs_TransGuides>-Establishment = ls_inf_tribu-estab.
@@ -239,8 +348,9 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
         <fs_TransGuides>-issuedate     = ls_guia-fecha.
 
         CLEAR: lv_xml.
-        CREATE OBJECT lo_xml
-        .
+
+        CREATE OBJECT lo_xml.
+
         CALL METHOD lo_xml->guiaremision
           EXPORTING
             header    = ls_guia
@@ -251,21 +361,24 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
           IMPORTING
             xml       = lv_xml.
 
-        CALL METHOD cl_web_http_utility=>encode_base64
+        lv_raw = cl_abap_conv_codepage=>create_out( )->convert( lv_xml ).
+
+        CALL METHOD cl_web_http_utility=>encode_x_base64
           EXPORTING
-            unencoded = lv_xml
+            unencoded = lv_raw
           RECEIVING
             encoded   = lv_base64.
-
-        lv_raw = cl_abap_conv_codepage=>create_out( )->convert( lv_xml ).
 
         <fs_TransGuides>-xml  = lv_raw.
         <fs_TransGuides>-Mimetype  = 'text/xml'.
         <fs_TransGuides>-filename = |{ ls_inf_tribu-claveacceso }.xml|.
 
+        lv_clave = |{ <fs_TransGuides>-accesskey }.txt|.
+
         CREATE OBJECT lo_emision
           EXPORTING
             documentsupplier = lv_id
+            clave            = lv_clave
             documenttype     = '03'
             companycode      = <fs_TransGuides>-Companycode
             xml              = lv_base64.
@@ -279,33 +392,130 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
         <fs_TransGuides>-Documentsupplier = lv_id.
         <fs_TransGuides>-Messagedocument  = lv_mensaje.
 
+        IF lv_update IS INITIAL.
+
+          lt_cre_guia = VALUE #( ( CompanyCode            = <fs_TransGuides>-CompanyCode
+                                   FiscalYear             = <fs_TransGuides>-FiscalYear
+                                   DeliveryDocument       = <fs_TransGuides>-DeliveryDocument
+                                   DeliveryDocumentType   = <fs_TransGuides>-DeliveryDocumentType
+                                   SoldtoParty            = <fs_TransGuides>-SoldtoParty
+                                   BusinessName           = <fs_TransGuides>-BusinessName
+                                   TypeId                 = <fs_TransGuides>-TypeId
+                                   IdNumber               = <fs_TransGuides>-IdNumber
+                                   Establishment          = <fs_TransGuides>-Establishment
+                                   EmissionPoint          = <fs_TransGuides>-EmissionPoint
+                                   Sequential             = <fs_TransGuides>-Sequential
+                                   Accesskey              = <fs_TransGuides>-Accesskey
+                                   DocumentType           = <fs_TransGuides>-DocumentType
+                                   IssueDate              = <fs_TransGuides>-IssueDate
+                                   DocumentStatus         = <fs_TransGuides>-DocumentStatus
+                                   MessageDocument        = <fs_TransGuides>-MessageDocument
+                                   AuthorizationDate      = <fs_TransGuides>-AuthorizationDate
+                                   Xml                    = <fs_TransGuides>-Xml
+                                   MimeType               = <fs_TransGuides>-MimeType
+                                   FileName               = <fs_TransGuides>-FileName
+                                   DocumentSupplier       = <fs_TransGuides>-DocumentSupplier
+                                   %control = VALUE #(
+                                      Companycode            = if_abap_behv=>mk-on
+                                      Fiscalyear             = if_abap_behv=>mk-on
+                                      DeliveryDocument       = if_abap_behv=>mk-on
+                                      DeliveryDocumentType   = if_abap_behv=>mk-on
+                                      SoldtoParty            = if_abap_behv=>mk-on
+                                      BusinessName           = if_abap_behv=>mk-on
+                                      TypeId                 = if_abap_behv=>mk-on
+                                      IdNumber               = if_abap_behv=>mk-on
+                                      Establishment          = if_abap_behv=>mk-on
+                                      EmissionPoint          = if_abap_behv=>mk-on
+                                      Sequential             = if_abap_behv=>mk-on
+                                      Accesskey              = if_abap_behv=>mk-on
+                                      DocumentType           = if_abap_behv=>mk-on
+                                      IssueDate              = if_abap_behv=>mk-on
+                                      DocumentStatus         = if_abap_behv=>mk-on
+                                      MessageDocument        = if_abap_behv=>mk-on
+                                      AuthorizationDate      = if_abap_behv=>mk-on
+                                      Xml                    = if_abap_behv=>mk-on
+                                      MimeType               = if_abap_behv=>mk-on
+                                      FileName               = if_abap_behv=>mk-on
+                                      DocumentSupplier       = if_abap_behv=>mk-on ) ) ).
+
+        ELSE.
+
+          lt_upd_guia = VALUE #( (  CompanyCode           = <fs_TransGuides>-CompanyCode
+                                   FiscalYear             = <fs_TransGuides>-FiscalYear
+                                   DeliveryDocument       = <fs_TransGuides>-DeliveryDocument
+                                   DeliveryDocumentType   = <fs_TransGuides>-DeliveryDocumentType
+                                   SoldtoParty            = <fs_TransGuides>-SoldtoParty
+                                   BusinessName           = <fs_TransGuides>-BusinessName
+                                   TypeId                 = <fs_TransGuides>-TypeId
+                                   IdNumber               = <fs_TransGuides>-IdNumber
+                                   Establishment          = <fs_TransGuides>-Establishment
+                                   EmissionPoint          = <fs_TransGuides>-EmissionPoint
+                                   Sequential             = <fs_TransGuides>-Sequential
+                                   Accesskey              = <fs_TransGuides>-Accesskey
+                                   DocumentType           = <fs_TransGuides>-DocumentType
+                                   IssueDate              = <fs_TransGuides>-IssueDate
+                                   DocumentStatus         = <fs_TransGuides>-DocumentStatus
+                                   MessageDocument        = <fs_TransGuides>-MessageDocument
+                                   AuthorizationDate      = <fs_TransGuides>-AuthorizationDate
+                                   Xml                    = <fs_TransGuides>-Xml
+                                   MimeType               = <fs_TransGuides>-MimeType
+                                   FileName               = <fs_TransGuides>-FileName
+                                   DocumentSupplier       = <fs_TransGuides>-DocumentSupplier
+                                   %control = VALUE #(
+                                      Companycode            = if_abap_behv=>mk-on
+                                      Fiscalyear             = if_abap_behv=>mk-on
+                                      DeliveryDocument       = if_abap_behv=>mk-on
+                                      DeliveryDocumentType   = if_abap_behv=>mk-on
+                                      SoldtoParty            = if_abap_behv=>mk-on
+                                      BusinessName           = if_abap_behv=>mk-on
+                                      TypeId                 = if_abap_behv=>mk-on
+                                      IdNumber               = if_abap_behv=>mk-on
+                                      Establishment          = if_abap_behv=>mk-on
+                                      EmissionPoint          = if_abap_behv=>mk-on
+                                      Sequential             = if_abap_behv=>mk-on
+                                      Accesskey              = if_abap_behv=>mk-on
+                                      DocumentType           = if_abap_behv=>mk-on
+                                      IssueDate              = if_abap_behv=>mk-on
+                                      DocumentStatus         = if_abap_behv=>mk-on
+                                      MessageDocument        = if_abap_behv=>mk-on
+                                      AuthorizationDate      = if_abap_behv=>mk-on
+                                      Xml                    = if_abap_behv=>mk-on
+                                      MimeType               = if_abap_behv=>mk-on
+                                      FileName               = if_abap_behv=>mk-on
+                                      DocumentSupplier       = if_abap_behv=>mk-on ) ) ).
+
+        ENDIF.
+
+        INSERT VALUE #( %msg = new_message_with_text(
+                    text = |{ <fs_TransGuides>-DeliveryDocument } { <fs_TransGuides>-Documentstatus } { <fs_TransGuides>-Messagedocument } |
+                severity = if_abap_behv_message=>severity-success )
+          ) INTO TABLE reported-transportguides.
+
         FREE: lo_emision, lo_xml, lo_guaitras.
 
       ENDLOOP.
 
-      LOOP AT TransGuides ASSIGNING <fs_TransGuides>.
+      IF lt_cre_guia[] IS NOT INITIAL.
 
-        lv_fiscalyear = <fs_TransGuides>-fiscalyear.
+        MODIFY ENTITIES OF zcds_rv_doc_sd_guia IN LOCAL MODE
+          ENTITY TransportGuides
+          CREATE FROM lt_cre_guia
+          REPORTED DATA(lt_reported)
+          FAILED DATA(lt_failed)
+          MAPPED DATA(lt_mapped).
 
-        SELECT SINGLE *
-          FROM zdt_sd_doc_guia
-          WHERE companycode           EQ @<fs_TransGuides>-Companycode
-           AND fiscalyear             EQ @<fs_TransGuides>-Fiscalyear
-           AND deliverydocument       EQ @<fs_TransGuides>-Deliverydocument
-           AND deliverydocumenttype   EQ @<fs_TransGuides>-Deliverydocumenttype
-          INTO @ls_ec_guia.
+      ENDIF.
 
-         IF sy-subrc NE 0.
-           MOVE-CORRESPONDING <fs_TransGuides> TO ls_ec_guia.
-           ls_ec_guia-fiscalyear = lv_fiscalyear.
-           INSERT zdt_sd_doc_guia FROM @ls_ec_guia.
-         ELSE.
-          MOVE-CORRESPONDING <fs_TransGuides> TO ls_ec_guia.
-          ls_ec_guia-fiscalyear = lv_fiscalyear.
-          UPDATE zdt_sd_doc_guia FROM @ls_ec_guia.
-        ENDIF.
+      IF lt_upd_guia[] IS NOT INITIAL.
 
-      ENDLOOP.
+        MODIFY ENTITIES OF zcds_rv_doc_sd_guia IN LOCAL MODE
+          ENTITY TransportGuides
+          UPDATE FROM lt_upd_guia
+          REPORTED lt_reported
+          FAILED lt_failed
+          MAPPED lt_mapped.
+
+      ENDIF.
 
     ENDIF.
 
@@ -320,15 +530,18 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
     DATA: lv_id      TYPE sgtxt,
           lv_xml     TYPE string,
           lv_mensaje TYPE string,
+          lv_clave   TYPE string,
           lv_date    TYPE datum.
 
     DATA: ls_ec_guia TYPE zdt_sd_doc_guia.
+
+    DATA: lt_upd_guia  TYPE TABLE FOR UPDATE zcds_rv_doc_sd_guia.
 
     DATA: lo_emision TYPE REF TO zcl_hs_emision_doc.
 
     READ ENTITIES OF zcds_rv_doc_sd_guia IN LOCAL MODE
       ENTITY TransportGuides
-      FIELDS ( Companycode Fiscalyear Deliverydocument Deliverydocumenttype Shiptoparty
+      FIELDS ( Companycode Fiscalyear Deliverydocument Deliverydocumenttype SoldToParty
                Businessname Typeid Idnumber Establishment Emissionpoint Sequential
                Accesskey Documenttype Issuedate Documentstatus Messagedocument Authorizationdate
                Xml Mimetype Filename Documentsupplier SalesOrganization DeliveryDate )
@@ -337,16 +550,21 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
 
     LOOP AT TransGuides ASSIGNING FIELD-SYMBOL(<fs_TransGuides>).
 
-      CLEAR: lv_date.
+      CLEAR: lv_date, lv_clave.
 
-      lv_id = <fs_TransGuides>-Documentsupplier.
+      lv_id    = <fs_TransGuides>-Accesskey.
+      lv_clave = <fs_TransGuides>-Accesskey.
 
       CREATE OBJECT lo_emision
         EXPORTING
           documentsupplier = lv_id
+          clave            = lv_clave
           documenttype     = <fs_TransGuides>-Documenttype
           companycode      = <fs_TransGuides>-Companycode
-          xml              = lv_xml.
+          xml              = lv_xml
+          establishment    = <fs_TransGuides>-Establishment
+          emissionpoint    = <fs_TransGuides>-Emissionpoint
+          sequential       = <fs_TransGuides>-Sequential.
 
       CALL METHOD lo_emision->send_request_by_url(
         IMPORTING
@@ -361,33 +579,249 @@ CLASS lhc_TransportGuides IMPLEMENTATION.
 
       <fs_TransGuides>-Messagedocument  = lv_mensaje.
 
+      lt_upd_guia = VALUE #( ( CompanyCode            = <fs_TransGuides>-CompanyCode
+                               FiscalYear             = <fs_TransGuides>-FiscalYear
+                               DeliveryDocument       = <fs_TransGuides>-DeliveryDocument
+                               DeliveryDocumentType   = <fs_TransGuides>-DeliveryDocumentType
+                               DocumentStatus         = <fs_TransGuides>-DocumentStatus
+                               MessageDocument        = <fs_TransGuides>-MessageDocument
+                               AuthorizationDate      = <fs_TransGuides>-AuthorizationDate
+                               %control = VALUE #(
+                                      Companycode            = if_abap_behv=>mk-on
+                                      Fiscalyear             = if_abap_behv=>mk-on
+                                      DeliveryDocument       = if_abap_behv=>mk-on
+                                      DeliveryDocumentType   = if_abap_behv=>mk-on
+                                      DocumentStatus         = if_abap_behv=>mk-on
+                                      MessageDocument        = if_abap_behv=>mk-on
+                                      AuthorizationDate      = if_abap_behv=>mk-on ) ) ).
+
+      INSERT VALUE #(
+            %msg = new_message_with_text( text = |{ <fs_TransGuides>-DeliveryDocument } { <fs_TransGuides>-Documentstatus } { <fs_TransGuides>-Messagedocument }{ <fs_TransGuides>-Authorizationdate } |
+            severity = if_abap_behv_message=>severity-success )
+      ) INTO TABLE reported-transportdata.
+
       FREE: lo_emision.
 
     ENDLOOP.
 
-    LOOP AT TransGuides ASSIGNING <fs_TransGuides>.
+    IF lt_upd_guia IS NOT INITIAL.
 
-      SELECT SINGLE *
-        FROM zdt_sd_doc_guia
-       WHERE companycode            EQ @<fs_TransGuides>-Companycode
-         AND fiscalyear             EQ @<fs_TransGuides>-Fiscalyear
-         AND deliverydocument       EQ @<fs_TransGuides>-Deliverydocument
-         AND deliverydocumenttype   EQ @<fs_TransGuides>-Deliverydocumenttype
-        INTO @ls_ec_guia.
+      MODIFY ENTITIES OF zcds_rv_doc_sd_guia IN LOCAL MODE
+         ENTITY TransportGuides
+         UPDATE FROM lt_upd_guia
+         REPORTED DATA(lt_reported)
+         FAILED DATA(lt_failed)
+         MAPPED DATA(lt_mapped).
 
-       IF sy-subrc NE 0.
-         MOVE-CORRESPONDING <fs_TransGuides> TO ls_ec_guia.
-         INSERT zdt_sd_doc_guia FROM @ls_ec_guia.
-      ELSE.
-        MOVE-CORRESPONDING <fs_TransGuides> TO ls_ec_guia.
-        UPDATE zdt_sd_doc_guia FROM @ls_ec_guia.
-      ENDIF.
-
-    ENDLOOP.
+    ENDIF.
 
     result = VALUE #( FOR TransGuide IN TransGuides
                     ( %tky   = TransGuide-%tky
                       %param = TransGuide ) ).
+
+  ENDMETHOD.
+
+  METHOD get_instance_authorizations.
+
+  ENDMETHOD.
+
+  METHOD get_global_authorizations.
+
+  ENDMETHOD.
+
+  METHOD is_update_allowed.
+    update_allowed = abap_false.
+  ENDMETHOD.
+
+  METHOD create.
+
+    DATA : lt_inserts   TYPE STANDARD TABLE OF zdt_sd_doc_guia,
+           ls_cre_guia  TYPE STRUCTURE FOR CREATE zcds_rv_doc_sd_guia.
+
+    IF entities IS NOT INITIAL.
+
+      lt_inserts = CORRESPONDING #( entities MAPPING FROM ENTITY ).
+      INSERT zdt_sd_doc_guia FROM TABLE @lt_inserts.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD update.
+
+    DATA : lt_inserts     TYPE STANDARD TABLE OF zdt_sd_doc_guia,
+           lt_updates     TYPE STANDARD TABLE OF zdt_sd_doc_guia,
+           lt_controls    TYPE STANDARD TABLE OF zdt_sd_doc_guia.
+
+      lt_inserts  = CORRESPONDING #( entities MAPPING FROM ENTITY ).
+      lt_controls = CORRESPONDING #( entities MAPPING FROM ENTITY USING CONTROL ).
+
+      SELECT * FROM zdt_sd_doc_guia
+        FOR ALL ENTRIES IN @lt_inserts
+        WHERE companycode            = @lt_inserts-companycode
+          AND fiscalyear             = @lt_inserts-fiscalyear
+          AND DeliveryDocument        = @lt_inserts-DeliveryDocument
+          AND DeliveryDocumenttype    = @lt_inserts-DeliveryDocumenttype
+        INTO TABLE @DATA(lt_docments).
+
+    IF sy-subrc EQ 0.
+
+      lt_updates = VALUE #( FOR i = 1 WHILE i LE lines( lt_inserts )
+        LET
+          ls_control  = VALUE #( lt_controls[ i ] OPTIONAL )
+          ls_insert   = VALUE #( lt_inserts[ i ] OPTIONAL )
+          ls_docment  = VALUE #( lt_docments[ DeliveryDocument = ls_insert-DeliveryDocument ] OPTIONAL )
+          IN
+            ( companycode            = ls_insert-companycode
+              fiscalyear             = ls_insert-fiscalyear
+              DeliveryDocument       = ls_insert-DeliveryDocument
+              DeliveryDocumenttype   = ls_insert-DeliveryDocumenttype
+
+              shiptoparty            = COND #( WHEN ls_insert-shiptoparty IS NOT INITIAL
+                                               THEN ls_insert-shiptoparty
+                                               ELSE ls_docment-shiptoparty )
+
+              businessname           = COND #( WHEN ls_insert-businessname IS NOT INITIAL
+                                               THEN ls_insert-businessname
+                                               ELSE ls_docment-businessname )
+
+              typeid                 = COND #( WHEN ls_insert-typeid IS NOT INITIAL
+                                              THEN ls_insert-typeid
+                                              ELSE ls_docment-typeid )
+
+              idnumber               = COND #( WHEN ls_insert-idnumber IS NOT INITIAL
+                                               THEN ls_insert-idnumber
+                                               ELSE ls_docment-idnumber )
+
+              establishment          = COND #( WHEN ls_insert-establishment IS NOT INITIAL
+                                               THEN ls_insert-establishment
+                                               ELSE ls_docment-establishment )
+
+              emissionpoint          = COND #( WHEN ls_insert-emissionpoint IS NOT INITIAL
+                                               THEN ls_insert-emissionpoint
+                                               ELSE ls_docment-emissionpoint )
+
+              sequential             = COND #( WHEN ls_insert-sequential IS NOT INITIAL
+                                               THEN ls_insert-sequential
+                                               ELSE ls_docment-sequential )
+
+              accesskey              = COND #( WHEN ls_insert-accesskey IS NOT INITIAL
+                                               THEN ls_insert-accesskey
+                                               ELSE ls_docment-accesskey )
+
+              documenttype           = COND #( WHEN ls_insert-documenttype IS NOT INITIAL
+                                               THEN ls_insert-documenttype
+                                               ELSE ls_docment-documenttype )
+
+              issuedate              = COND #( WHEN ls_insert-issuedate IS NOT INITIAL
+                                               THEN ls_insert-issuedate
+                                               ELSE ls_docment-issuedate )
+
+              documentstatus         = COND #( WHEN ls_insert-documentstatus IS NOT INITIAL
+                                               THEN ls_insert-documentstatus
+                                               ELSE ls_docment-documentstatus )
+
+              messagedocument        = COND #( WHEN ls_insert-messagedocument IS NOT INITIAL
+                                               THEN ls_insert-messagedocument
+                                               ELSE ls_docment-messagedocument )
+
+              authorizationdate      = COND #( WHEN ls_insert-authorizationdate IS NOT INITIAL
+                                               THEN ls_insert-authorizationdate
+                                               ELSE ls_docment-authorizationdate )
+
+              xml                    = COND #( WHEN ls_insert-xml IS NOT INITIAL
+                                               THEN ls_insert-xml
+                                               ELSE ls_docment-xml )
+
+              mimetype               = COND #( WHEN ls_insert-mimetype IS NOT INITIAL
+                                               THEN ls_insert-mimetype
+                                               ELSE ls_docment-mimetype )
+
+              filename               = COND #( WHEN ls_insert-filename IS NOT INITIAL
+                                               THEN ls_insert-filename
+                                               ELSE ls_docment-filename )
+
+              documentsupplier       = COND #( WHEN ls_insert-documentsupplier IS NOT INITIAL
+                                               THEN ls_insert-documentsupplier
+                                               ELSE ls_docment-documentsupplier ) )
+            ).
+
+    ELSE.
+      lt_updates = lt_inserts.
+    ENDIF.
+
+    UPDATE zdt_sd_doc_guia FROM TABLE @lt_updates.
+
+  ENDMETHOD.
+
+  METHOD delete.
+
+    IF keys IS NOT INITIAL.
+
+      LOOP AT keys ASSIGNING FIELD-SYMBOL(<fs_keys>).
+
+        DELETE FROM zdt_sd_doc_guia WHERE companycode            EQ @<fs_keys>-companycode
+                                     AND fiscalyear              EQ @<fs_keys>-fiscalyear
+                                     AND DeliveryDocument        EQ @<fs_keys>-DeliveryDocument
+                                     AND DeliveryDocumenttype    EQ @<fs_keys>-DeliveryDocumentType.
+
+      ENDLOOP.
+
+    ENDIF.
+
+  ENDMETHOD.
+
+  METHOD read.
+
+    SELECT * FROM zcds_rv_doc_sd_guia
+        FOR ALL ENTRIES IN @keys
+        WHERE CompanyCode            = @keys-CompanyCode
+          AND FiscalYear             = @keys-FiscalYear
+          AND DeliveryDocument       = @keys-DeliveryDocument
+          AND DeliveryDocumentType   = @keys-DeliveryDocumentType
+        INTO CORRESPONDING FIELDS OF table @result.
+
+  ENDMETHOD.
+
+  METHOD lock.
+
+  ENDMETHOD.
+
+  METHOD rba_Transportdata.
+
+    SELECT * FROM zcds_rv_ec_010
+        FOR ALL ENTRIES IN @keys_rba
+        WHERE CompanyCode            = @keys_rba-CompanyCode
+          AND FiscalYear             = @keys_rba-FiscalYear
+          AND DeliveryDocument       = @keys_rba-DeliveryDocument
+          AND DeliveryDocumentType   = @keys_rba-DeliveryDocumentType
+        INTO CORRESPONDING FIELDS OF table @result.
+
+  ENDMETHOD.
+
+  METHOD cba_Transportdata.
+
+    DATA : lt_inserts        TYPE STANDARD TABLE OF zdt_ec_010,
+           ls_inserts        TYPE zdt_ec_010,
+           lt_cre_transport  TYPE TABLE FOR UPDATE zcds_rv_ec_010,
+           ls_cre_transport  TYPE STRUCTURE FOR UPDATE zcds_rv_ec_010.
+
+    IF entities_cba IS NOT INITIAL.
+
+      LOOP AT entities_cba INTO DATA(ls_entities).
+
+        LOOP AT ls_entities-%target ASSIGNING FIELD-SYMBOL(<fs_TransporData>).
+          MOVE-CORRESPONDING: <fs_TransporData> TO ls_inserts.
+          APPEND ls_inserts TO lt_inserts.
+        ENDLOOP.
+
+      ENDLOOP.
+
+      IF lt_inserts IS NOT INITIAL.
+        MODIFY zdt_ec_010 FROM TABLE @lt_inserts.
+      ENDIF.
+
+    ENDIF.
 
   ENDMETHOD.
 

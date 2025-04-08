@@ -4,6 +4,18 @@ CLASS zcl_create_nota_debito DEFINITION
 
   PUBLIC SECTION.
 
+    TYPES: BEGIN OF ty_email,
+           AddressID        TYPE I_AddressEmailAddress_2-AddressID,
+           AddressPersonID  TYPE I_AddressEmailAddress_2-AddressPersonID,
+           EmailAddress     TYPE string,
+          END OF ty_email.
+
+          TYPES: BEGIN OF ty_Phone,
+           AddressID        TYPE I_AddressPhoneNumber_2-AddressID,
+           AddressPersonID  TYPE I_AddressPhoneNumber_2-AddressPersonID,
+           PhoneAreaCodeSubscriberNumber     TYPE string,
+          END OF ty_Phone.
+
     TYPES: ty_impuesto  TYPE STANDARD TABLE OF zts_total_imp,
            ty_pagos     TYPE STANDARD TABLE OF zts_pago,
            ty_motivos   TYPE STANDARD TABLE OF zts_nc_motivo,
@@ -33,7 +45,8 @@ CLASS zcl_create_nota_debito DEFINITION
                                        t_impuesto   TYPE zcl_create_nota_debito=>ty_impuesto
                                        t_pagos      TYPE zcl_create_nota_debito=>ty_pagos
                                        t_motivos    TYPE zcl_create_nota_debito=>ty_motivos
-                                       t_head_add   TYPE zcl_create_nota_debito=>ty_head_add.
+                                       t_head_add   TYPE zcl_create_nota_debito=>ty_head_add
+                                       message      TYPE string.
 
   PROTECTED SECTION.
 
@@ -78,8 +91,8 @@ CLASS zcl_create_nota_debito DEFINITION
           gs_AddlInformation          TYPE I_AddlCompanyCodeInformation,
           gs_BusinessPartner          TYPE I_BusinessPartner,
           gs_Address                  TYPE i_address_2,
-          gs_email                    TYPE I_AddressEmailAddress_2,
-          gs_telefono                 TYPE I_AddressPhoneNumber_2,
+          gs_email                    TYPE ty_email,
+          gs_telefono                 TYPE ty_phone,
           gs_Businesspartnertaxnumber TYPE I_Businesspartnertaxnumber,
           gs_BusPartAddress           TYPE I_BusPartAddress,
           gs_PaymentTerms             TYPE I_PaymentTermsConditions.
@@ -92,13 +105,15 @@ CLASS zcl_create_nota_debito DEFINITION
           gt_AddlInformation          TYPE STANDARD TABLE OF I_AddlCompanyCodeInformation,
           gt_BusinessPartner          TYPE STANDARD TABLE OF I_BusinessPartner,
           gt_ADDRESS                  TYPE STANDARD TABLE OF i_address_2,
-          gt_email                    TYPE STANDARD TABLE OF I_AddressEmailAddress_2,
-          gt_telefono                 TYPE STANDARD TABLE OF I_AddressPhoneNumber_2,
+          gt_email                    TYPE STANDARD TABLE OF ty_email,
+          gt_telefono                 TYPE STANDARD TABLE OF ty_phone,
           gt_Businesspartnertaxnumber TYPE STANDARD TABLE OF I_Businesspartnertaxnumber,
           gt_PaymentTerms             TYPE STANDARD TABLE OF I_PaymentTermsConditions.
 
     METHODS get_data .
-    METHODS infoTributaria  CHANGING inf_tribu   TYPE zts_inf_tribu.
+
+    METHODS infoTributaria  CHANGING inf_tribu   TYPE zts_inf_tribu
+                                     message     TYPE string.
 
     METHODS getClaveAcceso  IMPORTING inf_tribu   TYPE zts_inf_tribu
                                       fecha       TYPE string
@@ -106,7 +121,8 @@ CLASS zcl_create_nota_debito DEFINITION
                             CHANGING  estab       TYPE zts_inf_tribu-estab
                                       ptoemi      TYPE zts_inf_tribu-ptoemi
                                       secuencial  TYPE zts_inf_tribu-secuencial
-                                      claveacceso TYPE zts_inf_tribu-claveacceso.
+                                      claveacceso TYPE zts_inf_tribu-claveacceso
+                                      message     TYPE string.
 
     METHODS getHeaderND        CHANGING  header_d  TYPE zts_nd_header
                                          motivos   TYPE zcl_create_nota_debito=>ty_motivos.
@@ -132,7 +148,8 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
 
     me->get_data( ).
 
-    me->infoTributaria( CHANGING inf_tribu = me->gs_inf_tribu ).
+    me->infoTributaria( CHANGING inf_tribu = me->gs_inf_tribu
+                                 message   = message ).
 
     me->getheadernd(  CHANGING header_d           = me->gs_header_d
                                motivos            = me->gt_motivos ).
@@ -174,7 +191,8 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
           lv_six     TYPE i,
           lv_mod     TYPE i,
           lv_rep     TYPE p,
-          lv_rep2(2) TYPE c.
+          lv_rep2(2) TYPE c,
+          lv_mensaje TYPE string.
 
     CASE me->gv_documenttype.
       WHEN '05'.
@@ -222,6 +240,12 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
           ENDIF.
 
         CATCH cx_number_ranges INTO DATA(lr_error).
+
+          message = me->gs_ec_002-Objet.
+          lv_mensaje = lr_error->get_longtext( ).
+          IF lv_mensaje IS INITIAL.
+            lv_mensaje = lr_error->get_text( ).
+          ENDIF.
 
       ENDTRY.
 
@@ -317,16 +341,18 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
 *          header_d- = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
 *        ENDIF.
 
-        SELECT *
+        SELECT AddressID, AddressPersonID, STRING_AGG( EmailAddress, '; '  ) as EmailAddress
           FROM I_AddressEmailAddress_2
           WITH PRIVILEGED ACCESS
           WHERE AddressID EQ @me->gs_BusPartAddress-AddressID
+          GROUP BY AddressID, AddressPersonID
            INTO TABLE @me->gt_email.
 
-        SELECT *
+        SELECT AddressID, AddressPersonID, STRING_AGG( PhoneAreaCodeSubscriberNumber, '; '  ) as PhoneAreaCodeSubscriberNumber
           FROM I_AddressPhoneNumber_2
           WITH PRIVILEGED ACCESS
           WHERE AddressID EQ @me->gs_BusPartAddress-AddressID
+          GROUP BY AddressID, AddressPersonID
           INTO TABLE @me->gt_telefono.
 
       ENDIF.
@@ -356,6 +382,10 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
 
   METHOD getheaderadd.
 
+    DATA: lv_api   TYPE zde_type_api.
+
+    lv_api = 'DN'.
+
     CLEAR: gs_head_add.
     gs_head_add-valor = me->gs_billingdocument-BillingDocument.
     gs_head_add-nombre = 'Documento SAP'.
@@ -369,28 +399,33 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
     ENDIF.
 
     CLEAR: gs_head_add.
-    LOOP AT me->gt_email INTO gs_email.
-      IF sy-tabix EQ 1.
-        CONCATENATE gs_head_add-valor gs_email-EmailAddress INTO gs_head_add-valor.
-      ELSE.
-        CONCATENATE gs_head_add-valor '; ' gs_email-EmailAddress INTO gs_head_add-valor.
-      ENDIF.
-    ENDLOOP.
-    IF gs_head_add IS NOT INITIAL.
+    READ TABLE me->gt_email INTO gs_email INDEX  1.
+    IF sy-subrc EQ 0.
+      gs_head_add-valor = gs_email-EmailAddress.
       gs_head_add-nombre = 'Email'.
       APPEND gs_head_add TO header_add.
     ENDIF.
 
     CLEAR: gs_head_add.
-    LOOP AT me->gt_telefono INTO gs_telefono.
-      IF sy-tabix EQ 1.
-        CONCATENATE  gs_head_add-valor gs_telefono-PhoneAreaCodeSubscriberNumber  INTO gs_head_add-valor.
-      ELSE.
-        CONCATENATE gs_head_add-valor '; ' gs_telefono-PhoneAreaCodeSubscriberNumber INTO gs_head_add-valor.
-      ENDIF.
-    ENDLOOP.
-    IF gs_head_add IS NOT INITIAL.
+    READ TABLE me->gt_telefono INTO gs_telefono INDEX  1.
+    IF sy-subrc EQ 0.
+      gs_head_add-valor = gs_telefono-PhoneAreaCodeSubscriberNumber.
       gs_head_add-nombre = 'Telefono'.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    IF gs_Address IS NOT INITIAL.
+      gs_head_add-nombre = 'Direccion del Cliente'.
+      gs_head_add-valor = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'AGENTE_RET'. "Agente de Retencion
+    IF sy-subrc EQ 0.
+      gs_head_add-nombre = 'Agente de Retencion'.
+      gs_head_add-valor  = gs_ec_007-low.
       APPEND gs_head_add TO header_add.
     ENDIF.
 
@@ -399,9 +434,10 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
 
   METHOD getheadernd.
 
-    DATA: lv_fecha TYPE string,
+    DATA: lv_fecha                  TYPE string,
           lv_billingdocument        TYPE vbeln,
-          lv_api   TYPE zde_type_api.
+          lv_navnw                  TYPE navnw,
+          lv_api                    TYPE zde_type_api.
 
     lv_api = 'DN'.
 
@@ -427,9 +463,12 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
       header_d-moneda = me->gs_billingdocument-TransactionCurrency.
     ENDIF.
 
-    READ TABLE gt_SalesDocumentItem INTO gs_SalesDocumentItem INDEX 1.
-    IF sy-subrc EQ 0 AND gs_SalesDocumentItem-ReferenceSDDocument IS NOT INITIAL.
-      lv_billingdocument = gs_SalesDocumentItem-ReferenceSDDocument.
+*    READ TABLE gt_SalesDocumentItem INTO gs_SalesDocumentItem INDEX 1.
+*    IF sy-subrc EQ 0 AND gs_SalesDocument-ReferenceSDDocument IS NOT INITIAL AND gs_SalesDocumentItem-ReferenceSDDocument IS INITIAL.
+*      gs_SalesDocumentItem-ReferenceSDDocument = gs_SalesDocument-ReferenceSDDocument.
+*    ENDIF.
+    IF gs_SalesDocument-ReferenceSDDocument IS NOT INITIAL.
+      lv_billingdocument = gs_SalesDocument-ReferenceSDDocument.
 
       SELECT SINGLE client, companycode, fiscalyear, accountingdocument, accountingdocumenttype, billingdocument, billingdocumenttype,
                   soldtoparty, businessname,typeid, idnumber, establishment, emissionpoint, sequential, accesskey,
@@ -444,19 +483,25 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
         header_d-cod_docmod      = gs_factura-documenttype.
         CONCATENATE gs_factura-issuedate+6(2) gs_factura-issuedate+4(2) gs_factura-issuedate(4) INTO header_d-fech_emis_modif SEPARATED BY '/'.
         header_d-num_cod_modif = |{ gs_factura-establishment }-{ gs_factura-emissionpoint }-{ gs_factura-sequential }|.
-      ELSEIF gs_SalesDocument-PurchaseOrderByCustomer IS NOT INITIAL.
+*      ELSEIF gs_SalesDocument-PurchaseOrderByCustomer IS NOT INITIAL.
+*
+*        header_d-cod_docmod      = '01'.
+*        header_d-num_cod_modif = gs_SalesDocument-PurchaseOrderByCustomer.
+*        CONCATENATE gs_SalesDocument-CustomerPurchaseOrderDate+6(2) gs_SalesDocument-CustomerPurchaseOrderDate+4(2) gs_SalesDocument-CustomerPurchaseOrderDate(4) INTO header_d-fech_emis_modif SEPARATED BY '/'.
+
+      ELSEIF gs_SalesDocument-yy1_facturareferen_sdh IS NOT INITIAL.
 
         header_d-cod_docmod      = '01'.
-        header_d-num_cod_modif = gs_SalesDocument-PurchaseOrderByCustomer.
-        CONCATENATE gs_SalesDocument-CustomerPurchaseOrderDate+6(2) gs_SalesDocument-CustomerPurchaseOrderDate+4(2) gs_SalesDocument-CustomerPurchaseOrderDate(4) INTO header_d-fech_emis_modif SEPARATED BY '/'.
+        header_d-num_cod_modif = gs_SalesDocument-yy1_facturareferen_sdh.
+        CONCATENATE gs_SalesDocument-yy1_fechafacturare_sdh+6(2) gs_SalesDocument-yy1_fechafacturare_sdh+4(2) gs_SalesDocument-yy1_fechafacturare_sdh(4) INTO header_d-fech_emis_modif SEPARATED BY '/'.
 
       ENDIF.
 
-    ELSEIF gs_SalesDocument-PurchaseOrderByCustomer IS NOT INITIAL.
+    ELSEIF gs_SalesDocument-yy1_facturareferen_sdh IS NOT INITIAL.
 
         header_d-cod_docmod      = '01'.
-        header_d-num_cod_modif = gs_SalesDocument-PurchaseOrderByCustomer.
-        CONCATENATE gs_SalesDocument-CustomerPurchaseOrderDate+6(2) gs_SalesDocument-CustomerPurchaseOrderDate+4(2) gs_SalesDocument-CustomerPurchaseOrderDate(4) INTO header_d-fech_emis_modif SEPARATED BY '/'.
+        header_d-num_cod_modif = gs_SalesDocument-yy1_facturareferen_sdh.
+        CONCATENATE gs_SalesDocument-yy1_fechafacturare_sdh+6(2) gs_SalesDocument-yy1_fechafacturare_sdh+4(2) gs_SalesDocument-yy1_fechafacturare_sdh(4) INTO header_d-fech_emis_modif SEPARATED BY '/'.
 
     ENDIF.
 
@@ -466,14 +511,20 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
 
     SELECT SINGLE *
     FROM I_SDDocumentReasonText
-    WHERE SDDocumentReason = @gs_SalesDocument-SDDocumentReason
-      AND Language         = @sy-langu
+    WHERE SDDocumentReason EQ @gs_SalesDocument-SDDocumentReason
+      AND Language         EQ @sy-langu
     INTO @DATA(ls_SDDocumentReasonText).
     IF sy-subrc EQ 0.
       gs_motivos-razon = ls_SDDocumentReasonText-SDDocumentReasonText.
     ENDIF.
-    header_d-totalsinimpuestos = me->gs_billingdocument-TotalNetAmount.
-    gs_motivos-valor = header_d-valor = me->gs_billingdocument-TotalNetAmount + me->gs_billingdocument-TotalTaxAmount.
+
+    CLEAR: lv_navnw.
+    lv_navnw = me->gs_billingdocument-TotalNetAmount.
+    header_d-totalsinimpuestos = lv_navnw.
+
+    CLEAR: lv_navnw.
+    lv_navnw =   me->gs_billingdocument-TotalNetAmount + me->gs_billingdocument-TotalTaxAmount.
+    gs_motivos-valor = header_d-valor = lv_navnw.
 
     APPEND gs_motivos TO motivos.
 
@@ -498,39 +549,47 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
 
     ENDLOOP.
 
-    LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
-                                                                   AND ConditionInactiveReason EQ space.
+    IF lr_condition[] IS NOT INITIAL.
 
-      READ TABLE gt_ec_005 INTO gs_ec_005 WITH KEY ccondition = gs_billingitemprcgelmnt-ConditionType.
+      LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
+                                                                     AND ConditionInactiveReason EQ space.
 
-      READ TABLE gt_ec_003 INTO gs_ec_003 WITH KEY taxcode = gs_billingitemprcgelmnt-TaxCode taxsupportid = gs_ec_005-typecondition.
-      IF sy-subrc EQ 0.
+        READ TABLE gt_ec_005 INTO gs_ec_005 WITH KEY ccondition = gs_billingitemprcgelmnt-ConditionType.
 
-        READ TABLE impuesto ASSIGNING FIELD-SYMBOL(<fs_impuesto>) WITH KEY codigo =  gs_ec_003-taxsupportid codigoporcentaje =  gs_ec_003-taxsidrate.
+        READ TABLE gt_ec_003 INTO gs_ec_003 WITH KEY taxcode = gs_billingitemprcgelmnt-TaxCode taxsupportid = gs_ec_005-typecondition.
         IF sy-subrc EQ 0.
-          lv_navnw = gs_billingitemprcgelmnt-ConditionBaseValue.
-          <fs_impuesto>-baseimponible += lv_navnw.
-          lv_navnw = gs_billingitemprcgelmnt-ConditionAmount.
-          <fs_impuesto>-valor         += lv_navnw.
-        ELSE.
-          gs_impuesto-codigo            = gs_ec_003-taxsupportid.
-          gs_impuesto-codigoporcentaje  = gs_ec_003-taxsidrate.
 
-          lv_navnw = gs_billingitemprcgelmnt-ConditionBaseValue.
-          gs_impuesto-baseimponible     = lv_navnw.
+          READ TABLE impuesto ASSIGNING FIELD-SYMBOL(<fs_impuesto>) WITH KEY codigo =  gs_ec_003-taxsupportid codigoporcentaje =  gs_ec_003-taxsidrate.
+          IF sy-subrc EQ 0.
 
-          lv_navnw = gs_billingitemprcgelmnt-ConditionAmount.
-          gs_impuesto-valor             = lv_navnw.
+            lv_navnw = gs_billingitemprcgelmnt-ConditionBaseValue.
+            <fs_impuesto>-baseimponible += lv_navnw.
+            lv_navnw = gs_billingitemprcgelmnt-ConditionAmount.
+            <fs_impuesto>-valor         += lv_navnw.
 
-          lv_tarifa                     = gs_billingitemprcgelmnt-ConditionRateValue.
-          gs_impuesto-tarifa            = lv_tarifa.
-          APPEND gs_impuesto TO impuesto.
-          CLEAR: gs_impuesto.
+          ELSE.
+
+            gs_impuesto-codigo            = gs_ec_003-taxsupportid.
+            gs_impuesto-codigoporcentaje  = gs_ec_003-taxsidrate.
+
+            lv_navnw = gs_billingitemprcgelmnt-ConditionBaseValue.
+            gs_impuesto-baseimponible     = lv_navnw.
+
+            lv_navnw = gs_billingitemprcgelmnt-ConditionAmount.
+            gs_impuesto-valor             = lv_navnw.
+
+            lv_tarifa                     = gs_billingitemprcgelmnt-ConditionRateValue.
+            gs_impuesto-tarifa            = lv_tarifa.
+            APPEND gs_impuesto TO impuesto.
+            CLEAR: gs_impuesto.
+
+          ENDIF.
+
         ENDIF.
 
-      ENDIF.
+      ENDLOOP.
 
-    ENDLOOP.
+    ENDIF.
 
   ENDMETHOD.
 
@@ -590,7 +649,7 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
       AND documentsri  EQ @me->gv_documenttype
     INTO TABLE @gt_ec_002.
 
-    SELECT client, companycode, taxcode, notax, tax0, exempttax, tax, taxsupportid, taxsidrate, taxratepercent
+    SELECT client, companycode, taxcode, notax, tax0, exempttax, tax, taxsupportid, taxsidrate, taxratepercent, supporttaxcode
     FROM zdt_ec_003
     WHERE companycode  EQ @me->gv_companycode
     INTO TABLE @gt_ec_003.
@@ -634,30 +693,32 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
        INTO @gs_debito.
 
     SELECT SINGLE *
-    FROM I_BillingDocument
-    WHERE BillingDocument     = @me->gv_billingdocument
-      AND BillingDocumentType = @me->gv_billingdocumenttype
-      AND fiscalyear          = @me->gv_fiscalyear
-      AND companycode         = @me->gv_companycode
-    INTO @me->gs_billingdocument.
+      FROM I_BillingDocument
+      WHERE BillingDocument     EQ @me->gv_billingdocument
+        AND BillingDocumentType EQ @me->gv_billingdocumenttype
+        AND fiscalyear          EQ @me->gv_fiscalyear
+        AND companycode         EQ @me->gv_companycode
+      INTO @me->gs_billingdocument.
 
     SELECT  *
-    FROM I_BillingDocumentItem
-    WHERE BillingDocument     = @me->gv_billingdocument
-    INTO TABLE @me->gt_BillingDocumentItem.
+      FROM I_BillingDocumentItem
+      WHERE BillingDocument     EQ @me->gv_billingdocument
+      INTO TABLE @me->gt_BillingDocumentItem.
     IF sy-subrc EQ 0.
 
       READ TABLE me->gt_BillingDocumentItem INTO gs_BillingDocumentItem INDEX 1.
       SELECT SINGLE *
-      FROM I_SalesDocument
-      WHERE SalesDocument  = @me->gs_BillingDocumentItem-SalesDocument
-      INTO @me->gs_SalesDocument.
+        FROM I_SalesDocument
+        WITH PRIVILEGED ACCESS
+        WHERE SalesDocument  EQ @me->gs_BillingDocumentItem-SalesDocument
+         INTO @me->gs_SalesDocument.
 
       IF sy-subrc EQ 0.
 
         SELECT  *
           FROM I_SalesDocumentItem
-          WHERE SalesDocument  = @me->gs_SalesDocument-SalesDocument
+          WITH PRIVILEGED ACCESS
+          WHERE SalesDocument  EQ @me->gs_SalesDocument-SalesDocument
           INTO TABLE @me->gt_salesdocumentitem.
 
       ENDIF.
@@ -665,19 +726,19 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
     ENDIF.
 
     SELECT  *
-    FROM I_BillingDocumentItemPrcgElmnt
-    WHERE BillingDocument     = @me->gv_billingdocument
-    INTO TABLE @me->gt_billingitemprcgelmnt.
+      FROM I_BillingDocumentItemPrcgElmnt
+      WHERE BillingDocument     EQ @me->gv_billingdocument
+      INTO TABLE @me->gt_billingitemprcgelmnt.
 
     SELECT SINGLE *
-    FROM I_CompanyCode
-    WHERE companycode = @me->gv_companycode
-    INTO @me->gs_CompanyCode.
+      FROM I_CompanyCode
+      WHERE companycode EQ @me->gv_companycode
+      INTO @me->gs_CompanyCode.
 
     SELECT *
-    FROM I_AddlCompanyCodeInformation
-    WHERE companycode = @me->gv_companycode
-    INTO TABLE @me->gt_AddlInformation.
+      FROM I_AddlCompanyCodeInformation
+      WHERE companycode EQ @me->gv_companycode
+      INTO TABLE @me->gt_AddlInformation.
 
   ENDMETHOD.
 
@@ -806,7 +867,8 @@ CLASS ZCL_CREATE_NOTA_DEBITO IMPLEMENTATION.
                                CHANGING estab       = inf_tribu-estab
                                         ptoemi      = inf_tribu-ptoemi
                                         secuencial  = inf_tribu-secuencial
-                                        claveacceso = inf_tribu-claveacceso ).
+                                        claveacceso = inf_tribu-claveacceso
+                                        message     = message ).
         ENDIF.
 
       ENDIF.

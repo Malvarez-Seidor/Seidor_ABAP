@@ -1,0 +1,141 @@
+@Metadata.layer: #CORE
+
+@UI :{ headerInfo : { typeName          : 'Documento de Venta',
+                      typeNamePlural    : 'Documentos de Ventas',
+                      title             : { type :#STANDARD, value : 'CompanyCodeName' },
+                      description       : { type :#STANDARD, value : 'CompanyCode' } },
+                      
+ presentationVariant: [ { sortOrder: [ { by: 'DocumentStatus',  direction:  #DESC },
+                                       { by: 'BillingDocument', direction:  #ASC  } ],
+                     visualizations: [ { type: #AS_LINEITEM } ] } ] }
+annotate entity ZCDS_VED_REP_VEN_ATS with
+{
+   
+   @UI.facet: [ { label: 'Inf. Cabecera',  purpose: #STANDARD, type: #IDENTIFICATION_REFERENCE, importance: #HIGH, position: 10                                        },
+                { label: 'Inf. Documento', purpose: #STANDARD, type: #FIELDGROUP_REFERENCE,     importance: #HIGH, position: 20, targetQualifier: 'Detail'             },
+                { label: 'Detalles',       purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 30, targetElement: '_BillingDocumentItem' },
+                { label: 'Retenciones',    purpose: #STANDARD, type: #LINEITEM_REFERENCE,       importance: #HIGH, position: 40, targetElement: '_Withholdingtaxitem'  } ]
+   
+   @UI: { lineItem: [ { position : 10, importance : #HIGH, cssDefault.width: '4rem' } ] }
+   FiscalYear;
+   
+   @UI: { lineItem: [ { position : 20, importance : #HIGH } ] }
+   FiscalPeriod;
+   
+   @UI: { lineItem: [ { position : 30, importance : #HIGH, cssDefault.width: '8rem' } ], dataPoint: { visualization: #NUMBER  } }
+   @UI.dataPoint.hidden: false
+   BillingDocument;
+   
+   @UI: { lineItem: [ { position : 40, importance : #HIGH, cssDefault.width: '8rem' } ], textArrangement: #TEXT_ONLY }
+   @UI.dataPoint.hidden: false
+   BillingDocumentType;
+   
+   @UI.textArrangement: #TEXT_ONLY
+   @UI: { dataPoint: { title: 'Estado Documento' } }
+   DocumentStatus;
+   
+   @UI: { lineItem: [ { position : 50, label : 'Tipo Documento', importance : #HIGH, cssDefault.width: '4rem' } ],
+    identification: [ { position : 30, label : 'Tipo Documento' } ],
+    textArrangement: #TEXT_ONLY }
+   DocumentType;
+   
+   @UI: { lineItem: [ { position : 60, importance : #HIGH, cssDefault.width: '8rem' } ] }
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 20 } ]
+   AccountingDocument;
+   
+   @UI: { lineItem: [ { position : 70, importance : #HIGH, cssDefault.width: '10rem' } ], textArrangement: #TEXT_ONLY }
+   @UI.fieldGroup: [ { qualifier: 'Detail', position: 70 } ]
+   AccountingDocumentType;
+   
+   @UI: { lineItem: [ { position : 80,  importance : #MEDIUM } ], textArrangement: #TEXT_ONLY  }
+   @UI: { identification: [ { position : 10 } ] }
+   Customer;
+   
+   @UI: { lineItem: [ { position : 90, label : 'Tipo Identificación', importance : #HIGH } ],
+    identification: [ { position : 40, label : 'Tipo Identificación' } ] }
+   TypeId;
+    
+   @UI: { lineItem: [ { position : 100, label : 'Número Identificación',  importance : #HIGH, cssDefault.width: '10rem' } ],
+    identification: [ { position : 70,  label : 'Número Identificación' } ] }
+   IdNumber;
+   
+   @UI: { lineItem: [ { position : 110, label : 'Numero Documento', importance : #HIGH, cssDefault.width: '10rem' } ],
+    identification: [ { position : 60,  label : 'Numero Documento' } ] }
+   NumberDocument;
+      
+   @UI: { lineItem: [ { position : 120, label : 'Clave Acceso', importance : #MEDIUM } ],
+    identification: [ { position : 90,  label : 'Clave Acceso' } ] }
+   Accesskey;
+
+   @UI: { lineItem: [ { position : 130, label : 'Fecha Emisión', importance : #MEDIUM } ],
+    identification: [ { position : 20,  label : 'Fecha Emisión' } ] }
+   IssueDate;
+   
+   @UI: { lineItem: [ { position : 140, importance : #MEDIUM } ], textArrangement: #TEXT_ONLY }
+   @UI.fieldGroup: [ { qualifier: 'Detail', position: 10 } ]
+   CreatedByUser;
+   
+   @UI: { lineItem: [ { position : 150, importance : #MEDIUM } ] }
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 120 } ]
+   PostingDate;
+   
+   @UI.fieldGroup: [ { qualifier: 'Detail', position : 60 } ] 
+   BillingDocumentIsCancelled;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail',position: 30 } ]
+   CustomerPaymentTerms;
+   
+   @UI.identification: [ { label : 'Importe Neto' ,position: 80 } ]
+   TotalNetAmount;
+
+   @UI.identification: [ { label : 'Impuesto' ,position: 50 } ]
+   TotalTaxAmount;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 80 } ]
+   AccountingDocumentHeaderText;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 110 } ]
+   DocumentReferenceID;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 130 } ]
+   ReverseDocument;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 40, label: 'Documento Retención'} ]
+   AccountingDocumentWith;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 90, label: 'Tipo Retención' } ]
+   AccountingDocumentTypeWith;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 140 } ]
+   PostingDateRWith;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 50 } ]
+   DocumentHeaderTextWith;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 150 } ]
+   DocumentReferenceIDWith;
+   
+   @UI.fieldGroup:  [ { qualifier: 'Detail', position: 100 } ]
+   ReverseDocumentWith;
+   
+   @Search.defaultSearchElement: true
+   @Search.fuzzinessThreshold: 0.8
+   BusinessName;
+  
+   @Search.defaultSearchElement: true
+   @Search.fuzzinessThreshold: 0.8
+   CompanyCodeName;
+   
+   @Search.defaultSearchElement: true
+   @Search.fuzzinessThreshold: 0.8
+   BillingDocumentTypeName;
+   
+   @Search.defaultSearchElement: true
+   @Search.fuzzinessThreshold: 0.8
+   AccountingDocumentTypeName;
+   
+   @Search.defaultSearchElement: true
+   @Search.fuzzinessThreshold: 0.8
+   DocumentTypeNameWith;
+    
+}

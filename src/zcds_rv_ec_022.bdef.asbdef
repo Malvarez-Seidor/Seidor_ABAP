@@ -1,0 +1,25 @@
+managed implementation in class zbp_cds_rv_ec_022 unique;
+strict ( 2 );
+
+define behavior for ZCDS_RV_EC_022 alias PurchasingDocumentATS
+persistent table zdt_ec_022
+lock master
+authorization master ( global, instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+  field ( readonly: update ) Companycode, AccountingDocumentType, CompanyCodeName, AccountingDocumentTypeName;
+
+  mapping for zdt_ec_022
+
+  {
+
+  companycode            = companycode;
+  accountingdocumenttype = accountingdocumenttype;
+  codesri                = codesri;
+
+  }
+
+}

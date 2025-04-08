@@ -1,7 +1,9 @@
 @AbapCatalog.viewEnhancementCategory: [#NONE]
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Establecimineto Ayuda de Busqueda'
-@Metadata.ignorePropagatedAnnotations: true
+@EndUserText.label: 'Establecimineto'
+//@Metadata.ignorePropagatedAnnotations: true
+@Metadata.allowExtensions: true
+
 @ObjectModel.usageType:{
     serviceQuality: #X,
     sizeCategory: #S,
@@ -16,6 +18,7 @@ define view entity ZSH_ESTAB
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #HIGH
+      @UI: { lineItem: [ { label : 'Establecimiento' } ] }
   key establishment as Establishment,
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
@@ -24,6 +27,7 @@ define view entity ZSH_ESTAB
       @Search.defaultSearchElement: true
       @Search.fuzzinessThreshold: 0.8
       @Search.ranking: #LOW
+      @UI: { lineItem: [ { label : 'Documento SRI' } ] }
   key documentsri   as Documentsri
 
 }

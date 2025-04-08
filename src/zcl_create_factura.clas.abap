@@ -4,6 +4,18 @@ CLASS zcl_create_factura DEFINITION
 
   PUBLIC SECTION.
 
+    TYPES: BEGIN OF ty_email,
+           AddressID        TYPE I_AddressEmailAddress_2-AddressID,
+           AddressPersonID  TYPE I_AddressEmailAddress_2-AddressPersonID,
+           EmailAddress     TYPE string,
+          END OF ty_email.
+
+          TYPES: BEGIN OF ty_Phone,
+           AddressID        TYPE I_AddressPhoneNumber_2-AddressID,
+           AddressPersonID  TYPE I_AddressPhoneNumber_2-AddressPersonID,
+           PhoneAreaCodeSubscriberNumber     TYPE string,
+          END OF ty_Phone.
+
     TYPES: ty_impuesto  TYPE STANDARD TABLE OF zts_total_imp,
            ty_pagos     TYPE STANDARD TABLE OF zts_pago,
            ty_detalle_f TYPE STANDARD TABLE OF zts_fac_detalle,
@@ -12,7 +24,6 @@ CLASS zcl_create_factura DEFINITION
            ty_reembolso TYPE STANDARD TABLE OF zts_fac_det_reembolso,
            ty_reem_imp  TYPE STANDARD TABLE OF zts_reem_imp,
            ty_head_add  TYPE STANDARD TABLE OF zts_head_add.
-
 
     DATA: gv_companycode            TYPE bukrs,
           gv_documenttype           TYPE zde_trsri,
@@ -30,7 +41,7 @@ CLASS zcl_create_factura DEFINITION
                                   accountingdocument     TYPE belnr_d OPTIONAL  "Documento de Financiero
                                   accountingdocumenttype TYPE blart   OPTIONAL  "Tipo Documento de Financiero
                                   billingdocument        TYPE vbeln   OPTIONAL  "Documento de Ventas
-                                  billingdocumenttype    TYPE fkart   OPTIONAL. "Tipo Documento Ventas
+                                  billingdocumenttype    TYPE fkart   OPTIONAL.  "Tipo Documento Ventas
 
     METHODS callDocumentType IMPORTING documenttype TYPE zde_trsri                        "Tipo de Documento SRI
                              EXPORTING inf_tribu    TYPE zts_inf_tribu                    "si cabecera
@@ -42,7 +53,8 @@ CLASS zcl_create_factura DEFINITION
                                        t_det_imp    TYPE zcl_create_factura=>ty_det_imp   "si detalles
                                        t_reembolso  TYPE zcl_create_factura=>ty_reembolso "si detalles
                                        t_reem_imp   TYPE zcl_create_factura=>ty_reem_imp  "si detalles de impuesto
-                                       t_head_add   TYPE zcl_create_factura=>ty_head_add. "si cebecera datos adicionales
+                                       t_head_add   TYPE zcl_create_factura=>ty_head_add  "si cebecera datos adicionales
+                                       message      TYPE string.
 
   PROTECTED SECTION.
 
@@ -67,7 +79,6 @@ CLASS zcl_create_factura DEFINITION
           gs_ec_007    TYPE zdt_ec_007,
           gs_ec_008    TYPE zdt_ec_008,
           gs_ec_009    TYPE zdt_ec_009.
-
 
     DATA: gt_impuesto  TYPE STANDARD TABLE OF zts_total_imp,
           gt_pagos     TYPE STANDARD TABLE OF zts_pago,
@@ -101,8 +112,8 @@ CLASS zcl_create_factura DEFINITION
           gs_AddlInformation          TYPE I_AddlCompanyCodeInformation,
           gs_BusinessPartner          TYPE I_BusinessPartner,
           gs_Address                  TYPE i_address_2,
-          gs_email                    TYPE I_AddressEmailAddress_2,
-          gs_telefono                 TYPE I_AddressPhoneNumber_2,
+          gs_email                    TYPE ty_email,
+          gs_telefono                 TYPE ty_phone,
           gs_Businesspartnertaxnumber TYPE I_Businesspartnertaxnumber,
           gs_BusPartAddress           TYPE I_BusPartAddress,
           gs_PaymentTerms             TYPE I_PaymentTermsConditions.
@@ -117,14 +128,15 @@ CLASS zcl_create_factura DEFINITION
           gt_AddlInformation          TYPE STANDARD TABLE OF I_AddlCompanyCodeInformation,
           gt_BusinessPartner          TYPE STANDARD TABLE OF I_BusinessPartner,
           gt_ADDRESS                  TYPE STANDARD TABLE OF i_address_2,
-          gt_email                    TYPE STANDARD TABLE OF I_AddressEmailAddress_2,
-          gt_telefono                 TYPE STANDARD TABLE OF I_AddressPhoneNumber_2,
+          gt_email                    TYPE STANDARD TABLE OF ty_email,
+          gt_telefono                 TYPE STANDARD TABLE OF ty_phone,
           gt_Businesspartnertaxnumber TYPE STANDARD TABLE OF I_Businesspartnertaxnumber,
           gt_PaymentTerms             TYPE STANDARD TABLE OF I_PaymentTermsConditions.
 
     METHODS get_data .
 
-    METHODS infoTributaria  CHANGING inf_tribu   TYPE zts_inf_tribu.
+    METHODS infoTributaria  CHANGING inf_tribu   TYPE zts_inf_tribu
+                                     message     TYPE string.
 
     METHODS getClaveAcceso  IMPORTING inf_tribu   TYPE zts_inf_tribu
                                       fecha       TYPE string
@@ -132,7 +144,8 @@ CLASS zcl_create_factura DEFINITION
                             CHANGING  estab       TYPE zts_inf_tribu-estab
                                       ptoemi      TYPE zts_inf_tribu-ptoemi
                                       secuencial  TYPE zts_inf_tribu-secuencial
-                                      claveacceso TYPE zts_inf_tribu-claveacceso.
+                                      claveacceso TYPE zts_inf_tribu-claveacceso
+                                      message     TYPE string.
 
     METHODS getHeaderFactura   CHANGING header_f  TYPE zts_fac_header
                                         reembolso TYPE zcl_create_factura=>ty_reembolso
@@ -163,7 +176,8 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 
     me->get_data( ).
 
-    me->infoTributaria( CHANGING inf_tribu = me->gs_inf_tribu ).
+    me->infoTributaria( CHANGING inf_tribu = me->gs_inf_tribu
+                                 message   = message ).
 
     me->getHeaderFactura(  CHANGING header_f      = me->gs_header_f
                                     reembolso     = me->gt_reembolso
@@ -210,7 +224,8 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
           lv_six     TYPE i,
           lv_mod     TYPE i,
           lv_rep     TYPE p,
-          lv_rep2(2) TYPE c.
+          lv_rep2(2) TYPE c,
+          lv_mensaje TYPE string.
 
     CASE me->gv_documenttype.
       WHEN '01'.
@@ -257,7 +272,11 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
           ENDIF.
 
         CATCH cx_number_ranges INTO DATA(lr_error).
-
+          message = me->gs_ec_002-Objet.
+          lv_mensaje = lr_error->get_longtext( ).
+          IF lv_mensaje IS INITIAL.
+            lv_mensaje = lr_error->get_text( ).
+          ENDIF.
       ENDTRY.
 
     ENDIF.
@@ -352,16 +371,18 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
           header_f-direccioncomprador = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
         ENDIF.
 
-        SELECT *
+        SELECT AddressID, AddressPersonID, STRING_AGG( EmailAddress, '; '  ) as EmailAddress
           FROM I_AddressEmailAddress_2
           WITH PRIVILEGED ACCESS
           WHERE AddressID EQ @me->gs_BusPartAddress-AddressID
+          GROUP BY AddressID, AddressPersonID
            INTO TABLE @me->gt_email.
 
-        SELECT *
+        SELECT AddressID, AddressPersonID, STRING_AGG( PhoneAreaCodeSubscriberNumber, '; '  ) as PhoneAreaCodeSubscriberNumber
           FROM I_AddressPhoneNumber_2
           WITH PRIVILEGED ACCESS
           WHERE AddressID EQ @me->gs_BusPartAddress-AddressID
+          GROUP BY AddressID, AddressPersonID
           INTO TABLE @me->gt_telefono.
 
       ENDIF.
@@ -398,10 +419,19 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
           lr_conditio3            TYPE RANGE OF zdt_ec_005-ccondition,
           lt_BillingItemPrcgElmnt TYPE STANDARD TABLE OF I_BillingDocumentItemPrcgElmnt,
           ls_BillingItemPrcgElmnt TYPE I_BillingDocumentItemPrcgElmnt,
+          lt_det_add              TYPE STANDARD TABLE OF zts_det_add,
           lv_navnw                TYPE navnw,
-          lv_precio               TYPE navnw.
+          lv_descuento            TYPE navnw,
+          lv_precio               TYPE navnw,
+          lv_month                TYPE string,
+          lv_year                 TYPE string,
+          lv_ServiceDescription   TYPE I_ServiceDocument-ServiceDocumentDescription,
+          lv_PurchaseOrderByCust  TYPE I_ServiceDocument-PurchaseOrderByCustomer,
+          lv_api                  TYPE zde_type_api.
 
-    CLEAR:lr_condition[].
+    lv_api = 'IN'.
+
+    CLEAR: gt_det_add[], lr_condition[].
     LOOP AT gt_ec_005 INTO gs_ec_005 WHERE typecondition EQ '2'  "Impuestos
                                         OR typecondition EQ '3' ."ICE
 
@@ -418,7 +448,7 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
       ls_condition-low    = gs_ec_005-ccondition.
       ls_condition-sign   = 'I'.
       ls_condition-option = 'EQ'.
-      APPEND ls_condition TO lr_conditio2.
+      APPEND ls_condition TO lr_conditio3.
       CLEAR: ls_condition.
 
     ENDLOOP.
@@ -428,31 +458,182 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
       ls_condition-low    = gs_ec_005-ccondition.
       ls_condition-sign   = 'I'.
       ls_condition-option = 'EQ'.
-      APPEND ls_condition TO lr_conditio3.
+      APPEND ls_condition TO lr_conditio2.
       CLEAR: ls_condition.
 
     ENDLOOP.
+
+    lv_month = me->gs_billingdocument-BillingDocumentDate+4(2).
+    CASE lv_month.
+      WHEN '01'.
+        lv_month = 'ENERO'.
+      WHEN '02'.
+        lv_month = 'FEBRERO'.
+      WHEN '03'.
+        lv_month = 'MARZO'.
+      WHEN '04'.
+        lv_month = 'ABRIL'.
+      WHEN '05'.
+        lv_month = 'MAYO'.
+      WHEN '06'.
+        lv_month = 'JUNIO'.
+      WHEN '07'.
+        lv_month = 'JULIO'.
+      WHEN '08'.
+        lv_month = 'AGOSTO'.
+      WHEN '09'.
+        lv_month = 'SEPTIEMBRE'.
+      WHEN '10'.
+        lv_month = 'OCTUBRE'.
+      WHEN '11'.
+        lv_month = 'NOVIEMBRE'.
+      WHEN '12'.
+        lv_month = 'DICIEMBRE'.
+    ENDCASE.
+
+    lv_year = me->gs_billingdocument-BillingDocumentDate(4).
 
     lt_billingitemprcgelmnt[] = gt_billingitemprcgelmnt[].
 
     LOOP AT gt_billingdocumentitem INTO gs_billingdocumentitem.
 
       gs_detalle_f-codigoprincipal   = gs_billingdocumentitem-Product.
+      gs_detalle_f-codigoitem        = gs_billingdocumentitem-BillingDocumentItem.
 *      gs_detalle_f-codigoauxiliar    = gs_billingdocumentitem-Material.
-      gs_detalle_f-descripcion       = gs_billingdocumentitem-BillingDocumentItemText.
+*      gs_detalle_f-descripcion       = gs_billingdocumentitem-BillingDocumentItemText."Comentado por Caso especial
       gs_detalle_f-cantidad          = gs_billingdocumentitem-BillingQuantity.
       gs_detalle_f-unidadmedida      = gs_billingdocumentitem-BillingQuantityUnit.
 
-      SELECT SINGLE *
-      FROM I_UnitOfMeasureText
-      WHERE Language EQ @sy-langu
-       AND UnitOfMeasure EQ @gs_billingdocumentitem-BillingQuantityUnit
-       INTO @DATA(ls_UnitOfMeasureText).
-      IF sy-subrc EQ 0.
-        gs_det_add-titulo = 'UnidadMedida'.
-        gs_det_add-valor  = ls_UnitOfMeasureText-UnitOfMeasureLongName.
-        gs_det_add-codigoprincipal  = gs_billingdocumentitem-Product.
-        APPEND gs_det_add TO detalle_a.
+      READ TABLE detalle_a INTO gs_det_add WITH KEY codigoprincipal  = gs_billingdocumentitem-Product.
+      IF sy-subrc NE 0.
+        SELECT SINGLE Language, UnitOfMeasure, UnitOfMeasureLongName
+          FROM I_UnitOfMeasureText
+          WITH PRIVILEGED ACCESS
+          WHERE Language EQ @sy-langu
+           AND UnitOfMeasure EQ @gs_billingdocumentitem-BillingQuantityUnit
+           INTO @DATA(ls_UnitOfMeasureText).
+        IF sy-subrc EQ 0.
+          gs_det_add-titulo = 'UnidadMedida'.
+          gs_det_add-valor  = ls_UnitOfMeasureText-UnitOfMeasureLongName.
+          gs_det_add-codigoprincipal  = gs_billingdocumentitem-Product.
+          APPEND gs_det_add TO detalle_a.
+        ENDIF.
+
+        CLEAR: lv_servicedescription, lv_PurchaseOrderByCust.
+
+        IF gs_billingdocumentitem-ServiceDocument IS NOT INITIAL.
+
+          SELECT SINGLE ServiceDocumentDescription, PurchaseOrderByCustomer
+            FROM I_ServiceDocument
+            WITH PRIVILEGED ACCESS
+            WHERE ServiceDocument EQ @gs_billingdocumentitem-ServiceDocument
+          INTO ( @lv_servicedescription, @lv_PurchaseOrderByCust ) .
+
+        ENDIF.
+
+        CLEAR: gs_det_add, gs_salesdocumentitem."Agregado por Caso especial
+        READ TABLE gt_salesdocumentitem INTO gs_salesdocumentitem  WITH KEY SalesDocument = gs_billingdocumentitem-SalesDocument
+                                                                        SalesDocumentItem = gs_billingdocumentitem-SalesDocumentItem."Agregado por Caso especial
+        IF gs_salesdocumentitem-yy1_observaciones_sdi IS NOT INITIAL."Agregado por Caso especial
+
+          READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'MES_CONTRA' low = gs_billingdocumentitem-SalesDocumentItemCategory.
+          IF sy-subrc EQ 0.
+            IF lv_servicedescription IS NOT INITIAL.
+              IF lv_PurchaseOrderByCust IS NOT INITIAL.
+                gs_detalle_f-descripcion       = |{ me->gs_salesdocumentitem-yy1_observaciones_sdi } MES { lv_month } AÑO { lv_year } / { lv_servicedescription } / { lv_PurchaseOrderByCust }|."Caso especial
+              ELSE.
+                gs_detalle_f-descripcion       = |{ me->gs_salesdocumentitem-yy1_observaciones_sdi } MES { lv_month } AÑO { lv_year } / { lv_servicedescription }|."Caso especial
+              ENDIF.
+            ELSE.
+              gs_detalle_f-descripcion       = |{ me->gs_salesdocumentitem-yy1_observaciones_sdi } MES { lv_month } AÑO { lv_year }|."Caso especial
+            ENDIF.
+          ELSE.
+            gs_detalle_f-descripcion       = me->gs_salesdocumentitem-yy1_observaciones_sdi."Caso especial
+          ENDIF.
+
+          gs_det_add-titulo = 'Detalle Adicional 1'."Agregado por Caso especial
+          gs_det_add-valor   = gs_billingdocumentitem-BillingDocumentItemText."Agregado por Caso especial
+          gs_det_add-codigoprincipal  = gs_billingdocumentitem-Product."Agregado por Caso especial
+
+          APPEND gs_det_add TO detalle_a."Agregado por Caso especial
+
+        ELSE.
+
+          READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'MES_CONTRA' low = gs_billingdocumentitem-SalesDocumentItemCategory.
+          IF sy-subrc EQ 0.
+            IF lv_servicedescription IS NOT INITIAL.
+              IF lv_PurchaseOrderByCust IS NOT INITIAL.
+                gs_detalle_f-descripcion       = |{ gs_billingdocumentitem-BillingDocumentItemText } MES { lv_month } AÑO { lv_year } / { lv_servicedescription } / { lv_PurchaseOrderByCust }|."Caso especial
+              ELSE.
+                gs_detalle_f-descripcion       = |{ gs_billingdocumentitem-BillingDocumentItemText } MES { lv_month } AÑO { lv_year } / { lv_servicedescription }|."Caso especial
+              ENDIF.
+            ELSE.
+              gs_detalle_f-descripcion       = |{ gs_billingdocumentitem-BillingDocumentItemText } MES { lv_month } AÑO { lv_year }|."Caso especial
+            ENDIF.
+          ELSE.
+            gs_detalle_f-descripcion       = gs_billingdocumentitem-BillingDocumentItemText."Caso especial
+          ENDIF.
+
+        ENDIF.
+
+      ELSE.
+
+        CLEAR: lv_servicedescription, lv_PurchaseOrderByCust.
+
+        IF gs_billingdocumentitem-ServiceDocument IS NOT INITIAL.
+
+          SELECT SINGLE ServiceDocumentDescription, PurchaseOrderByCustomer
+            FROM I_ServiceDocument
+            WITH PRIVILEGED ACCESS
+            WHERE ServiceDocument EQ @gs_billingdocumentitem-ServiceDocument
+          INTO ( @lv_servicedescription, @lv_PurchaseOrderByCust ).
+
+        ENDIF.
+
+        CLEAR: gs_salesdocumentitem."Agregado por Caso especial
+        READ TABLE gt_salesdocumentitem INTO gs_salesdocumentitem  WITH KEY SalesDocument = gs_billingdocumentitem-SalesDocument SalesDocumentItem = gs_billingdocumentitem-SalesDocumentItem."Agregado por Caso especial
+        IF gs_salesdocumentitem-yy1_observaciones_sdi IS NOT INITIAL."Agregado por Caso especial
+
+          READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'MES_CONTRA' low = gs_billingdocumentitem-SalesDocumentItemCategory.
+          IF sy-subrc EQ 0.
+            IF lv_servicedescription IS NOT INITIAL.
+              IF lv_PurchaseOrderByCust IS NOT INITIAL.
+                gs_detalle_f-descripcion       = |{ me->gs_salesdocumentitem-yy1_observaciones_sdi } MES { lv_month } AÑO { lv_year } / { lv_servicedescription } / { lv_PurchaseOrderByCust }|."Caso especial
+              ELSE.
+                gs_detalle_f-descripcion       = |{ me->gs_salesdocumentitem-yy1_observaciones_sdi } MES { lv_month } AÑO { lv_year } / { lv_servicedescription }|."Caso especial
+              ENDIF.
+            ELSE.
+              gs_detalle_f-descripcion       = |{ me->gs_salesdocumentitem-yy1_observaciones_sdi } MES { lv_month } AÑO { lv_year }|."Caso especial
+            ENDIF.
+          ELSE.
+            gs_detalle_f-descripcion       = me->gs_salesdocumentitem-yy1_observaciones_sdi."Caso especial
+          ENDIF.
+
+          gs_det_add-titulo = 'Detalle Adicional 1'."Agregado por Caso especial
+          gs_det_add-valor   = gs_billingdocumentitem-BillingDocumentItemText."Agregado por Caso especial
+          gs_det_add-codigoprincipal  = gs_billingdocumentitem-Product."Agregado por Caso especial
+
+          APPEND gs_det_add TO detalle_a."Agregado por Caso especial
+
+        ELSE.
+
+          READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'MES_CONTRA' low = gs_billingdocumentitem-SalesDocumentItemCategory.
+          IF sy-subrc EQ 0.
+            IF lv_servicedescription IS NOT INITIAL.
+              IF lv_PurchaseOrderByCust IS NOT INITIAL.
+                gs_detalle_f-descripcion       = |{ gs_billingdocumentitem-BillingDocumentItemText } MES { lv_month } AÑO { lv_year } / { lv_servicedescription } / { lv_PurchaseOrderByCust }|."Caso especial
+              ELSE.
+                gs_detalle_f-descripcion       = |{ gs_billingdocumentitem-BillingDocumentItemText } MES { lv_month } AÑO { lv_year } / { lv_servicedescription }|."Caso especial
+              ENDIF.
+            ELSE.
+              gs_detalle_f-descripcion       = |{ gs_billingdocumentitem-BillingDocumentItemText } MES { lv_month } AÑO { lv_year }|."Caso especial
+            ENDIF.
+          ELSE.
+            gs_detalle_f-descripcion       = gs_billingdocumentitem-BillingDocumentItemText."Caso especial
+          ENDIF.
+
+        ENDIF.
+
       ENDIF.
 
       LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE BillingDocument         EQ gs_billingdocumentitem-BillingDocument
@@ -465,36 +646,56 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
         IF sy-subrc EQ 0.
 
           CLEAR: lv_navnw.
-          LOOP AT lt_BillingItemPrcgElmnt INTO ls_BillingItemPrcgElmnt WHERE ConditionType IN lr_conditio3
-                                                                         AND ConditionInactiveReason EQ space
-                                                                         AND BillingDocument         EQ gs_billingitemprcgelmnt-BillingDocument
-                                                                         AND BillingDocumentItem     EQ gs_billingitemprcgelmnt-BillingDocumentItem.
-            lv_navnw += ls_BillingItemPrcgElmnt-ConditionAmount.
+          IF lr_conditio2 IS NOT INITIAL.
+            LOOP AT lt_BillingItemPrcgElmnt INTO ls_BillingItemPrcgElmnt WHERE ConditionType IN lr_conditio2
+                                                                           AND ConditionInactiveReason EQ space
+                                                                           AND BillingDocument         EQ gs_billingitemprcgelmnt-BillingDocument
+                                                                           AND BillingDocumentItem     EQ gs_billingitemprcgelmnt-BillingDocumentItem.
+              lv_navnw += ls_BillingItemPrcgElmnt-ConditionAmount.
 
-          ENDLOOP.
+            ENDLOOP.
+          ENDIF.
 
           gs_det_imp-baseimponible      = lv_navnw.
           gs_detalle_f-totalsinimpuesto = lv_navnw.
+          CLEAR: lv_navnw, lv_descuento.
+
+          IF lr_conditio3 IS NOT INITIAL.
+            LOOP AT lt_BillingItemPrcgElmnt INTO ls_BillingItemPrcgElmnt WHERE ConditionType IN lr_conditio3
+                                                                           AND ConditionInactiveReason EQ space
+                                                                           AND BillingDocument         EQ gs_billingitemprcgelmnt-BillingDocument
+                                                                           AND BillingDocumentItem     EQ gs_billingitemprcgelmnt-BillingDocumentItem.
+              lv_navnw = ls_billingitemprcgelmnt-ConditionAmount.
+              gs_detalle_f-descuento += abs( lv_navnw ).
+
+              lv_descuento += abs( lv_navnw ).
+
+            ENDLOOP.
+          ENDIF.
+
           CLEAR: lv_navnw.
+          IF lv_descuento IS NOT INITIAL.
+            lv_navnw = gs_det_imp-baseimponible.
+            lv_navnw = lv_navnw - lv_descuento.
 
-          LOOP AT lt_BillingItemPrcgElmnt INTO ls_BillingItemPrcgElmnt WHERE ConditionType IN lr_conditio2
-                                                                         AND ConditionInactiveReason EQ space
-                                                                         AND BillingDocument         EQ gs_billingitemprcgelmnt-BillingDocument
-                                                                         AND BillingDocumentItem     EQ gs_billingitemprcgelmnt-BillingDocumentItem.
-            lv_navnw = ls_billingitemprcgelmnt-ConditionAmount.
-            gs_detalle_f-descuento += abs( lv_navnw ).
+            gs_det_imp-baseimponible      = lv_navnw.
+*            gs_detalle_f-totalsinimpuesto = lv_navnw.
 
-          ENDLOOP.
+          ENDIF.
 
-          READ TABLE detalle_i ASSIGNING FIELD-SYMBOL(<fs_impuesto>) WITH KEY codigo =  gs_ec_003-taxsupportid codigoporcentaje = gs_ec_003-taxsidrate codigoprincipal = gs_billingdocumentitem-Product.
+          READ TABLE detalle_i ASSIGNING FIELD-SYMBOL(<fs_impuesto>) WITH KEY codigo = gs_ec_003-taxsupportid
+                                                                    codigoporcentaje = gs_ec_003-taxsidrate
+                                                                     codigoprincipal = gs_billingdocumentitem-Product
+                                                                     codigoitem      = gs_billingdocumentitem-BillingDocumentItem.
           IF sy-subrc EQ 0.
             lv_navnw = gs_det_imp-baseimponible.
-            <fs_impuesto>-baseimponible += lv_navnw.
+            <fs_impuesto>-baseimponible += lv_navnw - lv_descuento.
 
             lv_navnw = gs_billingitemprcgelmnt-ConditionAmount.
             <fs_impuesto>-valor         += lv_navnw.
           ELSE.
             gs_det_imp-codigoprincipal   = gs_billingdocumentitem-Product.
+            gs_det_imp-codigoitem        = gs_billingdocumentitem-BillingDocumentItem.
             gs_det_imp-codigo            = gs_ec_003-taxsupportid.
             gs_det_imp-codigoporcentaje  = gs_ec_003-taxsidrate.
 
@@ -511,28 +712,33 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 
       ENDLOOP.
 
-      READ TABLE detalle ASSIGNING FIELD-SYMBOL(<fs_detalle>) WITH KEY codigoprincipal = gs_detalle_f-codigoprincipal codigoauxiliar = gs_detalle_f-codigoauxiliar.
-      IF sy-subrc EQ 0.
-        <fs_detalle>-cantidad          += gs_detalle_f-cantidad.
-        <fs_detalle>-descuento         += gs_detalle_f-descuento.
-        <fs_detalle>-totalsinimpuesto  += gs_detalle_f-totalsinimpuesto.
-        lv_precio = ( <fs_detalle>-totalsinimpuesto + <fs_detalle>-descuento ) / <fs_detalle>-cantidad.
-        <fs_detalle>-preciounitario    = lv_precio.
-      ELSE.
+*      READ TABLE detalle ASSIGNING FIELD-SYMBOL(<fs_detalle>) WITH KEY codigoprincipal = gs_detalle_f-codigoprincipal codigoauxiliar = gs_detalle_f-codigoauxiliar."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
+*      IF sy-subrc EQ 0."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
+*        <fs_detalle>-cantidad          += gs_detalle_f-cantidad."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
+*        <fs_detalle>-descuento         += gs_detalle_f-descuento."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
+*        <fs_detalle>-totalsinimpuesto  += gs_detalle_f-totalsinimpuesto - gs_detalle_f-descuento."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
+**        lv_precio = ( <fs_detalle>-totalsinimpuesto + <fs_detalle>-descuento ) / <fs_detalle>-cantidad."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
+*        lv_precio =  <fs_detalle>-totalsinimpuesto / <fs_detalle>-cantidad."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
+*        <fs_detalle>-preciounitario    = lv_precio."Quitado por Cliente NO QUIERE SUMA DE MATERIALES
+*      ELSE. "Quitado por Cliente NO QUIERE SUMA DE MATERIALES
         IF gs_detalle_f-descuento IS INITIAL.
           gs_detalle_f-descuento = '0.00'.
         ENDIF.
-        lv_precio = ( gs_detalle_f-totalsinimpuesto + gs_detalle_f-descuento ) / gs_detalle_f-cantidad.
+*        lv_precio = ( gs_detalle_f-totalsinimpuesto + gs_detalle_f-descuento ) / gs_detalle_f-cantidad.
+        lv_precio = gs_detalle_f-totalsinimpuesto / gs_detalle_f-cantidad.
         gs_detalle_f-preciounitario    = lv_precio.
+
+        lv_precio = gs_detalle_f-totalsinimpuesto - gs_detalle_f-descuento.
+        gs_detalle_f-totalsinimpuesto  = lv_precio.
         APPEND gs_detalle_f TO detalle.
-      ENDIF.
+*      ENDIF. "Quitado por Cliente NO QUIERE SUMA DE MATERIALES
       CLEAR: gs_detalle_f.
 
     ENDLOOP.
 
     SORT detalle   BY codigoprincipal.
     SORT detalle_a BY codigoprincipal.
-    DELETE ADJACENT DUPLICATES FROM detalle_a COMPARING codigoprincipal.
+*    DELETE ADJACENT DUPLICATES FROM detalle_a COMPARING codigoprincipal.
 
   ENDMETHOD.
 
@@ -569,8 +775,8 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 *      header_f-paisdestino  = gs_ec_009-countrysri.
 *    ENDIF.
 
-    header_f-puertoembarque = me->gs_salesdocument-yy1_ptodest_sdh. "Z003 A_BillingDocumentText
-    header_f-puertodestino  = me->gs_salesdocument-yy1_ptodest_sdh. "Z004 A_BillingDocumentText
+*    header_f-puertoembarque = me->gs_salesdocument-yy1_ptoemb_sdh. "Z003 A_BillingDocumentText
+*    header_f-puertodestino  = me->gs_salesdocument-yy1_ptodest_sdh. "Z004 A_BillingDocumentText
 
 
     CLEAR: ls_condition, lr_condition[].
@@ -585,11 +791,14 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
     ENDLOOP.
 
     CLEAR: lv_navnw.
-    LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
-                                                                   AND ConditionInactiveReason EQ space.
-      lv_navnw += abs( gs_billingitemprcgelmnt-ConditionAmount ).
+    IF lr_condition[] IS NOT INITIAL.
+      LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
+                                                                     AND ConditionInactiveReason EQ space.
+        lv_navnw += abs( gs_billingitemprcgelmnt-ConditionAmount ).
 
-    ENDLOOP.
+      ENDLOOP.
+    ENDIF.
+
     header_f-fleteinternacional  =  lv_navnw.
 
     CLEAR: ls_condition, lr_condition[].
@@ -604,11 +813,13 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
     ENDLOOP.
 
     CLEAR: lv_navnw.
-    LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
-                                                                   AND ConditionInactiveReason EQ space.
-      lv_navnw += abs( gs_billingitemprcgelmnt-ConditionAmount ).
+    IF lr_condition IS NOT INITIAL.
+      LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
+                                                                       AND ConditionInactiveReason EQ space.
+        lv_navnw += abs( gs_billingitemprcgelmnt-ConditionAmount ).
 
-    ENDLOOP.
+      ENDLOOP.
+    ENDIF.
 
     header_f-segurointernacional  = lv_navnw.
 
@@ -624,11 +835,13 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
     ENDLOOP.
 
     CLEAR: lv_navnw.
-    LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
-                                                                   AND ConditionInactiveReason EQ space.
-      lv_navnw += abs( gs_billingitemprcgelmnt-ConditionAmount ).
+    IF lr_condition IS NOT INITIAL.
+      LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
+                                                                     AND ConditionInactiveReason EQ space.
+        lv_navnw += abs( gs_billingitemprcgelmnt-ConditionAmount ).
 
-    ENDLOOP.
+      ENDLOOP.
+    ENDIF.
 
     header_f-gastosaduaneros =  lv_navnw.
 
@@ -644,11 +857,13 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
     ENDLOOP.
 
     CLEAR: lv_navnw.
-    LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
+    IF lr_condition IS NOT INITIAL.
+      LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
                                                                    AND ConditionInactiveReason EQ space.
-      lv_navnw += abs( gs_billingitemprcgelmnt-ConditionAmount ).
+        lv_navnw += abs( gs_billingitemprcgelmnt-ConditionAmount ).
 
-    ENDLOOP.
+      ENDLOOP.
+    ENDIF.
 
     header_f-gastostransporteotros = lv_navnw.
 
@@ -668,6 +883,10 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 
   METHOD getheaderadd.
 
+    DATA: lv_api   TYPE zde_type_api.
+
+    lv_api = 'IN'.
+
     CLEAR: gs_head_add.
     gs_head_add-valor = me->gs_billingdocument-BillingDocument.
     gs_head_add-nombre = 'Documento SAP'.
@@ -681,28 +900,33 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
     ENDIF.
 
     CLEAR: gs_head_add.
-    LOOP AT me->gt_email INTO gs_email.
-      IF sy-tabix EQ 1.
-        CONCATENATE gs_head_add-valor gs_email-EmailAddress INTO gs_head_add-valor.
-      ELSE.
-        CONCATENATE gs_head_add-valor  '; ' gs_email-EmailAddress INTO gs_head_add-valor.
-      ENDIF.
-    ENDLOOP.
-    IF gs_head_add IS NOT INITIAL.
+    READ TABLE me->gt_email INTO gs_email INDEX  1.
+    IF sy-subrc EQ 0.
+      gs_head_add-valor = gs_email-EmailAddress.
       gs_head_add-nombre = 'Email'.
       APPEND gs_head_add TO header_add.
     ENDIF.
 
     CLEAR: gs_head_add.
-    LOOP AT me->gt_telefono INTO gs_telefono.
-      IF sy-tabix EQ 1.
-        CONCATENATE  gs_head_add-valor gs_telefono-PhoneAreaCodeSubscriberNumber INTO gs_head_add-valor.
-      ELSE.
-        CONCATENATE gs_head_add-valor '; ' gs_telefono-PhoneAreaCodeSubscriberNumber INTO gs_head_add-valor.
-      ENDIF.
-    ENDLOOP.
-    IF gs_head_add IS NOT INITIAL.
+    READ TABLE me->gt_telefono INTO gs_telefono INDEX  1.
+    IF sy-subrc EQ 0.
+      gs_head_add-valor = gs_telefono-PhoneAreaCodeSubscriberNumber.
       gs_head_add-nombre = 'Telefono'.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    IF gs_Address IS NOT INITIAL.
+      gs_head_add-nombre = 'Direccion del Cliente'.
+      gs_head_add-valor = |{ me->gs_Address-StreetName } { me->gs_Address-HouseNumber } { me->gs_Address-StreetPrefixName1 } { me->gs_Address-StreetPrefixName2 }|.
+      APPEND gs_head_add TO header_add.
+    ENDIF.
+
+    CLEAR: gs_head_add.
+    READ TABLE me->gt_ec_007 INTO gs_ec_007  WITH KEY companycode = me->gv_companycode api = lv_api fieldname = 'AGENTE_RET'. "Agente de Retencion
+    IF sy-subrc EQ 0.
+      gs_head_add-nombre = 'Agente de Retencion'.
+      gs_head_add-valor  = gs_ec_007-low.
       APPEND gs_head_add TO header_add.
     ENDIF.
 
@@ -787,7 +1011,7 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
       ENDIF.
 
       IF ls_guia IS NOT INITIAL.
-        header_f-guiaremision = |{ ls_guia-establishment } '-'{ ls_guia-emissionpoint } '-' { ls_guia-sequential }|.
+        header_f-guiaremision = |{ ls_guia-establishment }-{ ls_guia-emissionpoint }-{ ls_guia-sequential }|.
       ENDIF.
 
     ENDIF.
@@ -811,13 +1035,15 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 
     ENDLOOP.
 
-    LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
-                                                                   AND ConditionInactiveReason EQ space.
+    IF lr_condition[] IS NOT INITIAL.
+      LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
+                                                                     AND ConditionInactiveReason EQ space.
 
-      lv_navnw = gs_billingitemprcgelmnt-ConditionAmount.
-      header_f-totaldescuento  += abs( lv_navnw ).
+        lv_navnw = gs_billingitemprcgelmnt-ConditionAmount.
+        header_f-totaldescuento  += abs( lv_navnw ).
 
-    ENDLOOP.
+      ENDLOOP.
+    ENDIF.
 
     IF header_f-totaldescuento IS INITIAL.
       header_f-totaldescuento = '0.00'.
@@ -871,8 +1097,8 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 
     lv_gjahr = me->gv_fiscalyear - 1.
 
-    LOOP AT gt_salesdocumentitem INTO gs_salesdocumentitem WHERE MaterialByCustomer IS NOT INITIAL.
-      lv_awkey = gs_salesdocumentitem-MaterialByCustomer.
+    LOOP AT gt_salesdocumentitem INTO gs_salesdocumentitem WHERE yy1_nmerofacturareembo_sdi IS NOT INITIAL.
+      lv_awkey = gs_salesdocumentitem-yy1_nmerofacturareembo_sdi.
       ls_awkey-low    = lv_awkey.
       ls_awkey-sign   = 'I'.
       ls_awkey-option = 'EQ'.
@@ -1134,9 +1360,11 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 
     DATA: lv_tarifa               TYPE i,
           lv_navnw                TYPE navnw,
+          lv_descuento            TYPE navnw,
           lr_condition            TYPE RANGE OF zdt_ec_005-ccondition,
           ls_condition            LIKE LINE  OF lr_condition,
           lr_condition2           TYPE RANGE OF zdt_ec_005-ccondition,
+          lr_condition3           TYPE RANGE OF zdt_ec_005-ccondition,
           lt_BillingItemPrcgElmnt TYPE STANDARD TABLE OF I_BillingDocumentItemPrcgElmnt,
           ls_BillingItemPrcgElmnt TYPE I_BillingDocumentItemPrcgElmnt.
 
@@ -1161,7 +1389,19 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 
     ENDLOOP.
 
+   LOOP AT gt_ec_005 INTO gs_ec_005 WHERE typecondition EQ '4'."Descuento
+
+      ls_condition-low    = gs_ec_005-ccondition.
+      ls_condition-sign   = 'I'.
+      ls_condition-option = 'EQ'.
+      APPEND ls_condition TO lr_condition3.
+      CLEAR: ls_condition.
+
+    ENDLOOP.
+
     lt_BillingItemPrcgElmnt[] = gt_BillingItemPrcgElmnt[].
+
+    CHECK lr_condition[] IS NOT INITIAL.
 
     LOOP AT gt_billingitemprcgelmnt INTO gs_billingitemprcgelmnt WHERE ConditionType IN lr_condition
                                                                    AND ConditionInactiveReason EQ space.
@@ -1171,23 +1411,38 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
       READ TABLE gt_ec_003 INTO gs_ec_003 WITH KEY taxcode = gs_billingitemprcgelmnt-TaxCode taxsupportid = gs_ec_005-typecondition.
       IF sy-subrc EQ 0.
 
-        CLEAR: lv_navnw.
-        LOOP AT lt_BillingItemPrcgElmnt INTO ls_BillingItemPrcgElmnt WHERE ConditionType IN lr_condition2
-                                                                       AND ConditionInactiveReason EQ space
-                                                                       AND BillingDocument         EQ gs_billingitemprcgelmnt-BillingDocument
-                                                                       AND BillingDocumentItem     EQ gs_billingitemprcgelmnt-BillingDocumentItem.
-          lv_navnw += ls_BillingItemPrcgElmnt-ConditionAmount.
+        CLEAR: lv_navnw, lv_descuento.
+        IF lr_condition2[] IS NOT INITIAL.
+          LOOP AT lt_BillingItemPrcgElmnt INTO ls_BillingItemPrcgElmnt WHERE ConditionType IN lr_condition2
+                                                                         AND ConditionInactiveReason EQ space
+                                                                         AND BillingDocument         EQ gs_billingitemprcgelmnt-BillingDocument
+                                                                         AND BillingDocumentItem     EQ gs_billingitemprcgelmnt-BillingDocumentItem.
+            lv_navnw += ls_BillingItemPrcgElmnt-ConditionAmount.
 
-        ENDLOOP.
+          ENDLOOP.
+        ENDIF.
 
+        IF lr_condition3[] IS NOT INITIAL.
+          LOOP AT lt_BillingItemPrcgElmnt INTO ls_BillingItemPrcgElmnt WHERE ConditionType IN lr_condition3
+                                                                         AND ConditionInactiveReason EQ space
+                                                                         AND BillingDocument         EQ gs_billingitemprcgelmnt-BillingDocument
+                                                                         AND BillingDocumentItem     EQ gs_billingitemprcgelmnt-BillingDocumentItem.
+            lv_descuento += abs( ls_BillingItemPrcgElmnt-ConditionAmount ).
+
+          ENDLOOP.
+        ENDIF.
+
+        lv_navnw = lv_navnw - lv_descuento.
         gs_impuesto-baseimponible     = lv_navnw.
 
         READ TABLE impuesto ASSIGNING FIELD-SYMBOL(<fs_impuesto>) WITH KEY codigo =  gs_ec_003-taxsupportid codigoporcentaje =  gs_ec_003-taxsidrate.
         IF sy-subrc EQ 0.
-          lv_navnw = gs_impuesto-baseimponible.
-          <fs_impuesto>-baseimponible += lv_navnw.
-          lv_navnw = gs_billingitemprcgelmnt-ConditionAmount.
-          <fs_impuesto>-valor         += lv_navnw.
+          CLEAR: lv_navnw.
+          lv_navnw = gs_impuesto-baseimponible + <fs_impuesto>-baseimponible.
+          <fs_impuesto>-baseimponible = lv_navnw.
+          CLEAR: lv_navnw.
+          lv_navnw = gs_billingitemprcgelmnt-ConditionAmount + <fs_impuesto>-valor.
+          <fs_impuesto>-valor         = lv_navnw.
         ELSE.
           gs_impuesto-codigo            = gs_ec_003-taxsupportid.
           gs_impuesto-codigoporcentaje  = gs_ec_003-taxsidrate.
@@ -1215,9 +1470,9 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
           lv_texto    TYPE c LENGTH 10.
 
     SELECT *
-    FROM I_PaymentTermsConditions
-    WHERE PaymentTerms EQ @me->gs_billingdocument-CustomerPaymentTerms
-    INTO TABLE @gt_PaymentTerms.
+      FROM I_PaymentTermsConditions
+      WHERE PaymentTerms EQ @me->gs_billingdocument-CustomerPaymentTerms
+      INTO TABLE @gt_PaymentTerms.
 
     READ TABLE gt_ec_006 INTO gs_ec_006 WITH KEY paymentmethod = me->gs_billingdocument-paymentmethod.
     IF sy-subrc EQ 0.
@@ -1265,7 +1520,7 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
       AND documentsri  EQ @me->gv_documenttype
     INTO TABLE @gt_ec_002.
 
-    SELECT client, companycode, taxcode, notax, tax0, exempttax, tax, taxsupportid, taxsidrate, taxratepercent
+    SELECT client, companycode, taxcode, notax, tax0, exempttax, tax, taxsupportid, taxsidrate, taxratepercent, supporttaxcode
     FROM zdt_ec_003
     WHERE companycode  EQ @me->gv_companycode
     INTO TABLE @gt_ec_003.
@@ -1296,8 +1551,9 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
     WHERE companycode  EQ @me->gv_companycode
     INTO TABLE @gt_ec_008.
 
-    SELECT client, country, countrysri, taxhavencountry, pais_conv
+    SELECT client, country, countrysri, taxhavencountry, taxagreement, taxregime
     FROM zdt_ec_009
+    WHERE country NE @space
     INTO TABLE @gt_ec_009.
 
     SELECT SINGLE client, companycode, fiscalyear, accountingdocument, accountingdocumenttype, billingdocument, billingdocumenttype,
@@ -1329,6 +1585,7 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
       READ TABLE me->gt_BillingDocumentItem INTO gs_BillingDocumentItem INDEX 1.
       SELECT SINGLE *
       FROM I_SalesDocument
+      WITH PRIVILEGED ACCESS
       WHERE SalesDocument  = @me->gs_BillingDocumentItem-SalesDocument
       INTO @me->gs_SalesDocument.
 
@@ -1336,6 +1593,7 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
 
         SELECT  *
           FROM I_SalesDocumentItem
+          WITH PRIVILEGED ACCESS
           WHERE SalesDocument  = @me->gs_SalesDocument-SalesDocument
           INTO TABLE @me->gt_salesdocumentitem.
 
@@ -1485,7 +1743,8 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
                                CHANGING estab       = inf_tribu-estab
                                         ptoemi      = inf_tribu-ptoemi
                                         secuencial  = inf_tribu-secuencial
-                                        claveacceso = inf_tribu-claveacceso ).
+                                        claveacceso = inf_tribu-claveacceso
+                                        message     = message ).
         ENDIF.
 
       ENDIF.
@@ -1493,4 +1752,5 @@ CLASS ZCL_CREATE_FACTURA IMPLEMENTATION.
     ENDIF.
 
   ENDMETHOD.
+
 ENDCLASS.
